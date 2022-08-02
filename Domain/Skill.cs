@@ -4,9 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EducationPortal.Domain
+namespace Domain
 {
-    public enum Skill
+    public class Skill
+    {
+        public SkillKind Name { get; set; }
+        public int Points { get; set; }
+    }
+    public enum SkillKind
     {
         Programming = 0,
         Music = 1,

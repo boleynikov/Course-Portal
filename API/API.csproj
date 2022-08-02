@@ -5,8 +5,4 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Domain\Course.cs~RF183c445b.TMP" />
-  </ItemGroup>
-
 </Project>

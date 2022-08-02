@@ -1,11 +1,7 @@
-﻿using EducationPortal.Domain.CourseMaterials;
-using System;
+﻿using Domain.CourseMaterials;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace EducationPortal.Domain
+namespace Domain
 {
     public class Course
     {
@@ -15,14 +11,14 @@ namespace EducationPortal.Domain
 
         public List<Material> CourseMaterials { get; private set; }
 
-        public Dictionary<Skill, int> CourseSkills { get; private set; }
+        public List<Skill> CourseSkills { get; private set; }
 
         public Course(string name, string description)
         {
             Name = name;
             Description = description;
             CourseMaterials = new List<Material>();
-            CourseSkills = new Dictionary<Skill, int>();
+            CourseSkills = new List<Skill>();
         }
 
         public void AddMaterial(Material material)
@@ -32,13 +28,15 @@ namespace EducationPortal.Domain
 
         public void AddSkill(Skill skill, int value)
         {
-            if (CourseSkills.ContainsKey(skill))
+            var skillExist = CourseSkills.Find(c => c.Name == skill.Name);
+            if (skillExist != null)
             {
-                CourseSkills[skill]+=value;
+                var index = CourseSkills.IndexOf(skillExist);
+                CourseSkills[index].Points += value;
             }
             else
             {
-                CourseSkills.Add(skill, value);
+                CourseSkills.Add(new Skill { Name = skill.Name, Points = value });
             }
         }
     }

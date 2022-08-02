@@ -1,19 +1,16 @@
-﻿using EducationPortal.Repository;
-using System;
+﻿using Domain.CourseMaterials;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace EducationPortal.Domain
+namespace Domain
 {
-    class User
+    public class User
     {
         public string Name { get; private set; }
-
         public string Email { get; private set; }
 
-        public Dictionary<Skill, int> UserSkills { get; private set; }
+        public List<Skill> UserSkills { get; private set; }
+
+        public List<Material> UserMaterials { get; private set; }
 
         public Dictionary<Course, CourseProgress> UserCourses { get; private set; }
         
@@ -21,7 +18,7 @@ namespace EducationPortal.Domain
         {
             Name = name;
             Email = email;
-            UserSkills = new Dictionary<Skill, int>();
+            UserSkills = new List<Skill>();
             UserCourses = new Dictionary<Course, CourseProgress>();
         }
 
@@ -34,15 +31,17 @@ namespace EducationPortal.Domain
 
             UserCourses.Add(course, new CourseProgress() { State = State.NotCompleted, Percentage = 0f }); 
         }
-        public void AddSkill(Skill skill, int value)
+        public void AddSkill(Skill skill)
         {
-            if (UserSkills.ContainsKey(skill))
+            var skillExist = UserSkills.Find(c => c.Name == skill.Name);
+            if (skillExist != null)
             {
-                UserSkills[skill] += value;
+                var index = UserSkills.IndexOf(skillExist);
+                UserSkills[index].Points += skill.Points;
             }
             else
             {
-                UserSkills.Add(skill, value);
+                UserSkills.Add(new Skill { Name = skill.Name, Points = skill.Points });
             }
         }
     }

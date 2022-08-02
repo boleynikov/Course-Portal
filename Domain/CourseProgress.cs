@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EducationPortal.Domain
+namespace Domain
 {
     public class CourseProgress
     {
