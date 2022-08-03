@@ -2,7 +2,7 @@
 using Domain;
 using Services.Abstract;
 
-namespace EducationPortal.Services
+namespace Services
 {
     public class UserService : IService<User>
     {
@@ -20,6 +20,11 @@ namespace EducationPortal.Services
         public void DeleteByIndex(int index)
         {
             repository.DeleteByIndex(index);
+        }
+
+        public User[] GetAll()
+        {
+            return repository.GetAll();
         }
 
         public User GetByIndex(int index)

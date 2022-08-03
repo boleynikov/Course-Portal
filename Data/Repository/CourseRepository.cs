@@ -1,16 +1,19 @@
 ﻿using Data.Repository.Abstract;
 using Domain;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Data.Repository
 {
     public class CourseRepository : IRepository<Course>
     {
+        private readonly IDbContext dbContext;
         private readonly List<Course> courses;
 
-        public CourseRepository()
+        public CourseRepository(IDbContext dbContext)
         {
-            courses = new List<Course>();
+            this.dbContext = dbContext;
+            courses = dbContext.Get<Course>();
         }
 
         public void Add(Course course)
@@ -34,7 +37,12 @@ namespace Data.Repository
         }
         public void Save()
         {
-            //TODO
+            dbContext.Update(courses);
+        }
+
+        public Course[] GetAll()
+        {
+            return courses.ToArray();
         }
     }
 }

@@ -1,16 +1,19 @@
 ﻿using Data.Repository.Abstract;
 using Domain.CourseMaterials;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace EducationPortal.Data.Repository
+namespace Data.Repository
 {
     public class MaterialRepository : IRepository<Material>
     {
+        private readonly IDbContext dbContext;
         private readonly List<Material> materials;
 
-        public MaterialRepository()
+        public MaterialRepository(IDbContext dbContext)
         {
-            materials = new List<Material>();
+            this.dbContext = dbContext;
+            materials = dbContext.Get<Material>();
         }
         public void Add(Material material)
         {
@@ -22,6 +25,11 @@ namespace EducationPortal.Data.Repository
             materials.Remove(materials[index]);
         }
 
+        public Material[] GetAll()
+        {
+            return materials.ToArray();
+        }
+
         public Material GetByIndex(int index)
         {
             return materials[index];
@@ -29,7 +37,7 @@ namespace EducationPortal.Data.Repository
 
         public void Save()
         {
-            //TODO
+            dbContext.Update(materials);
         }
 
         public void Update(Material entity)

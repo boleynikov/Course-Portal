@@ -1,12 +1,14 @@
-﻿using Domain.CourseMaterials;
+﻿using Domain.Abstract;
+using Domain.CourseMaterials;
 using System.Collections.Generic;
 
 namespace Domain
 {
-    public class User
+    public class User : BaseEntity
     {
         public string Name { get; private set; }
         public string Email { get; private set; }
+        public string Password { get; private set; }
 
         public List<Skill> UserSkills { get; private set; }
 
@@ -14,10 +16,11 @@ namespace Domain
 
         public Dictionary<Course, CourseProgress> UserCourses { get; private set; }
         
-        public User(string name, string email)
+        public User(string name, string email, string password)
         {
             Name = name;
             Email = email;
+            Password = password;
             UserSkills = new List<Skill>();
             UserCourses = new Dictionary<Course, CourseProgress>();
         }

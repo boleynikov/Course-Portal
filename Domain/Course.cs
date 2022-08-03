@@ -1,9 +1,10 @@
-﻿using Domain.CourseMaterials;
+﻿using Domain.Abstract;
+using Domain.CourseMaterials;
 using System.Collections.Generic;
 
 namespace Domain
 {
-    public class Course
+    public class Course : BaseEntity
     {
         public string Name { get; private set; }
 

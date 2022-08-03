@@ -2,7 +2,7 @@
 using Domain.CourseMaterials;
 using Services.Abstract;
 
-namespace EducationPortal.Services
+namespace Services
 {
     public class MaterialService : IService<Material>
     {
@@ -20,6 +20,11 @@ namespace EducationPortal.Services
         public void DeleteByIndex(int index)
         {
             repository.DeleteByIndex(index);
+        }
+
+        public Material[] GetAll()
+        {
+            return repository.GetAll();
         }
 
         public Material GetByIndex(int index)

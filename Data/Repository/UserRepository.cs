@@ -1,26 +1,36 @@
 ﻿using Data.Repository.Abstract;
 using Domain;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace EducationPortal.Data.Repository
+namespace Data.Repository
 {
     public class UserRepository : IRepository<User>
     {
+        private readonly IDbContext dbContext;
         private readonly List<User> users;
 
-        public UserRepository()
+        public UserRepository(IDbContext dbContext)
         {
-            users = new List<User>(); 
+            this.dbContext = dbContext;
+            users = dbContext.Get<User>();
         }
 
         public void Add(User user)
         {
             users.Add(user);
+            Save();
         }
 
         public void DeleteByIndex(int index)
         {
             users.Remove(users[index]);
+            Save();
+        }
+
+        public User[] GetAll()
+        {
+            return users.ToArray();
         }
 
         public User GetByIndex(int index)
@@ -30,7 +40,7 @@ namespace EducationPortal.Data.Repository
 
         public void Save()
         {
-            //TODO
+            dbContext.Update(users);
         }
 
         public void Update(User user)

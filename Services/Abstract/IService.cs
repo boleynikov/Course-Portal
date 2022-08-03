@@ -7,5 +7,6 @@
         void Update(T entity);
         void DeleteByIndex(int index);
         void Save();
+        T[] GetAll();
     }
 }

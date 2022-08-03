@@ -1,30 +1,51 @@
 ﻿using Domain;
 using Services.Abstract;
 using System;
+using System.Linq;
 
-namespace EducationPortal.Services
+namespace Services
 {
-    class AuthenticationService : IAuthenticationService
+    public class AuthenticationService : IAuthenticationService
     {
-        private readonly IService<User> service;
+        private readonly IService<User> userService;
 
         public AuthenticationService(IService<User> service)
         {
-            this.service = service;
+            this.userService = service;
         }
-        public void Login(string email, string password)
+        public bool Login(string email, string password)
         {
-            throw new NotImplementedException();
+            var allUsers = userService.GetAll();
+            var pulledUser = allUsers.SingleOrDefault(user => user.Email == email);
+            if (pulledUser != null)
+            {
+                if(password == pulledUser.Password)
+                {
+                    Console.WriteLine($"З поверненням, {pulledUser.Name}");
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Невірний пароль");
+                    return false;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Облікового запису з такою поштою немає");
+                return false;
+            }
         }
 
         public void Logout()
         {
-            throw new NotImplementedException();
+            //TODO
         }
 
         public void Register(string name, string email, string password)
         {
-            throw new NotImplementedException();
+            var user = new User(name, email, password);
+            userService.Add(user);
         }
     }
 }
