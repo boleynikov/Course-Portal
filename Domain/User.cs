@@ -1,9 +1,11 @@
 ﻿using Domain.Abstract;
 using Domain.CourseMaterials;
+using System;
 using System.Collections.Generic;
 
 namespace Domain
 {
+    [Serializable]
     public class User : BaseEntity
     {
         public string Name { get; private set; }
@@ -14,32 +16,38 @@ namespace Domain
 
         public List<Material> UserMaterials { get; private set; }
 
-        public Dictionary<Course, CourseProgress> UserCourses { get; private set; }
+        public List<(Course, CourseProgress)> UserCourses { get; private set; }
         
-        public User(string name, string email, string password)
+        public User(int id, string name, string email, string password) : base(id)
         {
             Name = name;
             Email = email;
             Password = password;
             UserSkills = new List<Skill>();
-            UserCourses = new Dictionary<Course, CourseProgress>();
+            UserMaterials = new List<Material>();
+            UserCourses = new List<(Course, CourseProgress)>();
         }
-
-        public void AddCourse(Course course)
+        public void AddMaterial(Material material)
+        {        
+            UserMaterials.Add(material);
+        }
+        
+        public void AddCourse(Course newCourse)
         {
-            if (UserCourses.ContainsKey(course))
+            if (UserCourses.Find(course => course.Item1.Name == newCourse.Name).Item1 != null)
             {
+                
                 return;
             }
-
-            UserCourses.Add(course, new CourseProgress() { State = State.NotCompleted, Percentage = 0f }); 
+            UserCourses.Add((newCourse, new CourseProgress() { State = State.NotCompleted, Percentage = 0f }));
+            //UserCourses.Add(course, new CourseProgress() { State = State.NotCompleted, Percentage = 0f }); 
         }
         public void AddSkill(Skill skill)
         {
-            var skillExist = UserSkills.Find(c => c.Name == skill.Name);
-            if (skillExist != null)
+            
+            if (UserSkills.Find(c => c.Name == skill.Name) != null)
             {
-                var index = UserSkills.IndexOf(skillExist);
+                var index = UserSkills.IndexOf(UserSkills.Find(c => c.Name == skill.Name));
                 UserSkills[index].Points += skill.Points;
             }
             else

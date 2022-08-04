@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.CourseMaterials
 {
+    [Serializable]
     public class PublicationMaterial : Material
     {
         public string Author { get; set; }
@@ -16,7 +13,7 @@ namespace Domain.CourseMaterials
 
         public DateTime YearOfPublication { get; set; }
 
-        public PublicationMaterial(string title, string author, int pageCount, string format, DateTime yearOfPublication) : base(title)
+        public PublicationMaterial(int id, string title, string author, int pageCount, string format, DateTime yearOfPublication, string type = "Publication") : base(id, title, type)
         {
             Author = author;
             PageCount = pageCount;

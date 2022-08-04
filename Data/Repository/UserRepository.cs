@@ -35,7 +35,7 @@ namespace Data.Repository
 
         public User GetByIndex(int index)
         {
-            return users[index];
+            return users.SingleOrDefault(user => user.Id == index);
         }
 
         public void Save()

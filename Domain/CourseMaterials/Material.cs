@@ -1,19 +1,16 @@
 ﻿using Domain.Abstract;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.CourseMaterials
 {
     public abstract class Material : BaseEntity
     {
+        public string Type { get; set; }
         public string Title { get; set; }
 
-        protected Material(string title)
+        protected Material(int id, string title, string type) : base(id)
         {
             Title = title;
+            Type = type;
         }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using Domain.Abstract;
 using Domain.CourseMaterials;
+using System;
 using System.Collections.Generic;
 
 namespace Domain
 {
+    [Serializable]
     public class Course : BaseEntity
     {
         public string Name { get; private set; }
@@ -14,7 +16,7 @@ namespace Domain
 
         public List<Skill> CourseSkills { get; private set; }
 
-        public Course(string name, string description)
+        public Course(int id, string name, string description) : base(id)
         {
             Name = name;
             Description = description;

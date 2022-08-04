@@ -1,6 +1,5 @@
 ﻿using Domain;
 using Services.Abstract;
-using System;
 using System.Linq;
 
 namespace Services
@@ -8,11 +7,13 @@ namespace Services
     public class AuthenticationService : IAuthenticationService
     {
         private readonly IService<User> userService;
-
+        public User Account { get; private set; }
         public AuthenticationService(IService<User> service)
         {
             this.userService = service;
         }
+
+        public User GetCurrentAccount() => Account;
         public bool Login(string email, string password)
         {
             var allUsers = userService.GetAll();
@@ -21,18 +22,16 @@ namespace Services
             {
                 if(password == pulledUser.Password)
                 {
-                    Console.WriteLine($"З поверненням, {pulledUser.Name}");
+                    Account = pulledUser;
                     return true;
                 }
                 else
-                {
-                    Console.WriteLine("Невірний пароль");
+                {                    
                     return false;
                 }
             }
             else
-            {
-                Console.WriteLine("Облікового запису з такою поштою немає");
+            {                
                 return false;
             }
         }
@@ -44,8 +43,10 @@ namespace Services
 
         public void Register(string name, string email, string password)
         {
-            var user = new User(name, email, password);
-            userService.Add(user);
+            var id = userService.GetAll().Length + 1; 
+            var newUser = new User(id, name, email, password);
+            userService.Add(newUser);
+            Account = newUser;
         }
     }
 }

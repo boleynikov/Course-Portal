@@ -1,7 +1,9 @@
 ﻿using API.Controllers;
+using API.Controllers.Abstract;
 using Data.Repository;
 using Data.Repository.Abstract;
 using Domain;
+using Domain.CourseMaterials;
 using Services;
 using Services.Abstract;
 using System;
@@ -16,16 +18,42 @@ namespace API
             Console.OutputEncoding = Encoding.Unicode;
             Console.InputEncoding = Encoding.Unicode;
 
-            IRepository<Course> courseRepository = new CourseRepository(new FileDbContext());
+            var fileContext = new FileDbContext();
+
+            IRepository<Material> materialRepository = new MaterialRepository(fileContext);
+            IService<Material> materialService = new MaterialService(materialRepository);
+
+            IRepository<Course> courseRepository = new CourseRepository(fileContext);
             IService<Course> courseService = new CourseService(courseRepository);
 
-            IRepository<User> userRepository = new UserRepository(new FileDbContext());
+            IRepository<User> userRepository = new UserRepository(fileContext);
             IService<User> userService = new UserService(userRepository);
             IAuthenticationService authenticationService = new AuthenticationService(userService);
 
-            HomeController home = new HomeController(courseService, authenticationService);
+            IController home = new HomeController(courseService, authenticationService);
+            IController user;
 
-            home.Launch();
+            string page = "home";
+            while(page != "exit")
+            {
+                switch (page)
+                {
+                    case "home":
+                        page = home.Launch();
+                        break;
+                    case "user":
+                        int userId = authenticationService.GetCurrentAccount().Id;
+                        user = new UserController(courseService, materialService, userService, userId);
+                        page = user.Launch();
+                        break;
+                    case "course":
+                        page = new CourseController().Launch();
+                        break;
+                    default:
+                        Console.WriteLine("Невідома сторінка");
+                        break;
+                }
+            }
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Data.Repository.Abstract;
 using Domain.CourseMaterials;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Data.Repository
 {
@@ -18,11 +17,13 @@ namespace Data.Repository
         public void Add(Material material)
         {
             materials.Add(material);
+            Save();
         }
 
         public void DeleteByIndex(int index)
         {
             materials.Remove(materials[index]);
+            Save();
         }
 
         public Material[] GetAll()

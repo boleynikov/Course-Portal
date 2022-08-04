@@ -1,7 +1,6 @@
 ﻿using Data.Repository.Abstract;
 using Domain;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Data.Repository
 {
@@ -19,11 +18,13 @@ namespace Data.Repository
         public void Add(Course course)
         {
             courses.Add(course);
+            Save();
         }
 
         public void DeleteByIndex(int index)
         {
             courses.Remove(courses[index]);
+            Save();
         }
 
         public Course GetByIndex(int index)
