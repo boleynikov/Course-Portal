@@ -30,7 +30,7 @@ namespace API
             IService<User> userService = new UserService(userRepository);
             IAuthenticationService authenticationService = new AuthenticationService(userService);
 
-            IController home = new HomeController(courseService, authenticationService);
+            IController home = new HomeController(courseService, userService, authenticationService);
             IController user;
 
             string page = "home";
@@ -47,7 +47,7 @@ namespace API
                         page = user.Launch();
                         break;
                     case "course":
-                        page = new CourseController().Launch();
+
                         break;
                     default:
                         Console.WriteLine("Невідома сторінка");

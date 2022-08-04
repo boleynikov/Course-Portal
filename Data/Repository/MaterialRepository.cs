@@ -1,6 +1,7 @@
 ﻿using Data.Repository.Abstract;
 using Domain.CourseMaterials;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Data.Repository
 {
@@ -41,9 +42,15 @@ namespace Data.Repository
             dbContext.Update(materials);
         }
 
-        public void Update(Material entity)
+        public void Update(Material editedMaterial)
         {
-            //TODO
+            var material = materials.FirstOrDefault(u => u.Id == editedMaterial.Id);
+            if (material != null)
+            {
+                int i = materials.IndexOf(material);
+                materials[i] = editedMaterial;
+                Save();
+            }
         }
     }
 }

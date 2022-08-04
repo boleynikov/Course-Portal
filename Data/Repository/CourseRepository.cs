@@ -1,6 +1,7 @@
 ﻿using Data.Repository.Abstract;
 using Domain;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Data.Repository
 {
@@ -32,9 +33,15 @@ namespace Data.Repository
             return courses[index];
         }
 
-        public void Update(Course course)
+        public void Update(Course editedCourse)
         {
-            //TODO
+            var course = courses.FirstOrDefault(u => u.Id == editedCourse.Id);
+            if (course != null)
+            {
+                int i = courses.IndexOf(course);
+                courses[i] = editedCourse;
+                Save();
+            }
         }
         public void Save()
         {

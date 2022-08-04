@@ -34,13 +34,22 @@ namespace Domain
         
         public void AddCourse(Course newCourse)
         {
-            if (UserCourses.Find(course => course.Item1.Name == newCourse.Name).Item1 != null)
+            if (UserCourses.Find(course => course.Item1.Name == newCourse.Name && course.Item1.Description == newCourse.Description).Item1 != null)
             {
-                
                 return;
             }
             UserCourses.Add((newCourse, new CourseProgress() { State = State.NotCompleted, Percentage = 0f }));
-            //UserCourses.Add(course, new CourseProgress() { State = State.NotCompleted, Percentage = 0f }); 
+        }
+
+        public void RemoveCourse(int id)
+        {
+            var pulledCourse = UserCourses.Find(course => course.Item1.Id == id).Item1;
+            if (pulledCourse == null)
+            {
+                return;
+            }
+            var pulledProgress = UserCourses.Find(course => course.Item1.Id == id).Item2;
+            var result = UserCourses.Remove((pulledCourse, pulledProgress));
         }
         public void AddSkill(Skill skill)
         {

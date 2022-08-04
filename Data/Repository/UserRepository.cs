@@ -43,9 +43,15 @@ namespace Data.Repository
             dbContext.Update(users);
         }
 
-        public void Update(User user)
+        public void Update(User editedUser)
         {
-            //TODO
+            var user = users.FirstOrDefault(u => u.Id == editedUser.Id);
+            if(user != null)
+            {
+                int i = users.IndexOf(user);
+                users[i] = editedUser;
+                Save();
+            }
         }
     }
 }

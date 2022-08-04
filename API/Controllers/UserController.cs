@@ -31,8 +31,8 @@ namespace API.Controllers
             string page = "user";
             while (page == "user")
             {
-                var currentUser = userService.GetByIndex(userId);
                 Console.Clear();
+                var currentUser = userService.GetByIndex(userId);
                 Console.WriteLine($"Обліковий запис");
                 Console.WriteLine($"Ім'я: {currentUser.Name}");
                 Console.WriteLine($"Email: {currentUser.Email}");
@@ -53,6 +53,7 @@ namespace API.Controllers
                 }
 
                 Console.WriteLine("Щоб створити курс - введіть \"create\"");
+                Console.WriteLine("Щоб видалити курс - введіть \"delete\"");
                 Console.WriteLine("Щоб повернутися назад - введіть \"home\"");
 
                 string cmdLine = Console.ReadLine();
@@ -62,7 +63,10 @@ namespace API.Controllers
                         CreateCourse();
                         break;
                     case "delete":
-                        //TODO: delete course
+                        Console.Write("Введіть номер курсу: ");
+                        int courseId = int.Parse(Console.ReadLine());
+                        currentUser.RemoveCourse(courseId);
+                        userService.Save();
                         break;
                     case "home":
                         page = "home";
