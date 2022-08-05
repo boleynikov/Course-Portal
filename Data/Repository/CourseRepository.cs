@@ -22,15 +22,15 @@ namespace Data.Repository
             Save();
         }
 
-        public void DeleteByIndex(int index)
+        public void DeleteByIndex(int id)
         {
-            courses.Remove(courses[index]);
+            courses.Remove(courses[id]);
             Save();
         }
 
-        public Course GetByIndex(int index)
+        public Course GetByIndex(int id)
         {
-            return courses[index];
+            return courses[id];
         }
 
         public void Update(Course editedCourse)

@@ -13,7 +13,10 @@ namespace API.Controllers
         private readonly IService<Material> materialService;
         private readonly IService<User> userService;
         private readonly int userId;
-        public UserController(IService<Course> courseService, IService<Material> materialService, IService<User> userService, int userId)
+        public UserController(IService<Course> courseService, 
+                              IService<Material> materialService, 
+                              IService<User> userService, 
+                              int userId)
         {
             this.courseService = courseService;
             this.materialService = materialService;
@@ -34,8 +37,8 @@ namespace API.Controllers
                 Console.Clear();
                 var currentUser = userService.GetByIndex(userId);
                 Console.WriteLine($"Обліковий запис");
-                Console.WriteLine($"Ім'я: {currentUser.Name}");
-                Console.WriteLine($"Email: {currentUser.Email}");
+                Console.WriteLine($"\tІм'я: {currentUser.Name}");
+                Console.WriteLine($"\tEmail: {currentUser.Email}");
                 if (currentUser.UserCourses.Count <= 0)
                 {
                     Console.WriteLine("У вас ще немає доданих чи створених курсів.");
@@ -48,13 +51,14 @@ namespace API.Controllers
                     {
                         var course = courseKeyValue.Item1;
                         var progress = courseKeyValue.Item2;
-                        Console.WriteLine($"{course.Id}. {course.Name} - Прогресс: {progress.State}, {progress.Percentage} %");
+                        Console.WriteLine("\t|{0, 2}.| {1,-30} | {2, 5}, {3, 3} %", course.Id, course.Name, progress.State, progress.Percentage);
                     }
                 }
 
+                Console.WriteLine();
                 Console.WriteLine("Щоб створити курс - введіть \"create\"");
                 Console.WriteLine("Щоб видалити курс - введіть \"delete\"");
-                Console.WriteLine("Щоб повернутися назад - введіть \"home\"");
+                Console.WriteLine("Щоб повернутися назад - введіть \"back\"");
 
                 string cmdLine = Console.ReadLine();
                 switch (cmdLine)
@@ -62,13 +66,18 @@ namespace API.Controllers
                     case "create":
                         CreateCourse();
                         break;
+                    case "open":
+                        Console.Write("Введіть номер курсу: ");
+                        int courseId = int.Parse(Console.ReadLine()) - 1;
+                        page = new CourseController(userService, courseService, currentUser.Id, courseService.GetByIndex(courseId), "user").Launch();
+                        break;
                     case "delete":
                         Console.Write("Введіть номер курсу: ");
-                        int courseId = int.Parse(Console.ReadLine());
+                        courseId = int.Parse(Console.ReadLine());
                         currentUser.RemoveCourse(courseId);
                         userService.Save();
                         break;
-                    case "home":
+                    case "back":
                         page = "home";
                         break;
                 }
@@ -111,6 +120,7 @@ namespace API.Controllers
 
         private List<Skill> CreateSkills()
         {
+            Console.Clear();
             List<Skill> courseSkills = new List<Skill>();
             Console.WriteLine("Оберіть навички, які можна отримати пройшовши курс:");
             string cmdLine = String.Empty;
@@ -128,12 +138,14 @@ namespace API.Controllers
                 {
                     var newSkill = new Skill { Name = skillKind, Points = points };
                     courseSkills.Add(newSkill);
+                    Console.Clear();
                 }
             }
             return courseSkills;
         }
         private List<Material> CreateMaterials()
         {
+            Console.Clear();
             List<Material> courseMaterials = new List<Material>();
             string cmdLine = string.Empty;
             while(cmdLine!= "stop")
@@ -146,7 +158,7 @@ namespace API.Controllers
                 switch (cmdLine)
                 {
                     case "Article":
-                        Console.Write("Введіть назву статті:");
+                        Console.Write("Введіть назву статті: ");
                         string title = Console.ReadLine();
                         Console.Write("Введіть дату публікації статті: ");
                         DateTime.TryParse(Console.ReadLine(), out DateTime date);
@@ -161,15 +173,15 @@ namespace API.Controllers
                         courseMaterials.Add(articleMaterial);
                         break;
                     case "Publication":
-                        Console.Write("Введіть назву публікації:");
+                        Console.Write("Введіть назву публікації: ");
                         title = Console.ReadLine();
                         Console.Write("Введіть автора публікації: ");
                         string author = Console.ReadLine();
                         Console.Write("Введіть кількість сторінок публікації: ");
                         int pageCount = int.Parse(Console.ReadLine());
-                        Console.Write("Введіть формат файлу публікації:");
+                        Console.Write("Введіть формат файлу публікації: ");
                         string format = Console.ReadLine();
-                        Console.Write("Введіть дату публікації:");
+                        Console.Write("Введіть дату публікації: ");
                         DateTime.TryParse(Console.ReadLine(), out date);
 
                         id = materialService.GetAll().Length + 1;
@@ -180,7 +192,7 @@ namespace API.Controllers
                         courseMaterials.Add(publicationMaterial);
                         break;
                     case "Video":
-                        Console.Write("Введіть назву відео:");
+                        Console.Write("Введіть назву відео: ");
                         title = Console.ReadLine();
                         Console.Write("Введіть довжину відео: ");
                         float.TryParse(Console.ReadLine(), out float duration);
@@ -195,6 +207,7 @@ namespace API.Controllers
                         courseMaterials.Add(videoMaterial);
                         break;
                 }
+                Console.Clear();
             }
 
             userService.Save();

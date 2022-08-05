@@ -4,9 +4,9 @@
     {
         void Add(T entity);
         T[] GetAll();
-        T GetByIndex(int index);
+        T GetByIndex(int id);
         void Update(T entity);
-        void DeleteByIndex(int index);
+        void DeleteByIndex(int id);
         void Save();
     }
 }

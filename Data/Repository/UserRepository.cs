@@ -22,9 +22,9 @@ namespace Data.Repository
             Save();
         }
 
-        public void DeleteByIndex(int index)
+        public void DeleteByIndex(int id)
         {
-            users.Remove(users[index]);
+            users.Remove(users[id]);
             Save();
         }
 
@@ -33,9 +33,9 @@ namespace Data.Repository
             return users.ToArray();
         }
 
-        public User GetByIndex(int index)
+        public User GetByIndex(int id)
         {
-            return users.SingleOrDefault(user => user.Id == index);
+            return users.SingleOrDefault(user => user.Id == id);
         }
 
         public void Save()

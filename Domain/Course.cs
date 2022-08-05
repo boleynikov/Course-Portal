@@ -42,5 +42,13 @@ namespace Domain
                 CourseSkills.Add(new Skill { Name = skill.Name, Points = value });
             }
         }
+
+        public void Update(string name, string descript, List<Material> materials, List<Skill> skills)
+        {
+            Name = name;
+            Description = descript;
+            CourseMaterials = materials;
+            CourseSkills = skills;
+        }
     }
 }

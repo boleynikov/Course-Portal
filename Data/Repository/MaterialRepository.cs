@@ -21,9 +21,9 @@ namespace Data.Repository
             Save();
         }
 
-        public void DeleteByIndex(int index)
+        public void DeleteByIndex(int id)
         {
-            materials.Remove(materials[index]);
+            materials.Remove(materials[id]);
             Save();
         }
 
@@ -32,9 +32,9 @@ namespace Data.Repository
             return materials.ToArray();
         }
 
-        public Material GetByIndex(int index)
+        public Material GetByIndex(int id)
         {
-            return materials[index];
+            return materials[id];
         }
 
         public void Save()

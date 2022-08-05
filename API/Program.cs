@@ -46,11 +46,10 @@ namespace API
                         user = new UserController(courseService, materialService, userService, userId);
                         page = user.Launch();
                         break;
-                    case "course":
-
-                        break;
                     default:
-                        Console.WriteLine("Невідома сторінка");
+                        Console.WriteLine("Невідома сторінка\nНатисніть Enter");
+                        page = "home";
+                        Console.ReadLine();
                         break;
                 }
             }

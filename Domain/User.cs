@@ -32,12 +32,25 @@ namespace Domain
             UserMaterials.Add(material);
         }
         
+        public void UpdateCourse(Course editedCourse)
+        {
+            var pulledCourse = UserCourses.Find(course => course.Item1.Id == editedCourse.Id).Item1;
+            if (pulledCourse == null)
+            {
+                return;
+            }
+
+            var pulledProgress = UserCourses.Find(course => course.Item1.Id == editedCourse.Id).Item2;
+            var index = UserCourses.IndexOf((pulledCourse, pulledProgress));
+            UserCourses[index] = (editedCourse, pulledProgress);
+        }
         public void AddCourse(Course newCourse)
         {
             if (UserCourses.Find(course => course.Item1.Name == newCourse.Name && course.Item1.Description == newCourse.Description).Item1 != null)
             {
                 return;
             }
+
             UserCourses.Add((newCourse, new CourseProgress() { State = State.NotCompleted, Percentage = 0f }));
         }
 
@@ -48,8 +61,9 @@ namespace Domain
             {
                 return;
             }
+
             var pulledProgress = UserCourses.Find(course => course.Item1.Id == id).Item2;
-            var result = UserCourses.Remove((pulledCourse, pulledProgress));
+            UserCourses.Remove((pulledCourse, pulledProgress));
         }
         public void AddSkill(Skill skill)
         {

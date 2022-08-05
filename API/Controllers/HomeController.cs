@@ -11,7 +11,9 @@ namespace API.Controllers
         public readonly IService<User> userService;
         public readonly IAuthenticationService authService;
 
-        public HomeController(IService<Course> courseService, IService<User> userService, IAuthenticationService authService)
+        public HomeController(IService<Course> courseService, 
+                              IService<User> userService, 
+                              IAuthenticationService authService)
         {
             this.courseService = courseService;
             this.userService = userService;
@@ -42,7 +44,8 @@ namespace API.Controllers
                 {
                     for (int i = 0; i < courses.Length; i++)
                     {
-                        Console.WriteLine($"{i + 1}. {courses[i].Name} | {courses[i].Description}");
+                        Console.WriteLine("\t|{0, 2}.| {1,-30} | {2,5}", i + 1, courses[i].Name, courses[i].Description);
+
                     }
                 }
                 Console.WriteLine();
@@ -88,12 +91,12 @@ namespace API.Controllers
                     Console.WriteLine($"\tОбліковий запис {currentUser.Name}");
                     Console.WriteLine("Щоб переглянути якийсь курс - введіть \"open\"");
                     Console.WriteLine("Щоб додати до свого списку курс - введіть \"add\"");
-                    Console.WriteLine("Щоб переглянути свої курси, введіть \"showCourses\"");
-                    Console.WriteLine("Щоб вийти звідси, введіть \"exit\"");
+                    Console.WriteLine("Щоб переглянути свою сторінку - введіть \"user\"");
+                    Console.WriteLine("Щоб вийти звідси - введіть \"exit\"");
                     cmdLine = Console.ReadLine();
                     switch (cmdLine)
                     {
-                        case "showCourses":
+                        case "user":
                             page = "user";
                             break;
                         case "add":
@@ -105,7 +108,7 @@ namespace API.Controllers
                         case "open":
                             Console.Write("Введіть номер курсу: ");
                             courseId = int.Parse(Console.ReadLine()) - 1;
-                            page = new CourseController(userService, currentUser.Id, courses[courseId]).Launch();
+                            page = new CourseController(userService, courseService, currentUser.Id, courses[courseId]).Launch();
                             break;
                         case "exit":
                             page = "exit";

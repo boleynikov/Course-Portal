@@ -7,13 +7,13 @@ namespace Services
     public class AuthenticationService : IAuthenticationService
     {
         private readonly IService<User> userService;
-        public User Account { get; private set; }
+        private User account;
         public AuthenticationService(IService<User> service)
         {
             this.userService = service;
         }
 
-        public User GetCurrentAccount() => Account;
+        public User GetCurrentAccount() => account;
         public bool Login(string email, string password)
         {
             var allUsers = userService.GetAll();
@@ -22,7 +22,7 @@ namespace Services
             {
                 if(password == pulledUser.Password)
                 {
-                    Account = pulledUser;
+                    account = pulledUser;
                     return true;
                 }
                 else
@@ -46,7 +46,7 @@ namespace Services
             var id = userService.GetAll().Length + 1; 
             var newUser = new User(id, name, email, password);
             userService.Add(newUser);
-            Account = newUser;
+            account = newUser;
         }
     }
 }
