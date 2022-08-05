@@ -1,56 +1,74 @@
-﻿using Data.Repository.Abstract;
-using Domain;
-using System.Collections.Generic;
-using System.Linq;
+﻿// <copyright file="CourseRepository.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace Data.Repository
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using Data.Repository.Abstract;
+    using Domain;
+
+    /// <summary>
+    /// Course repository.
+    /// </summary>
     public class CourseRepository : IRepository<Course>
     {
-        private readonly IDbContext dbContext;
-        private readonly List<Course> courses;
+        private readonly IDbContext _dbContext;
+        private readonly List<Course> _courses;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CourseRepository"/> class.
+        /// </summary>
+        /// <param name="dbContext">DBContext.</param>
         public CourseRepository(IDbContext dbContext)
         {
-            this.dbContext = dbContext;
-            courses = dbContext.Get<Course>();
+            _dbContext = dbContext;
+            _courses = dbContext?.Get<Course>();
         }
 
+        /// <inheritdoc/>
         public void Add(Course course)
         {
-            courses.Add(course);
+            _courses.Add(course);
             Save();
         }
 
+        /// <inheritdoc/>
         public void DeleteByIndex(int id)
         {
-            courses.Remove(courses[id]);
+            _courses.Remove(_courses[id]);
             Save();
         }
 
+        /// <inheritdoc/>
         public Course GetByIndex(int id)
         {
-            return courses[id];
+            return _courses[id];
         }
 
+        /// <inheritdoc/>
         public void Update(Course editedCourse)
         {
-            var course = courses.FirstOrDefault(u => u.Id == editedCourse.Id);
+            var course = _courses.FirstOrDefault(u => u.Id == editedCourse.Id);
             if (course != null)
             {
-                int i = courses.IndexOf(course);
-                courses[i] = editedCourse;
+                int i = _courses.IndexOf(course);
+                _courses[i] = editedCourse;
                 Save();
             }
         }
+
+        /// <inheritdoc/>
         public void Save()
         {
-            dbContext.Update(courses);
+            _dbContext.Update(_courses);
         }
 
+        /// <inheritdoc/>
         public Course[] GetAll()
         {
-            return courses.ToArray();
+            return _courses.ToArray();
         }
     }
 }

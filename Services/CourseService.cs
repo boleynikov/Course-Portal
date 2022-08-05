@@ -1,45 +1,63 @@
-﻿using Data.Repository.Abstract;
-using Domain;
-using Services.Abstract;
+﻿// <copyright file="CourseService.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace Services
 {
+    using Data.Repository.Abstract;
+    using Domain;
+    using Services.Abstract;
+
+    /// <summary>
+    /// CourseService.
+    /// </summary>
     public class CourseService : IService<Course>
     {
-        private readonly IRepository<Course> repository;
+        private readonly IRepository<Course> _repository;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CourseService"/> class.
+        /// </summary>
+        /// <param name="repository">Repository instance.</param>
         public CourseService(IRepository<Course> repository)
         {
-            this.repository = repository;
+            _repository = repository;
         }
+
+        /// <inheritdoc/>
         public void Add(Course course)
         {
-            repository.Add(course);
+            _repository.Add(course);
         }
 
+        /// <inheritdoc/>
         public void DeleteByIndex(int index)
         {
-            repository.DeleteByIndex(index);
+            _repository.DeleteByIndex(index);
         }
 
+        /// <inheritdoc/>
         public Course[] GetAll()
         {
-            return repository.GetAll();
+            return _repository.GetAll();
         }
 
+        /// <inheritdoc/>
         public Course GetByIndex(int index)
         {
-            return repository.GetByIndex(index);
+            return _repository.GetByIndex(index);
         }
 
+        /// <inheritdoc/>
         public void Save()
         {
-            repository.Save();
+            _repository.Save();
         }
 
+        /// <inheritdoc/>
         public void Update(Course course)
         {
-            repository.Update(course);
+            _repository.Update(course);
         }
     }
 }

@@ -1,34 +1,48 @@
-﻿using API.Controllers.Abstract;
-using Domain;
-using Services.Abstract;
-using System;
+﻿// <copyright file="HomeController.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace API.Controllers
 {
+    using System;
+    using API.Controllers.Abstract;
+    using Domain;
+    using Services.Abstract;
+
+    /// <summary>
+    /// Home Controller.
+    /// </summary>
     public class HomeController : IController
     {
-        public readonly IService<Course> courseService;
-        public readonly IService<User> userService;
-        public readonly IAuthenticationService authService;
+        private readonly IService<Course> _courseService;
+        private readonly IService<User> _userService;
+        private readonly IAuthorizationService _authService;
 
-        public HomeController(IService<Course> courseService, 
-                              IService<User> userService, 
-                              IAuthenticationService authService)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HomeController"/> class.
+        /// </summary>
+        /// <param name="courseService">Course service instance.</param>
+        /// <param name="userService">User service instance.</param>
+        /// <param name="authService">Authentication service instance.</param>
+        public HomeController(
+            IService<Course> courseService,
+            IService<User> userService,
+            IAuthorizationService authService)
         {
-            this.courseService = courseService;
-            this.userService = userService;
-            this.authService = authService;
+            _courseService = courseService;
+            _userService = userService;
+            _authService = authService;
         }
 
+        /// <inheritdoc/>
         public string Launch()
         {
-            var coursesOnSite = courseService.GetAll();
+            var coursesOnSite = _courseService.GetAll();
             return View(coursesOnSite);
         }
 
         private string View(Course[] courses)
         {
-            string cmdLine = String.Empty;
             string page = "home";
 
             while (page == "home")
@@ -45,11 +59,12 @@ namespace API.Controllers
                     for (int i = 0; i < courses.Length; i++)
                     {
                         Console.WriteLine("\t|{0, 2}.| {1,-40} | {2,5}", i + 1, courses[i].Name, courses[i].Description);
-
                     }
                 }
+
                 Console.WriteLine();
-                var currentUser = authService.GetCurrentAccount();
+                var currentUser = _authService.GetCurrentAccount();
+                string cmdLine;
                 if (currentUser == null)
                 {
                     Console.WriteLine("Увійдіть до свого облікового запису ввівши \"login\"");
@@ -62,10 +77,10 @@ namespace API.Controllers
                             string email = Console.ReadLine();
                             Console.Write("Введіть пароль: ");
                             string password = Console.ReadLine();
-                            var loginResult = authService.Login(email, password);
+                            var loginResult = _authService.Login(email, password);
                             if (loginResult)
                             {
-                                Console.WriteLine($"З поверненням {authService.GetCurrentAccount().Name}");
+                                Console.WriteLine($"З поверненням {_authService.GetCurrentAccount().Name}");
                                 Console.WriteLine("Натисніть Enter");
                                 Console.ReadLine();
                             }
@@ -74,6 +89,7 @@ namespace API.Controllers
                                 Console.WriteLine("Невірний email чи пароль");
                                 Console.ReadLine();
                             }
+
                             break;
                         case "register":
                             Console.Write("Введіть своє ім'я: ");
@@ -82,7 +98,7 @@ namespace API.Controllers
                             email = Console.ReadLine();
                             Console.Write("Введіть пароль: ");
                             password = Console.ReadLine();
-                            authService.Register(name, email, password);
+                            _authService.Register(name, email, password);
                             break;
                     }
                 }
@@ -103,12 +119,12 @@ namespace API.Controllers
                             Console.Write("Введіть номер курсу: ");
                             int courseId = int.Parse(Console.ReadLine()) - 1;
                             currentUser.AddCourse(courses[courseId]);
-                            userService.Save();
+                            _userService.Save();
                             break;
                         case "open":
                             Console.Write("Введіть номер курсу: ");
                             courseId = int.Parse(Console.ReadLine()) - 1;
-                            page = new CourseController(userService, courseService, currentUser.Id, courses[courseId]).Launch();
+                            page = new CourseController(_userService, _courseService, currentUser.Id, courses[courseId]).Launch();
                             break;
                         case "exit":
                             page = "exit";
@@ -118,6 +134,7 @@ namespace API.Controllers
                     }
                 }
             }
+
             return page;
         }
     }

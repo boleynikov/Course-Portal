@@ -1,55 +1,72 @@
-﻿using Data.Repository.Abstract;
-using Domain;
-using System.Collections.Generic;
-using System.Linq;
+﻿// <copyright file="UserRepository.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace Data.Repository
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using Data.Repository.Abstract;
+    using Domain;
+
+    /// <summary>
+    /// User repository.
+    /// </summary>
     public class UserRepository : IRepository<User>
     {
-        private readonly IDbContext dbContext;
-        private readonly List<User> users;
+        private readonly IDbContext _dbContext;
+        private readonly List<User> _users;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserRepository"/> class.
+        /// </summary>
+        /// <param name="dbContext">DBContext.</param>
         public UserRepository(IDbContext dbContext)
         {
-            this.dbContext = dbContext;
-            users = dbContext.Get<User>();
+            _dbContext = dbContext;
+            _users = dbContext?.Get<User>();
         }
 
+        /// <inheritdoc/>
         public void Add(User user)
         {
-            users.Add(user);
+            _users.Add(user);
             Save();
         }
 
+        /// <inheritdoc/>
         public void DeleteByIndex(int id)
         {
-            users.Remove(users[id]);
+            _users.Remove(_users[id]);
             Save();
         }
 
+        /// <inheritdoc/>
         public User[] GetAll()
         {
-            return users.ToArray();
+            return _users.ToArray();
         }
 
+        /// <inheritdoc/>
         public User GetByIndex(int id)
         {
-            return users.SingleOrDefault(user => user.Id == id);
+            return _users.SingleOrDefault(user => user.Id == id);
         }
 
+        /// <inheritdoc/>
         public void Save()
         {
-            dbContext.Update(users);
+            _dbContext.Update(_users);
         }
 
+        /// <inheritdoc/>
         public void Update(User editedUser)
         {
-            var user = users.FirstOrDefault(u => u.Id == editedUser.Id);
-            if(user != null)
+            var user = _users.FirstOrDefault(u => u.Id == editedUser.Id);
+            if (user != null)
             {
-                int i = users.IndexOf(user);
-                users[i] = editedUser;
+                int i = _users.IndexOf(user);
+                _users[i] = editedUser;
                 Save();
             }
         }

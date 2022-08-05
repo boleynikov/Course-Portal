@@ -1,45 +1,63 @@
-﻿using Data.Repository.Abstract;
-using Domain.CourseMaterials;
-using Services.Abstract;
+﻿// <copyright file="MaterialService.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace Services
 {
+    using Data.Repository.Abstract;
+    using Domain.CourseMaterials;
+    using Services.Abstract;
+
+    /// <summary>
+    /// Material Service.
+    /// </summary>
     public class MaterialService : IService<Material>
     {
-        private readonly IRepository<Material> repository;
+        private readonly IRepository<Material> _repository;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MaterialService"/> class.
+        /// </summary>
+        /// <param name="repository">Repository instance.</param>
         public MaterialService(IRepository<Material> repository)
         {
-            this.repository = repository;
+            _repository = repository;
         }
+
+        /// <inheritdoc/>
         public void Add(Material material)
         {
-            repository.Add(material);
+            _repository.Add(material);
         }
 
+        /// <inheritdoc/>
         public void DeleteByIndex(int index)
         {
-            repository.DeleteByIndex(index);
+            _repository.DeleteByIndex(index);
         }
 
+        /// <inheritdoc/>
         public Material[] GetAll()
         {
-            return repository.GetAll();
+            return _repository.GetAll();
         }
 
+        /// <inheritdoc/>
         public Material GetByIndex(int index)
         {
-           return repository.GetByIndex(index);
+            return _repository.GetByIndex(index);
         }
 
+        /// <inheritdoc/>
         public void Save()
         {
-            repository.Save();
+            _repository.Save();
         }
 
+        /// <inheritdoc/>
         public void Update(Material material)
         {
-            repository.Update(material);
+            _repository.Update(material);
         }
     }
 }

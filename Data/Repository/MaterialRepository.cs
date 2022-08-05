@@ -1,54 +1,72 @@
-﻿using Data.Repository.Abstract;
-using Domain.CourseMaterials;
-using System.Collections.Generic;
-using System.Linq;
+﻿// <copyright file="MaterialRepository.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace Data.Repository
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using Data.Repository.Abstract;
+    using Domain.CourseMaterials;
+
+    /// <summary>
+    /// Material Repository.
+    /// </summary>
     public class MaterialRepository : IRepository<Material>
     {
-        private readonly IDbContext dbContext;
-        private readonly List<Material> materials;
+        private readonly IDbContext _dbContext;
+        private readonly List<Material> _materials;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MaterialRepository"/> class.
+        /// </summary>
+        /// <param name="dbContext">DBContext.</param>
         public MaterialRepository(IDbContext dbContext)
         {
-            this.dbContext = dbContext;
-            materials = dbContext.Get<Material>();
+            _dbContext = dbContext;
+            _materials = dbContext?.Get<Material>();
         }
+
+        /// <inheritdoc/>
         public void Add(Material material)
         {
-            materials.Add(material);
+            _materials.Add(material);
             Save();
         }
 
+        /// <inheritdoc/>
         public void DeleteByIndex(int id)
         {
-            materials.Remove(materials[id]);
+            _materials.Remove(_materials[id]);
             Save();
         }
 
+        /// <inheritdoc/>
         public Material[] GetAll()
         {
-            return materials.ToArray();
+            return _materials.ToArray();
         }
 
+        /// <inheritdoc/>
         public Material GetByIndex(int id)
         {
-            return materials[id];
+            return _materials[id];
         }
 
+        /// <inheritdoc/>
         public void Save()
         {
-            dbContext.Update(materials);
+            _dbContext.Update(_materials);
         }
 
+        /// <inheritdoc/>
         public void Update(Material editedMaterial)
         {
-            var material = materials.FirstOrDefault(u => u.Id == editedMaterial.Id);
+            var material = _materials.FirstOrDefault(u => u.Id == editedMaterial.Id);
             if (material != null)
             {
-                int i = materials.IndexOf(material);
-                materials[i] = editedMaterial;
+                int i = _materials.IndexOf(material);
+                _materials[i] = editedMaterial;
                 Save();
             }
         }

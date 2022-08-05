@@ -1,32 +1,79 @@
-﻿using API.Controllers.Abstract;
-using Domain;
-using Domain.CourseMaterials;
-using Services.Abstract;
-using System;
-using System.Collections.Generic;
+﻿// <copyright file="UserController.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace API.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using API.Controllers.Abstract;
+    using Domain;
+    using Domain.CourseMaterials;
+    using Services.Abstract;
+
+    /// <summary>
+    /// User Controller.
+    /// </summary>
     public class UserController : IController
     {
-        private readonly IService<Course> courseService;
-        private readonly IService<Material> materialService;
-        private readonly IService<User> userService;
-        private readonly int userId;
-        public UserController(IService<Course> courseService, 
-                              IService<Material> materialService, 
-                              IService<User> userService, 
-                              int userId)
+        private readonly IService<Course> _courseService;
+        private readonly IService<Material> _materialService;
+        private readonly IService<User> _userService;
+        private readonly int _userId;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserController"/> class.
+        /// </summary>
+        /// <param name="courseService">Course service instance.</param>
+        /// <param name="materialService">Material service instance.</param>
+        /// <param name="userService">User service instance.</param>
+        /// <param name="userId">Current user id.</param>
+        public UserController(
+            IService<Course> courseService,
+            IService<Material> materialService,
+            IService<User> userService,
+            int userId)
         {
-            this.courseService = courseService;
-            this.materialService = materialService;
-            this.userService = userService;
-            this.userId = userId;
+            _courseService = courseService;
+            _materialService = materialService;
+            _userService = userService;
+            _userId = userId;
         }
 
+        /// <inheritdoc/>
         public string Launch()
-        {            
+        {
             return View();
+        }
+
+        private static List<Skill> CreateSkills()
+        {
+            Console.Clear();
+            List<Skill> courseSkills = new ();
+            Console.WriteLine("Оберіть навички, які можна отримати пройшовши курс:");
+            string cmdLine = string.Empty;
+            while (cmdLine != "stop")
+            {
+                Console.WriteLine("Доступні навички:");
+                Console.WriteLine("Programming,\nMusic,\nHealthCare,\nTimeManagment,\nCommunication,\nIllustration,\nPhoto");
+                Console.WriteLine("Введіть назву навика і кількість поінтів через дорівнює (Ось так: \"Programming = 3\")");
+                Console.WriteLine("Або введіть \"stop\", щоб зупинитися");
+                cmdLine = Console.ReadLine();
+                if (cmdLine == "stop")
+                {
+                    break;
+                }
+
+                string[] skillStr = cmdLine.Split(" = ");
+                if (Enum.TryParse(skillStr[0], out SkillKind skillKind) && int.TryParse(skillStr[1], out int points))
+                {
+                    var newSkill = new Skill { Name = skillKind, Points = points };
+                    courseSkills.Add(newSkill);
+                    Console.Clear();
+                }
+            }
+
+            return courseSkills;
         }
 
         private string View()
@@ -35,7 +82,7 @@ namespace API.Controllers
             while (page == "user")
             {
                 Console.Clear();
-                var currentUser = userService.GetByIndex(userId);
+                var currentUser = _userService.GetByIndex(_userId);
                 Console.WriteLine($"Обліковий запис");
                 Console.WriteLine($"\tІм'я: {currentUser.Name}");
                 Console.WriteLine($"\tEmail: {currentUser.Email}");
@@ -69,19 +116,20 @@ namespace API.Controllers
                     case "open":
                         Console.Write("Введіть номер курсу: ");
                         int courseId = int.Parse(Console.ReadLine()) - 1;
-                        page = new CourseController(userService, courseService, currentUser.Id, courseService.GetByIndex(courseId), "user").Launch();
+                        page = new CourseController(_userService, _courseService, currentUser.Id, _courseService.GetByIndex(courseId), "user").Launch();
                         break;
                     case "delete":
                         Console.Write("Введіть номер курсу: ");
                         courseId = int.Parse(Console.ReadLine());
                         currentUser.RemoveCourse(courseId);
-                        userService.Save();
+                        _userService.Save();
                         break;
                     case "back":
                         page = "home";
                         break;
                 }
             }
+
             return page;
         }
 
@@ -95,13 +143,13 @@ namespace API.Controllers
             Console.Write("Введіть опис курсу: ");
             string description = Console.ReadLine();
 
-            int id = courseService.GetAll().Length + 1;
+            int id = _courseService.GetAll().Length + 1;
             var course = new Course(id, name, description);
 
             var materials = CreateMaterials();
             var skills = CreateSkills();
 
-            foreach(var material in materials)
+            foreach (var material in materials)
             {
                 course.AddMaterial(material);
             }
@@ -111,44 +159,19 @@ namespace API.Controllers
                 course.AddSkill(skill, skill.Points);
             }
 
-            userService.GetByIndex(userId).AddCourse(course);
-            userService.Save();
-            courseService.Add(course);
+            _userService.GetByIndex(_userId).AddCourse(course);
+            _userService.Save();
+            _courseService.Add(course);
             Console.Write("Курс успішно додано. Натисніть Enter");
             Console.ReadLine();
         }
 
-        private List<Skill> CreateSkills()
-        {
-            Console.Clear();
-            List<Skill> courseSkills = new List<Skill>();
-            Console.WriteLine("Оберіть навички, які можна отримати пройшовши курс:");
-            string cmdLine = String.Empty;
-            while (cmdLine != "stop")
-            {
-                Console.WriteLine("Доступні навички:");
-                Console.WriteLine("Programming,\nMusic,\nHealthCare,\nTimeManagment,\nCommunication,\nIllustration,\nPhoto");
-                Console.WriteLine("Введіть назву навика і кількість поінтів через дорівнює (Ось так: \"Programming = 3\")");
-                Console.WriteLine("Або введіть \"stop\", щоб зупинитися");
-                cmdLine = Console.ReadLine();
-                if (cmdLine == "stop")
-                    break;
-                string[] skillStr = cmdLine.Split(" = ");
-                if (Enum.TryParse(skillStr[0], out SkillKind skillKind) && int.TryParse(skillStr[1], out int points))
-                {
-                    var newSkill = new Skill { Name = skillKind, Points = points };
-                    courseSkills.Add(newSkill);
-                    Console.Clear();
-                }
-            }
-            return courseSkills;
-        }
         private List<Material> CreateMaterials()
         {
             Console.Clear();
-            List<Material> courseMaterials = new List<Material>();
+            List<Material> courseMaterials = new ();
             string cmdLine = string.Empty;
-            while(cmdLine!= "stop")
+            while (cmdLine != "stop")
             {
                 Console.WriteLine("Введіть тип матеріалу, який хочете додати до курсу");
                 Console.WriteLine("Доступні матеріали: Article, Publication, Video");
@@ -165,11 +188,11 @@ namespace API.Controllers
                         Console.Write("Введіть посиланя на статтю: ");
                         string link = Console.ReadLine();
 
-                        int id = materialService.GetAll().Length + 1;
+                        int id = _materialService.GetAll().Length + 1;
                         var articleMaterial = new ArticleMaterial(id, title, date, link);
 
-                        userService.GetByIndex(userId).AddMaterial(articleMaterial);
-                        materialService.Add(articleMaterial);
+                        _userService.GetByIndex(_userId).AddMaterial(articleMaterial);
+                        _materialService.Add(articleMaterial);
                         courseMaterials.Add(articleMaterial);
                         break;
                     case "Publication":
@@ -184,11 +207,11 @@ namespace API.Controllers
                         Console.Write("Введіть дату публікації: ");
                         DateTime.TryParse(Console.ReadLine(), out date);
 
-                        id = materialService.GetAll().Length + 1;
+                        id = _materialService.GetAll().Length + 1;
                         var publicationMaterial = new PublicationMaterial(id, title, author, pageCount, format, date);
 
-                        userService.GetByIndex(userId).AddMaterial(publicationMaterial);
-                        materialService.Add(publicationMaterial);
+                        _userService.GetByIndex(_userId).AddMaterial(publicationMaterial);
+                        _materialService.Add(publicationMaterial);
                         courseMaterials.Add(publicationMaterial);
                         break;
                     case "Video":
@@ -199,18 +222,19 @@ namespace API.Controllers
                         Console.Write("Введіть якість відео: ");
                         int quality = int.Parse(Console.ReadLine());
 
-                        id = materialService.GetAll().Length + 1;
+                        id = _materialService.GetAll().Length + 1;
                         var videoMaterial = new VideoMaterial(id, title, duration, quality);
 
-                        userService.GetByIndex(userId).AddMaterial(videoMaterial);
-                        materialService.Add(videoMaterial);
+                        _userService.GetByIndex(_userId).AddMaterial(videoMaterial);
+                        _materialService.Add(videoMaterial);
                         courseMaterials.Add(videoMaterial);
                         break;
                 }
+
                 Console.Clear();
             }
 
-            userService.Save();
+            _userService.Save();
             return courseMaterials;
         }
     }

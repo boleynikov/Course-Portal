@@ -1,32 +1,55 @@
-﻿using Data.Repository;
-using Data.Repository.Abstract;
-using Domain;
-using Domain.Abstract;
-using Domain.CourseMaterials;
-using Services;
-using Services.Abstract;
-using System;
-using System.Collections.Generic;
+﻿// <copyright file="UnitOfWork.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace API
 {
-    public class UnitOfWork<TContext>  where TContext : IDbContext
+    using System;
+    using System.Collections.Generic;
+    using Data.Repository;
+    using Data.Repository.Abstract;
+    using Domain;
+    using Domain.Abstract;
+    using Domain.CourseMaterials;
+    using Services;
+    using Services.Abstract;
+
+    /// <summary>
+    /// Simple implementation of UnitOfWork pattern.
+    /// </summary>
+    /// <typeparam name="TContext">Type of DBContext.</typeparam>
+    public class UnitOfWork<TContext>
+        where TContext : IDbContext
     {
         private Dictionary<Type, object> _repositories;
         private Dictionary<Type, object> _services;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UnitOfWork{TContext}"/> class.
+        /// </summary>
+        /// <param name="context">DBContext.</param>
         public UnitOfWork(TContext context)
         {
             DbContext = context ?? throw new ArgumentNullException(nameof(context));
         }
-       
+
+        /// <summary>
+        /// Gets dBContext.
+        /// </summary>
         public TContext DbContext { get; }
-       
-        public IRepository<TEntity> GetRepository<TEntity>() where TEntity : BaseEntity
+
+        /// <summary>
+        /// Get Generic Repository.
+        /// </summary>
+        /// <typeparam name="TEntity">Generic type of repo.</typeparam>
+        /// <returns>TEntity repo.</returns>
+        public IRepository<TEntity> GetRepository<TEntity>()
+            where TEntity : BaseEntity
         {
             if (_repositories == null)
             {
                 _repositories = new Dictionary<Type, object>();
-            }           
+            }
 
             var type = typeof(TEntity);
             if (!_repositories.ContainsKey(type))
@@ -48,7 +71,13 @@ namespace API
             return (IRepository<TEntity>)_repositories[type];
         }
 
-        public IService<TEntity> GetService<TEntity>() where TEntity : BaseEntity
+        /// <summary>
+        /// Get Generic Service.
+        /// </summary>
+        /// <typeparam name="TEntity">Generic type of service.</typeparam>
+        /// <returns>TEntity service.</returns>
+        public IService<TEntity> GetService<TEntity>()
+            where TEntity : BaseEntity
         {
             if (_services == null)
             {
@@ -74,7 +103,5 @@ namespace API
 
             return (IService<TEntity>)_services[type];
         }
-
     }
-
 }

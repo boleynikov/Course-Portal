@@ -1,18 +1,25 @@
-﻿using Data.Repository.Abstract;
-using Domain.Abstract;
-using Domain.CourseMaterials;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
-using System;
-using System.Collections.Generic;
-using System.IO;
+﻿// <copyright file="FileDbContext.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace Data.Repository
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using Data.Repository.Abstract;
+    using Domain.Abstract;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Serialization;
+
+    /// <summary>
+    /// FileDBContext implementation of DBContext.
+    /// </summary>
     public class FileDbContext : IDbContext
     {
-        public List<T> Get<T>() where T : BaseEntity
+        /// <inheritdoc/>
+        public List<T> Get<T>()
+            where T : BaseEntity
         {
             var name = typeof(T).Name;
             var fileName = $"{name}s.data";
@@ -24,7 +31,7 @@ namespace Data.Repository
             }
 
             var justReadedJson = File.ReadAllText(fileName);
-            if (String.IsNullOrEmpty(justReadedJson))
+            if (string.IsNullOrEmpty(justReadedJson))
             {
                 return new List<T>();
             }
@@ -34,15 +41,17 @@ namespace Data.Repository
             return readedList;
         }
 
-        public bool Update<T>(List<T> listEntities) where T : BaseEntity
+        /// <inheritdoc/>
+        public bool Update<T>(List<T> listEntities)
+            where T : BaseEntity
         {
             var name = typeof(T).Name;
             var fileName = $"{name}s.data";
             try
             {
-                DefaultContractResolver contractResolver = new DefaultContractResolver
+                DefaultContractResolver contractResolver = new ()
                 {
-                    NamingStrategy = new CamelCaseNamingStrategy()
+                    NamingStrategy = new CamelCaseNamingStrategy(),
                 };
 
                 var jsonString = JsonConvert.SerializeObject(listEntities, new JsonSerializerSettings
@@ -55,45 +64,11 @@ namespace Data.Repository
                 Console.WriteLine("Дані оновлено.");
                 return true;
             }
-            catch (Exception ex)
+            catch (JsonReaderException ex)
             {
                 Console.WriteLine(ex.Message);
                 return false;
             }
         }
     }
-
-    internal class MaterialConverter : JsonConverter
-    {
-        public override bool CanConvert(Type objectType)
-        {
-            return (objectType == typeof(Material));
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            JObject jo = JObject.Load(reader);
-            if (jo["type"].Value<string>() == "Article")
-                return jo.ToObject<ArticleMaterial>(serializer);
-
-            if (jo["type"].Value<string>() == "Publication")
-                return jo.ToObject<PublicationMaterial>(serializer);
-
-            if (jo["type"].Value<string>() == "Video")
-                return jo.ToObject<VideoMaterial>(serializer);
-
-            return null;
-        }
-
-        public override bool CanWrite
-        {
-            get { return false; }
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
 }

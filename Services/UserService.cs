@@ -1,45 +1,63 @@
-﻿using Data.Repository.Abstract;
-using Domain;
-using Services.Abstract;
+﻿// <copyright file="UserService.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace Services
 {
+    using Data.Repository.Abstract;
+    using Domain;
+    using Services.Abstract;
+
+    /// <summary>
+    /// User Service.
+    /// </summary>
     public class UserService : IService<User>
     {
-        private readonly IRepository<User> repository;
+        private readonly IRepository<User> _repository;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserService"/> class.
+        /// </summary>
+        /// <param name="repository">Repository instance.</param>
         public UserService(IRepository<User> repository)
         {
-            this.repository = repository;
+            _repository = repository;
         }
+
+        /// <inheritdoc/>
         public void Add(User user)
         {
-            repository.Add(user);
+            _repository.Add(user);
         }
 
+        /// <inheritdoc/>
         public void DeleteByIndex(int index)
         {
-            repository.DeleteByIndex(index);
+            _repository.DeleteByIndex(index);
         }
 
+        /// <inheritdoc/>
         public User[] GetAll()
         {
-            return repository.GetAll();
+            return _repository.GetAll();
         }
 
+        /// <inheritdoc/>
         public User GetByIndex(int index)
         {
-            return repository.GetByIndex(index);
+            return _repository.GetByIndex(index);
         }
 
+        /// <inheritdoc/>
         public void Save()
         {
-            repository.Save();
+            _repository.Save();
         }
 
+        /// <inheritdoc/>
         public void Update(User user)
         {
-            repository.Update(user);
+            _repository.Update(user);
         }
     }
 }

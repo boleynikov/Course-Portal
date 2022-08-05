@@ -1,35 +1,37 @@
-﻿using API.Controllers;
-using API.Controllers.Abstract;
-using Data.Repository;
-using Data.Repository.Abstract;
-using Domain;
-using Domain.CourseMaterials;
-using Services;
-using Services.Abstract;
-using System;
-using System.Text;
+﻿// <copyright file="Program.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace API
 {
-    class Program
+    using System;
+    using System.Text;
+    using API.Controllers;
+    using API.Controllers.Abstract;
+    using Data.Repository;
+    using Data.Repository.Abstract;
+    using Domain;
+    using Domain.CourseMaterials;
+    using Services;
+    using Services.Abstract;
+
+    /// <summary>
+    /// Start Program class.
+    /// </summary>
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main()
         {
             Console.OutputEncoding = Encoding.Unicode;
             Console.InputEncoding = Encoding.Unicode;
 
             var unitOfWork = new UnitOfWork<FileDbContext>(new FileDbContext());
 
-            var materialRepository = unitOfWork.GetRepository<Material>();
-            var courseRepository = unitOfWork.GetRepository<Course>();
-            var userRepository = unitOfWork.GetRepository<User>();
-
             var materialService = unitOfWork.GetService<Material>();
-            var courseService =  unitOfWork.GetService<Course>();
-            var userService =  unitOfWork.GetService<User>();
+            var courseService = unitOfWork.GetService<Course>();
+            var userService = unitOfWork.GetService<User>();
 
-
-            IAuthenticationService authenticationService = new AuthenticationService(userService);
+            IAuthorizationService authenticationService = new AuthorizationService(userService);
 
             IController home = new HomeController(courseService, userService, authenticationService);
             IController user;

@@ -1,19 +1,25 @@
-﻿using System;
+﻿// <copyright file="CourseProgress.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace Domain
 {
+    using System;
+
+    /// <summary>
+    /// Course Progress class.
+    /// </summary>
     [Serializable]
     public class CourseProgress
     {
-        public State State;
+        /// <summary>
+        /// Gets or sets state of course progress.
+        /// </summary>
+        public State State { get; set; }
 
-        public float Percentage;
-
-    }
-    [Serializable]
-    public enum State
-    {
-        NotCompleted = 0,
-        Completed = 1
+        /// <summary>
+        /// Gets or sets persetage of course progress.
+        /// </summary>
+        public float Percentage { get; set; }
     }
 }
