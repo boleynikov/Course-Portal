@@ -44,7 +44,7 @@ namespace API.Controllers
                 {
                     for (int i = 0; i < courses.Length; i++)
                     {
-                        Console.WriteLine("\t|{0, 2}.| {1,-30} | {2,5}", i + 1, courses[i].Name, courses[i].Description);
+                        Console.WriteLine("\t|{0, 2}.| {1,-40} | {2,5}", i + 1, courses[i].Name, courses[i].Description);
 
                     }
                 }

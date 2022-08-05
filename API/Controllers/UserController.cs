@@ -51,7 +51,7 @@ namespace API.Controllers
                     {
                         var course = courseKeyValue.Item1;
                         var progress = courseKeyValue.Item2;
-                        Console.WriteLine("\t|{0, 2}.| {1,-30} | {2, 5}, {3, 3} %", course.Id, course.Name, progress.State, progress.Percentage);
+                        Console.WriteLine("\t|{0, 2}.| {1,-40} | {2, 5}, {3, 3} %", course.Id, course.Name, progress.State, progress.Percentage);
                     }
                 }
 

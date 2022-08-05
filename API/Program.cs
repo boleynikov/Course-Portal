@@ -18,23 +18,24 @@ namespace API
             Console.OutputEncoding = Encoding.Unicode;
             Console.InputEncoding = Encoding.Unicode;
 
-            var fileContext = new FileDbContext();
+            var unitOfWork = new UnitOfWork<FileDbContext>(new FileDbContext());
 
-            IRepository<Material> materialRepository = new MaterialRepository(fileContext);
-            IService<Material> materialService = new MaterialService(materialRepository);
+            var materialRepository = unitOfWork.GetRepository<Material>();
+            var courseRepository = unitOfWork.GetRepository<Course>();
+            var userRepository = unitOfWork.GetRepository<User>();
 
-            IRepository<Course> courseRepository = new CourseRepository(fileContext);
-            IService<Course> courseService = new CourseService(courseRepository);
+            var materialService = unitOfWork.GetService<Material>();
+            var courseService =  unitOfWork.GetService<Course>();
+            var userService =  unitOfWork.GetService<User>();
 
-            IRepository<User> userRepository = new UserRepository(fileContext);
-            IService<User> userService = new UserService(userRepository);
+
             IAuthenticationService authenticationService = new AuthenticationService(userService);
 
             IController home = new HomeController(courseService, userService, authenticationService);
             IController user;
 
             string page = "home";
-            while(page != "exit")
+            while (page != "exit")
             {
                 switch (page)
                 {
