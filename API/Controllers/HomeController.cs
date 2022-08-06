@@ -23,7 +23,7 @@ namespace API.Controllers
         /// </summary>
         /// <param name="courseService">Course service instance.</param>
         /// <param name="userService">User service instance.</param>
-        /// <param name="authService">Authentication service instance.</param>
+        /// <param name="authService">Authorization service instance.</param>
         public HomeController(
             IService<Course> courseService,
             IService<User> userService,
@@ -117,13 +117,15 @@ namespace API.Controllers
                             break;
                         case "add":
                             Console.Write("Введіть номер курсу: ");
-                            int courseId = int.Parse(Console.ReadLine()) - 1;
+                            int.TryParse(Console.ReadLine(), out int courseId);
+                            courseId--;
                             currentUser.AddCourse(courses[courseId]);
                             _userService.Save();
                             break;
                         case "open":
                             Console.Write("Введіть номер курсу: ");
-                            courseId = int.Parse(Console.ReadLine()) - 1;
+                            int.TryParse(Console.ReadLine(), out courseId);
+                            courseId--;
                             page = new CourseController(_userService, _courseService, currentUser.Id, courses[courseId]).Launch();
                             break;
                         case "exit":

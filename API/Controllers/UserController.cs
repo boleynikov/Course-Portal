@@ -115,7 +115,8 @@ namespace API.Controllers
                         break;
                     case "open":
                         Console.Write("Введіть номер курсу: ");
-                        int courseId = int.Parse(Console.ReadLine()) - 1;
+                        int.TryParse(Console.ReadLine(), out int courseId);
+                        courseId--;
                         page = new CourseController(_userService, _courseService, currentUser.Id, _courseService.GetByIndex(courseId), "user").Launch();
                         break;
                     case "delete":
@@ -201,7 +202,7 @@ namespace API.Controllers
                         Console.Write("Введіть автора публікації: ");
                         string author = Console.ReadLine();
                         Console.Write("Введіть кількість сторінок публікації: ");
-                        int pageCount = int.Parse(Console.ReadLine());
+                        int.TryParse(Console.ReadLine(), out int pageCount);
                         Console.Write("Введіть формат файлу публікації: ");
                         string format = Console.ReadLine();
                         Console.Write("Введіть дату публікації: ");
@@ -220,7 +221,7 @@ namespace API.Controllers
                         Console.Write("Введіть довжину відео: ");
                         float.TryParse(Console.ReadLine(), out float duration);
                         Console.Write("Введіть якість відео: ");
-                        int quality = int.Parse(Console.ReadLine());
+                        int.TryParse(Console.ReadLine(), out int quality);
 
                         id = _materialService.GetAll().Length + 1;
                         var videoMaterial = new VideoMaterial(id, title, duration, quality);

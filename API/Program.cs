@@ -31,9 +31,9 @@ namespace API
             var courseService = unitOfWork.GetService<Course>();
             var userService = unitOfWork.GetService<User>();
 
-            IAuthorizationService authenticationService = new AuthorizationService(userService);
+            IAuthorizationService authorizationService = new AuthorizationService(userService);
 
-            IController home = new HomeController(courseService, userService, authenticationService);
+            IController home = new HomeController(courseService, userService, authorizationService);
             IController user;
 
             string page = "home";
@@ -45,7 +45,7 @@ namespace API
                         page = home.Launch();
                         break;
                     case "user":
-                        int userId = authenticationService.GetCurrentAccount().Id;
+                        int userId = authorizationService.GetCurrentAccount().Id;
                         user = new UserController(courseService, materialService, userService, userId);
                         page = user.Launch();
                         break;
