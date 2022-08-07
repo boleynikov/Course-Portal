@@ -4,6 +4,7 @@
 
 namespace Data.Repository
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Data.Repository.Abstract;
@@ -23,8 +24,8 @@ namespace Data.Repository
         /// <param name="dbContext">DBContext.</param>
         public CourseRepository(IDbContext dbContext)
         {
-            _dbContext = dbContext;
-            _courses = dbContext?.Get<Course>();
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            _courses = dbContext.Get<Course>();
         }
 
         /// <inheritdoc/>

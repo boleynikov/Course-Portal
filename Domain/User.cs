@@ -76,16 +76,21 @@ namespace Domain
         /// Update existing user course.
         /// </summary>
         /// <param name="editedCourse">Updated course.</param>
-        public void UpdateCourse(Course editedCourse)
+        public void UpdateCourseInfo(Course editedCourse)
         {
-            var pulledCourse = UserCourses.Find(course => course.Item1.Id == editedCourse.Id).Item1;
-            if (pulledCourse == null)
+            if (editedCourse == null)
+            {
+                throw new ArgumentNullException(nameof(editedCourse));
+            }
+
+            var pulledUserCourse = UserCourses.Find(course => course.Item1.Id == editedCourse.Id).Item1;
+            if (pulledUserCourse == null)
             {
                 return;
             }
 
             var pulledProgress = UserCourses.Find(course => course.Item1.Id == editedCourse.Id).Item2;
-            var index = UserCourses.IndexOf((pulledCourse, pulledProgress));
+            var index = UserCourses.IndexOf((pulledUserCourse, pulledProgress));
             UserCourses[index] = (editedCourse, pulledProgress);
         }
 
@@ -95,7 +100,13 @@ namespace Domain
         /// <param name="newCourse">New Course.</param>
         public void AddCourse(Course newCourse)
         {
-            if (UserCourses.Find(course => course.Item1.Name == newCourse.Name && course.Item1.Description == newCourse.Description).Item1 != null)
+            if (newCourse == null)
+            {
+                throw new ArgumentNullException(nameof(newCourse));
+            }
+
+            if (UserCourses.Find(course => course.Item1.Name == newCourse.Name &&
+                                           course.Item1.Description == newCourse.Description).Item1 != null)
             {
                 return;
             }

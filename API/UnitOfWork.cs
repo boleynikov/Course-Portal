@@ -27,49 +27,16 @@ namespace API
         /// <summary>
         /// Initializes a new instance of the <see cref="UnitOfWork{TContext}"/> class.
         /// </summary>
-        /// <param name="context">DBContext.</param>
-        public UnitOfWork(TContext context)
+        /// <param name="dbContext">DBContext.</param>
+        public UnitOfWork(TContext dbContext)
         {
-            DbContext = context ?? throw new ArgumentNullException(nameof(context));
+            DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         /// <summary>
         /// Gets dBContext.
         /// </summary>
         public TContext DbContext { get; }
-
-        /// <summary>
-        /// Get Generic Repository.
-        /// </summary>
-        /// <typeparam name="TEntity">Generic type of repo.</typeparam>
-        /// <returns>TEntity repo.</returns>
-        public IRepository<TEntity> GetRepository<TEntity>()
-            where TEntity : BaseEntity
-        {
-            if (_repositories == null)
-            {
-                _repositories = new Dictionary<Type, object>();
-            }
-
-            var type = typeof(TEntity);
-            if (!_repositories.ContainsKey(type))
-            {
-                switch (type.Name)
-                {
-                    case "Material":
-                        _repositories[type] = new MaterialRepository(DbContext);
-                        break;
-                    case "User":
-                        _repositories[type] = new UserRepository(DbContext);
-                        break;
-                    case "Course":
-                        _repositories[type] = new CourseRepository(DbContext);
-                        break;
-                }
-            }
-
-            return (IRepository<TEntity>)_repositories[type];
-        }
 
         /// <summary>
         /// Get Generic Service.
@@ -102,6 +69,39 @@ namespace API
             }
 
             return (IService<TEntity>)_services[type];
+        }
+
+        /// <summary>
+        /// Get Generic Repository.
+        /// </summary>
+        /// <typeparam name="TEntity">Generic type of repo.</typeparam>
+        /// <returns>TEntity repo.</returns>
+        private IRepository<TEntity> GetRepository<TEntity>()
+            where TEntity : BaseEntity
+        {
+            if (_repositories == null)
+            {
+                _repositories = new Dictionary<Type, object>();
+            }
+
+            var type = typeof(TEntity);
+            if (!_repositories.ContainsKey(type))
+            {
+                switch (type.Name)
+                {
+                    case "Material":
+                        _repositories[type] = new MaterialRepository(DbContext);
+                        break;
+                    case "User":
+                        _repositories[type] = new UserRepository(DbContext);
+                        break;
+                    case "Course":
+                        _repositories[type] = new CourseRepository(DbContext);
+                        break;
+                }
+            }
+
+            return (IRepository<TEntity>)_repositories[type];
         }
     }
 }

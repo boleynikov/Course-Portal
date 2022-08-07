@@ -90,7 +90,7 @@ namespace Domain
         /// <param name="descript">Updated course description.</param>
         /// <param name="materials">Updated course materials.</param>
         /// <param name="skills">Updated course skills.</param>
-        public void Update(string name, string descript, List<Material> materials, List<Skill> skills)
+        public void UpdateInfo(string name, string descript, List<Material> materials, List<Skill> skills)
         {
             Name = name;
             Description = descript;

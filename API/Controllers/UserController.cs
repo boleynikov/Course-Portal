@@ -46,43 +46,14 @@ namespace API.Controllers
             return View();
         }
 
-        private static List<Skill> CreateSkills()
-        {
-            Console.Clear();
-            List<Skill> courseSkills = new ();
-            Console.WriteLine("Оберіть навички, які можна отримати пройшовши курс:");
-            string cmdLine = string.Empty;
-            while (cmdLine != "stop")
-            {
-                Console.WriteLine("Доступні навички:");
-                Console.WriteLine("Programming,\nMusic,\nHealthCare,\nTimeManagment,\nCommunication,\nIllustration,\nPhoto");
-                Console.WriteLine("Введіть назву навика і кількість поінтів через дорівнює (Ось так: \"Programming = 3\")");
-                Console.WriteLine("Або введіть \"stop\", щоб зупинитися");
-                cmdLine = Console.ReadLine();
-                if (cmdLine == "stop")
-                {
-                    break;
-                }
-
-                string[] skillStr = cmdLine.Split(" = ");
-                if (Enum.TryParse(skillStr[0], out SkillKind skillKind) && int.TryParse(skillStr[1], out int points))
-                {
-                    var newSkill = new Skill { Name = skillKind, Points = points };
-                    courseSkills.Add(newSkill);
-                    Console.Clear();
-                }
-            }
-
-            return courseSkills;
-        }
-
         private string View()
         {
+            var currentUser = _userService.GetByIndex(_userId);
             string page = "user";
+
             while (page == "user")
             {
                 Console.Clear();
-                var currentUser = _userService.GetByIndex(_userId);
                 Console.WriteLine($"Обліковий запис");
                 Console.WriteLine($"\tІм'я: {currentUser.Name}");
                 Console.WriteLine($"\tEmail: {currentUser.Email}");
@@ -134,6 +105,37 @@ namespace API.Controllers
             return page;
         }
 
+        private List<Skill> CreateSkills()
+        {
+            List<Skill> courseSkills = new ();
+            string cmdLine = string.Empty;
+
+            Console.Clear();
+            Console.WriteLine("Оберіть навички, які можна отримати пройшовши курс:");
+            while (cmdLine != "stop")
+            {
+                Console.WriteLine("Доступні навички:");
+                Console.WriteLine("Programming,\nMusic,\nHealthCare,\nTimeManagment,\nCommunication,\nIllustration,\nPhoto");
+                Console.WriteLine("Введіть назву навика і кількість поінтів через дорівнює (Ось так: \"Programming = 3\")");
+                Console.WriteLine("Або введіть \"stop\", щоб зупинитися");
+                cmdLine = Console.ReadLine();
+                if (cmdLine == "stop")
+                {
+                    break;
+                }
+
+                string[] skillStr = cmdLine.Split(" = ");
+                if (Enum.TryParse(skillStr[0], out SkillKind skillKind) && int.TryParse(skillStr[1], out int points))
+                {
+                    var newSkill = new Skill { Name = skillKind, Points = points };
+                    courseSkills.Add(newSkill);
+                    Console.Clear();
+                }
+            }
+
+            return courseSkills;
+        }
+
         private void CreateCourse()
         {
             Console.Clear();
@@ -169,9 +171,10 @@ namespace API.Controllers
 
         private List<Material> CreateMaterials()
         {
-            Console.Clear();
             List<Material> courseMaterials = new ();
             string cmdLine = string.Empty;
+
+            Console.Clear();
             while (cmdLine != "stop")
             {
                 Console.WriteLine("Введіть тип матеріалу, який хочете додати до курсу");

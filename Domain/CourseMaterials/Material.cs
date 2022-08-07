@@ -31,7 +31,7 @@ namespace Domain.CourseMaterials
         public string Type { get; set; }
 
         /// <summary>
-        /// Gets or sets type of material.
+        /// Gets or sets title of material.
         /// </summary>
         public string Title { get; set; }
     }

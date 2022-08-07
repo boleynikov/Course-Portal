@@ -85,8 +85,8 @@ namespace API.Controllers
                         string name = Console.ReadLine();
                         Console.Write("Введіть новий опис курсу: ");
                         string description = Console.ReadLine();
-                        _course.Update(name, description, _course.CourseMaterials, _course.CourseSkills);
-                        currentUser.UpdateCourse(_course);
+                        _course.UpdateInfo(name, description, _course.CourseMaterials, _course.CourseSkills);
+                        currentUser.UpdateCourseInfo(_course);
                         _courseService.Update(_course);
                         _userService.Update(currentUser);
                         break;

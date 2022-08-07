@@ -1,5 +1,9 @@
 ﻿[*.cs]
-
+dotnet_diagnostic.Nix01.max_line_length = 200
+dotnet_diagnostic.Nix02.max_method_lines = 50
+dotnet_diagnostic.Nix03.max_file_lines = 1000
+dotnet_diagnostic.Nix04.max_params_in_method = 5
+dotnet_diagnostic.Nix05.max_params_in_ctor = 5
 dotnet_diagnostic.SA0002.severity = error #The stylecop.json settings file could not be loaded due to a deserialization error
 dotnet_diagnostic.SA1000.severity = error #The spacing around a C# keyword is incorrect
 dotnet_diagnostic.SA1001.severity = error #The spacing around a comma is incorrect, within a C# code file
@@ -650,9 +654,3 @@ dotnet_code_quality_unused_parameters = all:suggestion
 dotnet_diagnostic.CA1002.severity=silent
 dotnet_diagnostic.CA1303.severity=silent
 dotnet_diagnostic.CA1806.severity=silent
-
-dotnet_diagnostic.Nix01.max_line_length = 200
-dotnet_diagnostic.Nix02.max_method_lines = 50
-dotnet_diagnostic.Nix03.max_file_lines = 1000
-dotnet_diagnostic.Nix04.max_params_in_method = 5
-dotnet_diagnostic.Nix05.max_params_in_ctor = 5
