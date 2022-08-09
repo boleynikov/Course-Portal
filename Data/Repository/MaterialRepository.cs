@@ -43,7 +43,7 @@ namespace Data.Repository
         }
 
         /// <inheritdoc/>
-        public Material[] GetAll()
+        public IEnumerable<Material> GetAll()
         {
             return _materials.ToArray();
         }

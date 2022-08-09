@@ -5,6 +5,7 @@
 namespace API.Controllers
 {
     using System;
+    using System.Linq;
     using API.Controllers.Abstract;
     using Domain;
     using Services.Interface;
@@ -46,7 +47,7 @@ namespace API.Controllers
         public string Launch()
         {
             var coursesOnSite = _courseService.GetAll();
-            return View(coursesOnSite);
+            return View(coursesOnSite.ToArray());
         }
 
         private string View(Course[] courses)
@@ -66,7 +67,7 @@ namespace API.Controllers
                 {
                     for (int i = 0; i < courses.Length; i++)
                     {
-                        Console.WriteLine("\t|{0, 2}.| {1,-40} | {2,5}", i + 1, courses[i].Name, courses[i].Description);
+                        Console.WriteLine("\t|{0, 2}.| {1,-40} | {2,5}", courses[i].Id, courses[i].Name, courses[i].Description);
                     }
                 }
 
@@ -83,9 +84,9 @@ namespace API.Controllers
                     {
                         case _loginCommand:
                             Console.Write("Введіть електронну адресу: ");
-                            string email = Console.ReadLine();
+                            string email = InputNotEmptyString(Console.ReadLine());
                             Console.Write("Введіть пароль: ");
-                            string password = Console.ReadLine();
+                            string password = InputNotEmptyString(Console.ReadLine());
                             var loginResult = _authService.Login(email, password);
                             if (loginResult)
                             {
@@ -102,11 +103,11 @@ namespace API.Controllers
                             break;
                         case _registerCommand:
                             Console.Write("Введіть своє ім'я: ");
-                            string name = Console.ReadLine();
+                            string name = InputNotEmptyString(Console.ReadLine());
                             Console.Write("Введіть електронну адресу: ");
-                            email = Console.ReadLine();
+                            email = InputNotEmptyString(Console.ReadLine());
                             Console.Write("Введіть пароль: ");
-                            password = Console.ReadLine();
+                            password = InputNotEmptyString(Console.ReadLine());
                             _authService.Register(name, email, password);
                             break;
                         case _exitCommand:
@@ -129,16 +130,20 @@ namespace API.Controllers
                             break;
                         case _addCourseCommand:
                             Console.Write("Введіть номер курсу: ");
-                            int.TryParse(Console.ReadLine(), out int courseId);
-                            courseId--;
-                            currentUser.AddCourse(courses[courseId]);
-                            _userService.Save();
+                            if (ValidateCourse(Console.ReadLine(), out Course course))
+                            {
+                                currentUser.AddCourse(course);
+                                _userService.Save();
+                            }
+
                             break;
                         case _openCourseCommand:
                             Console.Write("Введіть номер курсу: ");
-                            int.TryParse(Console.ReadLine(), out courseId);
-                            courseId--;
-                            page = new CourseController(_userService, _courseService, currentUser.Id, courses[courseId]).Launch();
+                            if (ValidateCourse(Console.ReadLine(), out course))
+                            {
+                                page = new CourseController(_userService, _courseService, currentUser.Id, course).Launch();
+                            }
+
                             break;
                         case _exitCommand:
                             page = _exitCommand;
@@ -150,6 +155,49 @@ namespace API.Controllers
             }
 
             return page;
+        }
+
+        private string InputNotEmptyString(string inputString)
+        {
+            while (string.IsNullOrWhiteSpace(inputString))
+            {
+                if (string.IsNullOrWhiteSpace(inputString))
+                {
+                    Console.Write("Ви ввели порожню строку. Спробуйте ще раз: ");
+                }
+
+                inputString = Console.ReadLine();
+            }
+
+            return inputString;
+        }
+
+        private bool ValidateCourse(string strCourseId, out Course course)
+        {
+            if (int.TryParse(strCourseId, out int courseId))
+            {
+                try
+                {
+                    course = _courseService.GetByIndex(courseId);
+                    return true;
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    course = null;
+                    Console.WriteLine("Немає курсу з таким ідентифікатором\n" +
+                                      "Натисніть Enter");
+                    Console.ReadLine();
+                    return false;
+                }
+            }
+            else
+            {
+                course = null;
+                Console.WriteLine("Неправильний формат вводу\n" +
+                                  "Натисніть Enter");
+                Console.ReadLine();
+                return false;
+            }
         }
     }
 }

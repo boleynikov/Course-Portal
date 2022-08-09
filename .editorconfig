@@ -654,3 +654,4 @@ dotnet_code_quality_unused_parameters = all:suggestion
 dotnet_diagnostic.CA1002.severity=silent
 dotnet_diagnostic.CA1303.severity=silent
 dotnet_diagnostic.CA1806.severity=silent
+dotnet_diagnostic.CA1822.severity=silent

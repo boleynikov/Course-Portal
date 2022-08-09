@@ -87,9 +87,9 @@ namespace API.Controllers
                         break;
                     case _editCommand:
                         Console.Write("Введіть нову назву курсу: ");
-                        string name = Console.ReadLine();
+                        string name = InputNotEmptyString(Console.ReadLine());
                         Console.Write("Введіть новий опис курсу: ");
-                        string description = Console.ReadLine();
+                        string description = InputNotEmptyString(Console.ReadLine());
                         _course.UpdateInfo(name, description, _course.CourseMaterials, _course.CourseSkills);
                         currentUser.UpdateCourseInfo(_course);
                         _courseService.Update(_course);
@@ -102,6 +102,21 @@ namespace API.Controllers
             }
 
             return page;
+        }
+
+        private string InputNotEmptyString(string inputString)
+        {
+            while (string.IsNullOrWhiteSpace(inputString))
+            {
+                if (string.IsNullOrWhiteSpace(inputString))
+                {
+                    Console.Write("Ви ввели порожню строку.Спробуйте ще раз: ");
+                }
+
+                inputString = Console.ReadLine();
+            }
+
+            return inputString;
         }
     }
 }

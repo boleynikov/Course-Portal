@@ -6,6 +6,7 @@ namespace API.Controllers
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using API.Controllers.Abstract;
     using Domain;
     using Domain.CourseMaterials;
@@ -17,13 +18,13 @@ namespace API.Controllers
     /// </summary>
     public class UserController : IController
     {
+        private const string _homePage = "home";
         private const string _exitCommand = "0";
         private const string _userPage = "1";
-        private const string _homePage = "home";
-        private const string _stopAddingCommand = "2";
         private const string _createCourseCommand = "3";
         private const string _deleteCourseCommand = "4";
         private const string _openCourseCommand = "5";
+        private const string _stopAddingCommand = "6";
 
         private const string _articleInputCase = "1";
         private const string _publicationInputCase = "2";
@@ -88,8 +89,9 @@ namespace API.Controllers
 
                 Console.WriteLine();
                 Console.WriteLine($"Щоб створити курс - введіть {_createCourseCommand}\n" +
-                                     $"Щоб видалити курс - введіть {_deleteCourseCommand}\n" +
-                                     $"Щоб повернутися назад - введіть {_exitCommand}");
+                                  $"Щоб переглянути якийсь курс - введіть {_openCourseCommand}\n" +
+                                  $"Щоб видалити курс - введіть {_deleteCourseCommand}\n" +
+                                  $"Щоб повернутися назад - введіть {_exitCommand}");
 
                 string cmdLine = Console.ReadLine();
                 switch (cmdLine)
@@ -99,15 +101,20 @@ namespace API.Controllers
                         break;
                     case _openCourseCommand:
                         Console.Write("Введіть номер курсу: ");
-                        int.TryParse(Console.ReadLine(), out int courseId);
-                        courseId--;
-                        page = new CourseController(_userService, _courseService, currentUser.Id, _courseService.GetByIndex(courseId), _userPage).Launch();
+                        if (ValidateCourse(Console.ReadLine(), out Course course))
+                        {
+                            page = new CourseController(_userService, _courseService, currentUser.Id, course, _userPage).Launch();
+                        }
+
                         break;
                     case _deleteCourseCommand:
                         Console.Write("Введіть номер курсу: ");
-                        courseId = int.Parse(Console.ReadLine());
-                        currentUser.RemoveCourse(courseId);
-                        _userService.Save();
+                        if (ValidateCourse(Console.ReadLine(), out course))
+                        {
+                            currentUser.RemoveCourse(course.Id);
+                            _userService.Save();
+                        }
+
                         break;
                     case _exitCommand:
                         page = _homePage;
@@ -147,9 +154,31 @@ namespace API.Controllers
                 string[] skillStr = cmdLine.Split(" = ");
                 if (Enum.TryParse(skillStr[0], out SkillKind skillKind) && int.TryParse(skillStr[1], out int points))
                 {
+                    if ((int)skillKind > 7 || (int)skillKind < 0)
+                    {
+                        Console.WriteLine("Такої навички немає\n" +
+                                          "Натисніть Enter");
+                        Console.ReadLine();
+                        continue;
+                    }
+
+                    if (points <= 0)
+                    {
+                        Console.WriteLine("Не можна вказувати стільки поінтів\n" +
+                                          "Натисніть Enter");
+                        Console.ReadLine();
+                        continue;
+                    }
+
                     var newSkill = new Skill { Name = skillKind, Points = points };
                     courseSkills.Add(newSkill);
                     Console.Clear();
+                }
+                else
+                {
+                    Console.WriteLine("Не вірний формат вводу\n" +
+                                      "Натисніть Enter");
+                    Console.ReadLine();
                 }
             }
 
@@ -161,12 +190,12 @@ namespace API.Controllers
             Console.Clear();
 
             Console.Write("Введіть назву курсу: ");
-            string name = Console.ReadLine();
+            string name = InputNotEmptyString(Console.ReadLine());
 
             Console.Write("Введіть опис курсу: ");
-            string description = Console.ReadLine();
+            string description = InputNotEmptyString(Console.ReadLine());
 
-            int id = _courseService.GetAll().Length + 1;
+            int id = _courseService.GetAll().ToList().Count + 1;
             var course = new Course(id, name, description);
 
             var materials = CreateMaterials();
@@ -204,18 +233,18 @@ namespace API.Controllers
                                    "3 - Video\n" +
                                   $"Або введіть {_stopAddingCommand}, щоб зупинитися");
                 Console.Write("Обраний матеріал: ");
-                cmdLine = Console.ReadLine();
+                cmdLine = InputNotEmptyString(Console.ReadLine());
                 switch (cmdLine)
                 {
                     case _articleInputCase:
                         Console.Write("Введіть назву статті: ");
-                        string title = Console.ReadLine();
+                        string title = InputNotEmptyString(Console.ReadLine());
                         Console.Write("Введіть дату публікації статті: ");
                         DateTime.TryParse(Console.ReadLine(), out DateTime date);
                         Console.Write("Введіть посиланя на статтю: ");
-                        string link = Console.ReadLine();
+                        string link = InputNotEmptyString(Console.ReadLine());
 
-                        int id = _materialService.GetAll().Length + 1;
+                        int id = _materialService.GetAll().ToList().Count + 1;
                         var articleMaterial = new ArticleMaterial(id, title, date, link);
 
                         _userService.GetByIndex(_userId).AddMaterial(articleMaterial);
@@ -224,17 +253,17 @@ namespace API.Controllers
                         break;
                     case _publicationInputCase:
                         Console.Write("Введіть назву публікації: ");
-                        title = Console.ReadLine();
+                        title = InputNotEmptyString(Console.ReadLine());
                         Console.Write("Введіть автора публікації: ");
-                        string author = Console.ReadLine();
+                        string author = InputNotEmptyString(Console.ReadLine());
                         Console.Write("Введіть кількість сторінок публікації: ");
                         int.TryParse(Console.ReadLine(), out int pageCount);
                         Console.Write("Введіть формат файлу публікації: ");
-                        string format = Console.ReadLine();
+                        string format = InputNotEmptyString(Console.ReadLine());
                         Console.Write("Введіть дату публікації: ");
                         DateTime.TryParse(Console.ReadLine(), out date);
 
-                        id = _materialService.GetAll().Length + 1;
+                        id = _materialService.GetAll().ToList().Count + 1;
                         var publicationMaterial = new PublicationMaterial(id, title, author, pageCount, format, date);
 
                         _userService.GetByIndex(_userId).AddMaterial(publicationMaterial);
@@ -243,18 +272,26 @@ namespace API.Controllers
                         break;
                     case _videoInputCase:
                         Console.Write("Введіть назву відео: ");
-                        title = Console.ReadLine();
+                        title = InputNotEmptyString(Console.ReadLine());
                         Console.Write("Введіть довжину відео: ");
                         float.TryParse(Console.ReadLine(), out float duration);
                         Console.Write("Введіть якість відео: ");
                         int.TryParse(Console.ReadLine(), out int quality);
 
-                        id = _materialService.GetAll().Length + 1;
+                        id = _materialService.GetAll().ToList().Count + 1;
                         var videoMaterial = new VideoMaterial(id, title, duration, quality);
 
                         _userService.GetByIndex(_userId).AddMaterial(videoMaterial);
                         _materialService.Add(videoMaterial);
                         courseMaterials.Add(videoMaterial);
+                        break;
+                    case _stopAddingCommand:
+                        Console.WriteLine("Матеріали додано");
+                        break;
+                    default:
+                        Console.WriteLine("На жаль це не тип матеріалу\n" +
+                                          "Натисніть Enter");
+                        Console.ReadLine();
                         break;
                 }
 
@@ -263,6 +300,50 @@ namespace API.Controllers
 
             _userService.Save();
             return courseMaterials;
+        }
+
+        private string InputNotEmptyString(string inputString)
+        {
+            while (string.IsNullOrWhiteSpace(inputString))
+            {
+                if (string.IsNullOrWhiteSpace(inputString))
+                {
+                    Console.Write("Ви ввели порожню строку. Спробуйте ще раз: ");
+                }
+
+                inputString = Console.ReadLine();
+            }
+
+            return inputString;
+        }
+
+        private bool ValidateCourse(string strCourseId, out Course course)
+        {
+            if (int.TryParse(strCourseId, out int courseId))
+            {
+                try
+                {
+                    course = _userService.GetByIndex(_userId).UserCourses.FirstOrDefault(c => c.Item1.Id == courseId).Item1
+                        ?? throw new ArgumentOutOfRangeException(nameof(courseId));
+                    return true;
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    course = null;
+                    Console.WriteLine("Немає курсу з таким ідентифікатором\n" +
+                                      "Натисніть Enter");
+                    Console.ReadLine();
+                    return false;
+                }
+            }
+            else
+            {
+                course = null;
+                Console.WriteLine("Неправильний формат вводу\n" +
+                                  "Натисніть Enter");
+                Console.ReadLine();
+                return false;
+            }
         }
     }
 }

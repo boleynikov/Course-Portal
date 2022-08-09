@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Collections.Generic;
+
 namespace Services.Interface
 {
     /// <summary>
@@ -44,6 +46,6 @@ namespace Services.Interface
         /// Get all T entities from repo.
         /// </summary>
         /// <returns>Entities array.</returns>
-        T[] GetAll();
+        IEnumerable<T> GetAll();
     }
 }

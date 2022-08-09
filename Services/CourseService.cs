@@ -7,6 +7,7 @@ namespace Services
     using Data.Repository.Interface;
     using Domain;
     using Services.Interface;
+    using System.Collections.Generic;
 
     /// <summary>
     /// CourseService.
@@ -37,7 +38,7 @@ namespace Services
         }
 
         /// <inheritdoc/>
-        public Course[] GetAll()
+        public IEnumerable<Course> GetAll()
         {
             return _repository.GetAll();
         }

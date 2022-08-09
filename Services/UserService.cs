@@ -7,6 +7,7 @@ namespace Services
     using Data.Repository.Interface;
     using Domain;
     using Services.Interface;
+    using System.Collections.Generic;
 
     /// <summary>
     /// User Service.
@@ -37,7 +38,7 @@ namespace Services
         }
 
         /// <inheritdoc/>
-        public User[] GetAll()
+        public IEnumerable<User> GetAll()
         {
             return _repository.GetAll();
         }

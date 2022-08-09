@@ -43,7 +43,7 @@ namespace Data.Repository
         }
 
         /// <inheritdoc/>
-        public User[] GetAll()
+        public IEnumerable<User> GetAll()
         {
             return _users.ToArray();
         }

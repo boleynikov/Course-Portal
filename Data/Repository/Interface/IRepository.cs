@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Collections.Generic;
+
 namespace Data.Repository.Interface
 {
     /// <summary>
@@ -20,7 +22,7 @@ namespace Data.Repository.Interface
         /// Get all T objects.
         /// </summary>
         /// <returns>T array.</returns>
-        T[] GetAll();
+        IEnumerable<T> GetAll();
 
         /// <summary>
         /// Get T object by id.

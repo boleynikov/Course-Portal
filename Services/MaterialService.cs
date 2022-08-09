@@ -7,6 +7,7 @@ namespace Services
     using Data.Repository.Interface;
     using Domain.CourseMaterials;
     using Services.Interface;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Material Service.
@@ -37,7 +38,7 @@ namespace Services
         }
 
         /// <inheritdoc/>
-        public Material[] GetAll()
+        public IEnumerable<Material> GetAll()
         {
             return _repository.GetAll();
         }

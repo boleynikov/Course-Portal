@@ -109,6 +109,9 @@ namespace Domain
             if (UserCourses.Find(course => course.Item1.Name == newCourse.Name &&
                                            course.Item1.Description == newCourse.Description).Item1 != null)
             {
+                Console.WriteLine("Даний курс у вас уже є\n" +
+                                  "Натисніть Enter");
+                Console.ReadLine();
                 return;
             }
 

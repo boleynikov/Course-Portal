@@ -38,20 +38,30 @@ namespace Data.Repository
         /// <inheritdoc/>
         public void DeleteByIndex(int id)
         {
-            _courses.Remove(_courses[id]);
+            var course = _courses.FirstOrDefault(c => c.Id == id);
+            if (course != null)
+            {
+                _courses.Remove(_courses[id]);
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException(nameof(id));
+            }
+
             Save();
         }
 
         /// <inheritdoc/>
         public Course GetByIndex(int id)
         {
-            return _courses[id];
+            var course = _courses.FirstOrDefault(c => c.Id == id);
+            return course ?? throw new ArgumentOutOfRangeException(nameof(id));
         }
 
         /// <inheritdoc/>
         public void Update(Course editedCourse)
         {
-            var course = _courses.FirstOrDefault(u => u.Id == editedCourse.Id);
+            var course = _courses.FirstOrDefault(c => c.Id == editedCourse.Id);
             if (course != null)
             {
                 int i = _courses.IndexOf(course);
@@ -67,7 +77,7 @@ namespace Data.Repository
         }
 
         /// <inheritdoc/>
-        public Course[] GetAll()
+        public IEnumerable<Course> GetAll()
         {
             return _courses.ToArray();
         }
