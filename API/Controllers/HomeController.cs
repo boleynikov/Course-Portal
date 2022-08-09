@@ -184,7 +184,7 @@ namespace API.Controllers
                 catch (ArgumentOutOfRangeException)
                 {
                     course = null;
-                    Console.WriteLine("Немає курсу з таким ідентифікатором\n" +
+                    Console.WriteLine($"Немає курсу з таким ідентифікатором {courseId}\n" +
                                       "Натисніть Enter");
                     Console.ReadLine();
                     return false;

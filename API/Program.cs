@@ -8,6 +8,7 @@ namespace API
     using System.Text;
     using API.Controllers;
     using API.Controllers.Abstract;
+    using API.Interface;
     using Data.Repository;
     using Domain;
     using Domain.CourseMaterials;
@@ -28,7 +29,7 @@ namespace API
             Console.OutputEncoding = Encoding.Unicode;
             Console.InputEncoding = Encoding.Unicode;
 
-            var unitOfWork = new UnitOfWork<FileDbContext>(new FileDbContext());
+            IUnitOfWork<FileDbContext> unitOfWork = new UnitOfWork<FileDbContext>(new FileDbContext());
 
             var materialService = unitOfWork.GetService<Material>();
             var courseService = unitOfWork.GetService<Course>();
@@ -36,26 +37,22 @@ namespace API
 
             IAuthorizationService authorizationService = new AuthorizationService(userService);
 
-            IController home = new HomeController(courseService, userService, authorizationService);
-            IController user;
-
             string page = _homePage;
             while (page != _exit)
             {
                 switch (page)
                 {
                     case _homePage:
-                        page = home.Launch();
+                        page = new HomeController(courseService, userService, authorizationService).Launch();
                         break;
                     case _userPage:
                         int userId = authorizationService.GetCurrentAccount().Id;
-                        user = new UserController(courseService, materialService, userService, userId);
-                        page = user.Launch();
+                        page = new UserController(courseService, materialService, userService, userId).Launch();
                         break;
                     default:
                         Console.WriteLine("Невідома сторінка\nНатисніть Enter");
-                        page = "home";
                         Console.ReadLine();
+                        page = "home";
                         break;
                 }
             }

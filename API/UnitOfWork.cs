@@ -6,6 +6,7 @@ namespace API
 {
     using System;
     using System.Collections.Generic;
+    using API.Interface;
     using Data.Repository;
     using Data.Repository.Interface;
     using Domain;
@@ -18,7 +19,7 @@ namespace API
     /// Simple implementation of UnitOfWork pattern.
     /// </summary>
     /// <typeparam name="TContext">Type of DBContext.</typeparam>
-    public class UnitOfWork<TContext>
+    public class UnitOfWork<TContext> : IUnitOfWork<TContext>
         where TContext : IDbContext
     {
         private Dictionary<Type, object> _repositories;
@@ -76,7 +77,7 @@ namespace API
         /// </summary>
         /// <typeparam name="TEntity">Generic type of repo.</typeparam>
         /// <returns>TEntity repo.</returns>
-        private IRepository<TEntity> GetRepository<TEntity>()
+        public IRepository<TEntity> GetRepository<TEntity>()
             where TEntity : BaseEntity
         {
             if (_repositories == null)

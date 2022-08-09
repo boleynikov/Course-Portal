@@ -5,8 +5,10 @@
 namespace API.Controllers
 {
     using System;
+    using System.Linq;
     using API.Controllers.Abstract;
     using Domain;
+    using Domain.CourseMaterials;
     using Services.Interface;
 
     /// <summary>
@@ -18,6 +20,10 @@ namespace API.Controllers
         private const string _addCommand = "0";
         private const string _editCommand = "1";
         private const string _exitCommand = "2";
+
+        private const string _editCourseName = "1";
+        private const string _editCourseDescription = "2";
+        private const string _editCourseMaterials = "3";
 
         private readonly IService<User> _userService;
         private readonly IService<Course> _courseService;
@@ -76,7 +82,7 @@ namespace API.Controllers
                 }
 
                 Console.WriteLine($"Щоб додати до свого списку курс - введіть {_addCommand}\n" +
-                                  $"Щоб змінити назву чи опис курсу - введіть {_editCommand}\n" +
+                                  $"Щоб змінити назву опис чи додати матеріали до курсу - введіть {_editCommand}\n" +
                                   $"Щоб повернутися назад - введіть {_exitCommand}\n");
                 string cmdLine = Console.ReadLine();
                 switch (cmdLine)
@@ -86,11 +92,7 @@ namespace API.Controllers
                         _userService.Save();
                         break;
                     case _editCommand:
-                        Console.Write("Введіть нову назву курсу: ");
-                        string name = InputNotEmptyString(Console.ReadLine());
-                        Console.Write("Введіть новий опис курсу: ");
-                        string description = InputNotEmptyString(Console.ReadLine());
-                        _course.UpdateInfo(name, description, _course.CourseMaterials, _course.CourseSkills);
+                        EditCourse();
                         currentUser.UpdateCourseInfo(_course);
                         _courseService.Update(_course);
                         _userService.Update(currentUser);
@@ -98,10 +100,97 @@ namespace API.Controllers
                     case _exitCommand:
                         page = _redirectPage;
                         break;
+                    default:
+                        Console.WriteLine("Команду не розпізнано\n" +
+                                  "Натисніть Enter");
+                        Console.ReadLine();
+                        break;
                 }
             }
 
             return page;
+        }
+
+        private void EditCourse()
+        {
+            var name = _course.Name;
+            var description = _course.Description;
+            Console.WriteLine("Введіть цифри у відповідності до того що саме ви хочете відредагувати\n" +
+                              "через кому пробіл [, ]\n" +
+                              $"{_editCourseName} - змінити назву\n" +
+                              $"{_editCourseDescription} - змінити опис\n" +
+                              $"{_editCourseMaterials} - додати матеріали із вже завантажених користувачем");
+
+            var str = InputNotEmptyString(Console.ReadLine());
+            string[] editCmd = str.Split(", ");
+            foreach (var cmd in editCmd)
+            {
+                switch (cmd)
+                {
+                    case _editCourseName:
+                        Console.Write("Введіть нову назву курсу: ");
+                        name = InputNotEmptyString(Console.ReadLine());
+                        break;
+                    case _editCourseDescription:
+                        Console.Write("Введіть новий опис курсу: ");
+                        description = InputNotEmptyString(Console.ReadLine());
+                        break;
+                    case _editCourseMaterials:
+                        var userMaterials = _userService.GetByIndex(_userId).UserMaterials;
+                        Console.WriteLine("Оберіть номери матеріалів, які ви хочете додати через кому з пробілом [, ]");
+                        userMaterials.ForEach((mat) => Console.WriteLine($"{mat.Id} {mat.Title}"));
+
+                        var strMaterialsIds = InputNotEmptyString(Console.ReadLine());
+                        var listMaterialsIds = strMaterialsIds.Split(", ").ToList();
+                        listMaterialsIds.ForEach((strMatId) =>
+                        {
+                            if (ValidateMaterial(strMatId, out Material material))
+                            {
+                                _course.CourseMaterials.Add(material);
+                            }
+                        });
+                        break;
+                }
+            }
+
+            _course.UpdateInfo(name, description, _course.CourseMaterials, _course.CourseSkills);
+        }
+
+        private bool ValidateMaterial(string strMaterialId, out Material material)
+        {
+            if (int.TryParse(strMaterialId, out int materialId))
+            {
+                try
+                {
+                    material = _courseService.GetByIndex(_userId).CourseMaterials.FirstOrDefault(c => c.Id == materialId)
+                        ?? throw new ArgumentOutOfRangeException(nameof(materialId));
+                    if (_course.CourseMaterials.Contains(material))
+                    {
+                        Console.WriteLine($"Матеріал з id {materialId} вже є у матеріалах курсу\n" +
+                                           "Натисніть Enter");
+                        Console.ReadLine();
+                        return false;
+                    }
+
+                    return true;
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    material = null;
+                    Console.WriteLine($"Немає матеріалу з таким ідентифікатором {materialId}\n" +
+                                      "Натисніть Enter");
+                    Console.ReadLine();
+                    return false;
+                }
+            }
+            else
+            {
+                material = null;
+                Console.WriteLine("Неправильний формат вводу\n" +
+                                  "Натисніть Enter");
+                Console.ReadLine();
+                return false;
+            }
         }
 
         private string InputNotEmptyString(string inputString)
