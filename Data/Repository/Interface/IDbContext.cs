@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace Data.Repository.Abstract
+namespace Data.Repository.Interface
 {
     using System.Collections.Generic;
     using Domain.Abstract;

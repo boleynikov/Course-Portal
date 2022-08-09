@@ -7,7 +7,7 @@ namespace Data.Repository
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Data.Repository.Abstract;
+    using Data.Repository.Interface;
     using Domain;
 
     /// <summary>

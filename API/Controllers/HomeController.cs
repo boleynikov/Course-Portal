@@ -7,13 +7,21 @@ namespace API.Controllers
     using System;
     using API.Controllers.Abstract;
     using Domain;
-    using Services.Abstract;
+    using Services.Interface;
 
     /// <summary>
     /// Home Controller.
     /// </summary>
     public class HomeController : IController
     {
+        private const string _homePage = "home";
+        private const string _userPage = "1";
+        private const string _loginCommand = "2";
+        private const string _registerCommand = "3";
+        private const string _addCourseCommand = "4";
+        private const string _openCourseCommand = "5";
+        private const string _exitCommand = "6";
+
         private readonly IService<Course> _courseService;
         private readonly IService<User> _userService;
         private readonly IAuthorizationService _authService;
@@ -43,13 +51,13 @@ namespace API.Controllers
 
         private string View(Course[] courses)
         {
-            string page = "home";
+            string page = _homePage;
 
-            while (page == "home")
+            while (page == _homePage)
             {
                 Console.Clear();
-                Console.WriteLine("Вітаємо на Educational Portal");
-                Console.WriteLine("Список наявних курсів:");
+                Console.WriteLine("Вітаємо на Educational Portal\n" +
+                                  "Список наявних курсів:");
                 if (courses.Length <= 0)
                 {
                     Console.WriteLine("\tНаразі репозиторій курсів пустий");
@@ -67,12 +75,13 @@ namespace API.Controllers
                 string cmdLine;
                 if (currentUser == null)
                 {
-                    Console.WriteLine("Увійдіть до свого облікового запису ввівши \"login\"");
-                    Console.WriteLine("Якщо такого ще немає, введіть \"register\"");
+                    Console.WriteLine($"Увійдіть до свого облікового запису ввівши {_loginCommand}\n" +
+                                      $"Якщо такого ще немає, введіть {_registerCommand}\n" +
+                                      $"Щоб вийти звідси - введіть {_exitCommand}\n");
                     cmdLine = Console.ReadLine();
                     switch (cmdLine)
                     {
-                        case "login":
+                        case _loginCommand:
                             Console.Write("Введіть електронну адресу: ");
                             string email = Console.ReadLine();
                             Console.Write("Введіть пароль: ");
@@ -80,8 +89,8 @@ namespace API.Controllers
                             var loginResult = _authService.Login(email, password);
                             if (loginResult)
                             {
-                                Console.WriteLine($"З поверненням {_authService.GetCurrentAccount().Name}");
-                                Console.WriteLine("Натисніть Enter");
+                                Console.WriteLine($"З поверненням {_authService.GetCurrentAccount().Name}\n" +
+                                                   "Натисніть Enter");
                                 Console.ReadLine();
                             }
                             else
@@ -91,7 +100,7 @@ namespace API.Controllers
                             }
 
                             break;
-                        case "register":
+                        case _registerCommand:
                             Console.Write("Введіть своє ім'я: ");
                             string name = Console.ReadLine();
                             Console.Write("Введіть електронну адресу: ");
@@ -100,36 +109,39 @@ namespace API.Controllers
                             password = Console.ReadLine();
                             _authService.Register(name, email, password);
                             break;
+                        case _exitCommand:
+                            page = _exitCommand;
+                            break;
                     }
                 }
                 else
                 {
-                    Console.WriteLine($"\tОбліковий запис {currentUser.Name}");
-                    Console.WriteLine("Щоб переглянути якийсь курс - введіть \"open\"");
-                    Console.WriteLine("Щоб додати до свого списку курс - введіть \"add\"");
-                    Console.WriteLine("Щоб переглянути свою сторінку - введіть \"user\"");
-                    Console.WriteLine("Щоб вийти звідси - введіть \"exit\"");
+                    Console.WriteLine($"\tОбліковий запис {currentUser.Name}\n" +
+                                       $"Щоб переглянути свою сторінку - введіть {_userPage}\n" +
+                                       $"Щоб переглянути якийсь курс - введіть {_openCourseCommand}\n" +
+                                       $"Щоб додати до свого списку курс - введіть {_addCourseCommand}\n" +
+                                       $"Щоб вийти звідси - введіть {_exitCommand}\n");
                     cmdLine = Console.ReadLine();
                     switch (cmdLine)
                     {
-                        case "user":
-                            page = "user";
+                        case _userPage:
+                            page = _userPage;
                             break;
-                        case "add":
+                        case _addCourseCommand:
                             Console.Write("Введіть номер курсу: ");
                             int.TryParse(Console.ReadLine(), out int courseId);
                             courseId--;
                             currentUser.AddCourse(courses[courseId]);
                             _userService.Save();
                             break;
-                        case "open":
+                        case _openCourseCommand:
                             Console.Write("Введіть номер курсу: ");
                             int.TryParse(Console.ReadLine(), out courseId);
                             courseId--;
                             page = new CourseController(_userService, _courseService, currentUser.Id, courses[courseId]).Launch();
                             break;
-                        case "exit":
-                            page = "exit";
+                        case _exitCommand:
+                            page = _exitCommand;
                             break;
                         default:
                             return page;

@@ -7,13 +7,18 @@ namespace API.Controllers
     using System;
     using API.Controllers.Abstract;
     using Domain;
-    using Services.Abstract;
+    using Services.Interface;
 
     /// <summary>
     /// Course Controller.
     /// </summary>
     public class CourseController : IController
     {
+        private const string _coursePage = "course";
+        private const string _addCommand = "0";
+        private const string _editCommand = "1";
+        private const string _exitCommand = "2";
+
         private readonly IService<User> _userService;
         private readonly IService<Course> _courseService;
         private readonly Course _course;
@@ -45,8 +50,8 @@ namespace API.Controllers
         /// <inheritdoc/>
         public string Launch()
         {
-            string page = "course";
-            while (page == "course")
+            string page = _coursePage;
+            while (page == _coursePage)
             {
                 Console.Clear();
                 var currentUser = _userService.GetByIndex(_userId);
@@ -57,8 +62,8 @@ namespace API.Controllers
                     Console.WriteLine($"\tВаш прогрес: {pulledCoursePair.Item2.State} {pulledCoursePair.Item2.Percentage} %");
                 }
 
-                Console.WriteLine($"Опис: {_course.Description}");
-                Console.WriteLine("Матеріали курсу:");
+                Console.WriteLine($"Опис: {_course.Description}\n" +
+                                   "Матеріали курсу:");
                 foreach (var material in _course.CourseMaterials)
                 {
                     Console.WriteLine("\t{0,20} | {1,5}", material.Type, material.Title);
@@ -70,17 +75,17 @@ namespace API.Controllers
                     Console.WriteLine("\t{0,20} | {1,5}", skill.Name, skill.Points);
                 }
 
-                Console.WriteLine("Щоб додати до свого списку курс - введіть \"add\"");
-                Console.WriteLine("Щоб змінити назву чи опис курсу - введіть \"edit\"");
-                Console.WriteLine("Щоб повернутися назад - введіть \"back\"");
+                Console.WriteLine($"Щоб додати до свого списку курс - введіть {_addCommand}\n" +
+                                  $"Щоб змінити назву чи опис курсу - введіть {_editCommand}\n" +
+                                  $"Щоб повернутися назад - введіть {_exitCommand}\n");
                 string cmdLine = Console.ReadLine();
                 switch (cmdLine)
                 {
-                    case "add":
+                    case _addCommand:
                         currentUser.AddCourse(_course);
                         _userService.Save();
                         break;
-                    case "edit":
+                    case _editCommand:
                         Console.Write("Введіть нову назву курсу: ");
                         string name = Console.ReadLine();
                         Console.Write("Введіть новий опис курсу: ");
@@ -90,7 +95,7 @@ namespace API.Controllers
                         _courseService.Update(_course);
                         _userService.Update(currentUser);
                         break;
-                    case "back":
+                    case _exitCommand:
                         page = _redirectPage;
                         break;
                 }

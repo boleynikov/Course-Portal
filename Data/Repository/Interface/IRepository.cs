@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace Data.Repository.Abstract
+namespace Data.Repository.Interface
 {
     /// <summary>
     /// Interface of repository.

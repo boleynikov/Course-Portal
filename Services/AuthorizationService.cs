@@ -6,7 +6,7 @@ namespace Services
 {
     using System.Linq;
     using Domain;
-    using Services.Abstract;
+    using Services.Interface;
 
     /// <summary>
     /// Authentication service.
@@ -40,15 +40,9 @@ namespace Services
                     _account = pulledUser;
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <inheritdoc/>

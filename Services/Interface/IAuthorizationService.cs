@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace Services.Abstract
+namespace Services.Interface
 {
     using Domain;
 

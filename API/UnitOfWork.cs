@@ -7,12 +7,12 @@ namespace API
     using System;
     using System.Collections.Generic;
     using Data.Repository;
-    using Data.Repository.Abstract;
+    using Data.Repository.Interface;
     using Domain;
     using Domain.Abstract;
     using Domain.CourseMaterials;
     using Services;
-    using Services.Abstract;
+    using Services.Interface;
 
     /// <summary>
     /// Simple implementation of UnitOfWork pattern.

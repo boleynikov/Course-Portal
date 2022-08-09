@@ -8,6 +8,7 @@ namespace Domain
     using System.Collections.Generic;
     using Domain.Abstract;
     using Domain.CourseMaterials;
+    using Domain.Enum;
 
     /// <summary>
     /// User class.

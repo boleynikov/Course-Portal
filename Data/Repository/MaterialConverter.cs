@@ -5,14 +5,9 @@
 namespace Data.Repository
 {
     using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using Data.Repository.Abstract;
-    using Domain.Abstract;
     using Domain.CourseMaterials;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
-    using Newtonsoft.Json.Serialization;
 
     /// <summary>
     /// Converter for deserialization of list with abstract class heirs.

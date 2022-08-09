@@ -7,7 +7,7 @@ namespace Data.Repository
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using Data.Repository.Abstract;
+    using Data.Repository.Interface;
     using Domain.Abstract;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;

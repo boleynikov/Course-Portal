@@ -9,13 +9,26 @@ namespace API.Controllers
     using API.Controllers.Abstract;
     using Domain;
     using Domain.CourseMaterials;
-    using Services.Abstract;
+    using Domain.Enum;
+    using Services.Interface;
 
     /// <summary>
     /// User Controller.
     /// </summary>
     public class UserController : IController
     {
+        private const string _exitCommand = "0";
+        private const string _userPage = "1";
+        private const string _homePage = "home";
+        private const string _stopAddingCommand = "2";
+        private const string _createCourseCommand = "3";
+        private const string _deleteCourseCommand = "4";
+        private const string _openCourseCommand = "5";
+
+        private const string _articleInputCase = "1";
+        private const string _publicationInputCase = "2";
+        private const string _videoInputCase = "3";
+
         private readonly IService<Course> _courseService;
         private readonly IService<Material> _materialService;
         private readonly IService<User> _userService;
@@ -49,22 +62,22 @@ namespace API.Controllers
         private string View()
         {
             var currentUser = _userService.GetByIndex(_userId);
-            string page = "user";
+            string page = _userPage;
 
-            while (page == "user")
+            while (page == _userPage)
             {
                 Console.Clear();
-                Console.WriteLine($"Обліковий запис");
-                Console.WriteLine($"\tІм'я: {currentUser.Name}");
-                Console.WriteLine($"\tEmail: {currentUser.Email}");
+                Console.WriteLine($"Обліковий запис\n" +
+                                  $"Ім'я: {currentUser.Name}\n" +
+                                  $"Email: {currentUser.Email}\n");
                 if (currentUser.UserCourses.Count <= 0)
                 {
                     Console.WriteLine("У вас ще немає доданих чи створених курсів.");
                 }
                 else
                 {
-                    Console.WriteLine($"Кількість курсів користувача: {currentUser.UserCourses.Count}");
-                    Console.WriteLine("Список наявних курсів:");
+                    Console.WriteLine($"Кількість курсів користувача: {currentUser.UserCourses.Count}\n" +
+                                       "Список наявних курсів:");
                     foreach (var courseKeyValue in currentUser.UserCourses)
                     {
                         var course = courseKeyValue.Item1;
@@ -74,30 +87,30 @@ namespace API.Controllers
                 }
 
                 Console.WriteLine();
-                Console.WriteLine("Щоб створити курс - введіть \"create\"");
-                Console.WriteLine("Щоб видалити курс - введіть \"delete\"");
-                Console.WriteLine("Щоб повернутися назад - введіть \"back\"");
+                Console.WriteLine($"Щоб створити курс - введіть {_createCourseCommand}\n" +
+                                     $"Щоб видалити курс - введіть {_deleteCourseCommand}\n" +
+                                     $"Щоб повернутися назад - введіть {_exitCommand}");
 
                 string cmdLine = Console.ReadLine();
                 switch (cmdLine)
                 {
-                    case "create":
+                    case _createCourseCommand:
                         CreateCourse();
                         break;
-                    case "open":
+                    case _openCourseCommand:
                         Console.Write("Введіть номер курсу: ");
                         int.TryParse(Console.ReadLine(), out int courseId);
                         courseId--;
-                        page = new CourseController(_userService, _courseService, currentUser.Id, _courseService.GetByIndex(courseId), "user").Launch();
+                        page = new CourseController(_userService, _courseService, currentUser.Id, _courseService.GetByIndex(courseId), _userPage).Launch();
                         break;
-                    case "delete":
+                    case _deleteCourseCommand:
                         Console.Write("Введіть номер курсу: ");
                         courseId = int.Parse(Console.ReadLine());
                         currentUser.RemoveCourse(courseId);
                         _userService.Save();
                         break;
-                    case "back":
-                        page = "home";
+                    case _exitCommand:
+                        page = _homePage;
                         break;
                 }
             }
@@ -114,12 +127,19 @@ namespace API.Controllers
             Console.WriteLine("Оберіть навички, які можна отримати пройшовши курс:");
             while (cmdLine != "stop")
             {
-                Console.WriteLine("Доступні навички:");
-                Console.WriteLine("Programming,\nMusic,\nHealthCare,\nTimeManagment,\nCommunication,\nIllustration,\nPhoto");
-                Console.WriteLine("Введіть назву навика і кількість поінтів через дорівнює (Ось так: \"Programming = 3\")");
-                Console.WriteLine("Або введіть \"stop\", щоб зупинитися");
+                Console.WriteLine($"Доступні навички:\n" +
+                                   "0 - Programming,\n" +
+                                   "1 - Music,\n" +
+                                   "2 - Physics,\n" +
+                                   "3 - HealthCare,\n" +
+                                   "4 - TimeManagment,\n" +
+                                   "5 - Communication,\n" +
+                                   "6 - Illustration,\n" +
+                                   "7 - Photo\n" +
+                 "Введіть номер навика і кількість поінтів через дорівнює (Ось так: 1 = 3)\n" +
+                 $"Або введіть {_stopAddingCommand}, щоб зупинитися");
                 cmdLine = Console.ReadLine();
-                if (cmdLine == "stop")
+                if (cmdLine == _stopAddingCommand)
                 {
                     break;
                 }
@@ -175,16 +195,19 @@ namespace API.Controllers
             string cmdLine = string.Empty;
 
             Console.Clear();
-            while (cmdLine != "stop")
+            while (cmdLine != _stopAddingCommand)
             {
-                Console.WriteLine("Введіть тип матеріалу, який хочете додати до курсу");
-                Console.WriteLine("Доступні матеріали: Article, Publication, Video");
-                Console.WriteLine("Або введіть \"stop\", щоб зупинитися");
+                Console.WriteLine($"Введіть номер типу матеріалу, який хочете додати до курсу\n" +
+                                   "Доступні матеріали:\n" +
+                                   "1 - Article,\n" +
+                                   "2 - Publication,\n" +
+                                   "3 - Video\n" +
+                                  $"Або введіть {_stopAddingCommand}, щоб зупинитися");
                 Console.Write("Обраний матеріал: ");
                 cmdLine = Console.ReadLine();
                 switch (cmdLine)
                 {
-                    case "Article":
+                    case _articleInputCase:
                         Console.Write("Введіть назву статті: ");
                         string title = Console.ReadLine();
                         Console.Write("Введіть дату публікації статті: ");
@@ -199,7 +222,7 @@ namespace API.Controllers
                         _materialService.Add(articleMaterial);
                         courseMaterials.Add(articleMaterial);
                         break;
-                    case "Publication":
+                    case _publicationInputCase:
                         Console.Write("Введіть назву публікації: ");
                         title = Console.ReadLine();
                         Console.Write("Введіть автора публікації: ");
@@ -218,7 +241,7 @@ namespace API.Controllers
                         _materialService.Add(publicationMaterial);
                         courseMaterials.Add(publicationMaterial);
                         break;
-                    case "Video":
+                    case _videoInputCase:
                         Console.Write("Введіть назву відео: ");
                         title = Console.ReadLine();
                         Console.Write("Введіть довжину відео: ");

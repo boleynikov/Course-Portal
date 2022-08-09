@@ -9,17 +9,20 @@ namespace API
     using API.Controllers;
     using API.Controllers.Abstract;
     using Data.Repository;
-    using Data.Repository.Abstract;
     using Domain;
     using Domain.CourseMaterials;
     using Services;
-    using Services.Abstract;
+    using Services.Interface;
 
     /// <summary>
     /// Start Program class.
     /// </summary>
     internal class Program
     {
+        private const string _homePage = "home";
+        private const string _userPage = "1";
+        private const string _exit = "6";
+
         private static void Main()
         {
             Console.OutputEncoding = Encoding.Unicode;
@@ -36,15 +39,15 @@ namespace API
             IController home = new HomeController(courseService, userService, authorizationService);
             IController user;
 
-            string page = "home";
-            while (page != "exit")
+            string page = _homePage;
+            while (page != _exit)
             {
                 switch (page)
                 {
-                    case "home":
+                    case _homePage:
                         page = home.Launch();
                         break;
-                    case "user":
+                    case _userPage:
                         int userId = authorizationService.GetCurrentAccount().Id;
                         user = new UserController(courseService, materialService, userService, userId);
                         page = user.Launch();

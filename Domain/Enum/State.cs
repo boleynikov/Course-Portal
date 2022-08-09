@@ -2,10 +2,13 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace Domain
+namespace Domain.Enum
 {
     using System;
 
+    /// <summary>
+    /// Course progress state.
+    /// </summary>
     [Serializable]
     public enum State
     {

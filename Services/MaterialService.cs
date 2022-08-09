@@ -4,9 +4,9 @@
 
 namespace Services
 {
-    using Data.Repository.Abstract;
+    using Data.Repository.Interface;
     using Domain.CourseMaterials;
-    using Services.Abstract;
+    using Services.Interface;
 
     /// <summary>
     /// Material Service.
