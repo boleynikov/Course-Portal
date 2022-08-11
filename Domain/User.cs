@@ -62,16 +62,7 @@ namespace Domain
         /// <summary>
         /// Gets user courses.
         /// </summary>
-        public List<(Course, CourseProgress)> UserCourses { get; private set; }
-
-        /// <summary>
-        /// Add Material to user.
-        /// </summary>
-        /// <param name="material">Added material.</param>
-        public void AddMaterial(Material material)
-        {
-            UserMaterials.Add(material);
-        }
+        public List<(Course Course, CourseProgress Progress)> UserCourses { get; private set; }
 
         /// <summary>
         /// Update existing user course.
@@ -84,13 +75,13 @@ namespace Domain
                 throw new ArgumentNullException(nameof(editedCourse));
             }
 
-            var pulledUserCourse = UserCourses.Find(course => course.Item1.Id == editedCourse.Id).Item1;
+            var pulledUserCourse = UserCourses.Find(course => course.Course.Id == editedCourse.Id).Course;
             if (pulledUserCourse == null)
             {
                 return;
             }
 
-            var pulledProgress = UserCourses.Find(course => course.Item1.Id == editedCourse.Id).Item2;
+            var pulledProgress = UserCourses.Find(course => course.Course.Id == editedCourse.Id).Progress;
             var index = UserCourses.IndexOf((pulledUserCourse, pulledProgress));
             UserCourses[index] = (editedCourse, pulledProgress);
         }
@@ -106,8 +97,8 @@ namespace Domain
                 throw new ArgumentNullException(nameof(newCourse));
             }
 
-            if (UserCourses.Find(course => course.Item1.Name == newCourse.Name &&
-                                           course.Item1.Description == newCourse.Description).Item1 != null)
+            if (UserCourses.Find(course => course.Course.Name == newCourse.Name &&
+                                           course.Course.Description == newCourse.Description).Course != null)
             {
                 Console.WriteLine("Даний курс у вас уже є\n" +
                                   "Натисніть Enter");
@@ -124,13 +115,13 @@ namespace Domain
         /// <param name="id">Course id.</param>
         public void RemoveCourse(int id)
         {
-            var pulledCourse = UserCourses.Find(course => course.Item1.Id == id).Item1;
+            var pulledCourse = UserCourses.Find(course => course.Course.Id == id).Course;
             if (pulledCourse == null)
             {
                 return;
             }
 
-            var pulledProgress = UserCourses.Find(course => course.Item1.Id == id).Item2;
+            var pulledProgress = UserCourses.Find(course => course.Course.Id == id).Progress;
             UserCourses.Remove((pulledCourse, pulledProgress));
         }
 

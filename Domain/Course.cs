@@ -51,15 +51,6 @@ namespace Domain
         public List<Skill> CourseSkills { get; private set; }
 
         /// <summary>
-        /// Adding new material to course.
-        /// </summary>
-        /// <param name="material">New material.</param>
-        public void AddMaterial(Material material)
-        {
-            CourseMaterials.Add(material);
-        }
-
-        /// <summary>
         /// Adding new skill to course.
         /// </summary>
         /// <param name="skill">New skill.</param>

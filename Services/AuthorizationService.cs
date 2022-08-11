@@ -51,7 +51,7 @@ namespace Services
         /// <inheritdoc/>
         public void Logout()
         {
-            // TODO
+            _account = null;
         }
 
         /// <inheritdoc/>

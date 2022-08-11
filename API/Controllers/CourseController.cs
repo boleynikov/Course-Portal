@@ -23,7 +23,8 @@ namespace API.Controllers
 
         private const string _editCourseName = "1";
         private const string _editCourseDescription = "2";
-        private const string _editCourseMaterials = "3";
+        private const string _addCourseMaterials = "3";
+        private const string _deleteCourseMaterial = "4";
 
         private readonly IService<User> _userService;
         private readonly IService<Course> _courseService;
@@ -62,17 +63,17 @@ namespace API.Controllers
                 Console.Clear();
                 var currentUser = _userService.GetByIndex(_userId);
                 Console.WriteLine($"Курс: {_course.Name}");
-                var pulledCoursePair = currentUser.UserCourses.Find(c => c.Item1.Id == _course.Id);
-                if (pulledCoursePair.Item1 != null)
+                var pulledCourseTuple = currentUser.UserCourses.Find(c => c.Course.Id == _course.Id);
+                if (pulledCourseTuple.Course != null)
                 {
-                    Console.WriteLine($"\tВаш прогрес: {pulledCoursePair.Item2.State} {pulledCoursePair.Item2.Percentage} %");
+                    Console.WriteLine($"\tВаш прогрес: {pulledCourseTuple.Progress.State} {pulledCourseTuple.Progress.Percentage} %");
                 }
 
                 Console.WriteLine($"Опис: {_course.Description}\n" +
                                    "Матеріали курсу:");
                 foreach (var material in _course.CourseMaterials)
                 {
-                    Console.WriteLine("\t{0,20} | {1,5}", material.Type, material.Title);
+                    Console.WriteLine("\t{0, 2} {1,20} | {2,5}", material.Id, material.Type, material.Title);
                 }
 
                 Console.WriteLine("Навички, які ви отримаєте при проходженні курсу:");
@@ -119,7 +120,8 @@ namespace API.Controllers
                               "через кому пробіл [, ]\n" +
                               $"{_editCourseName} - змінити назву\n" +
                               $"{_editCourseDescription} - змінити опис\n" +
-                              $"{_editCourseMaterials} - додати матеріали із вже завантажених користувачем");
+                              $"{_addCourseMaterials} - додати матеріали із вже завантажених користувачем\n" +
+                              $"{_deleteCourseMaterial} - видалити матеріал із курсу");
 
             var str = InputNotEmptyString(Console.ReadLine());
             string[] editCmd = str.Split(", ");
@@ -135,18 +137,36 @@ namespace API.Controllers
                         Console.Write("Введіть новий опис курсу: ");
                         description = InputNotEmptyString(Console.ReadLine());
                         break;
-                    case _editCourseMaterials:
+                    case _deleteCourseMaterial:
+                        Console.Write("Введіть ідентифікатор матеріалу: ");
+                        var strMaterialId = InputNotEmptyString(Console.ReadLine());
+                        if (ValidateMaterial(strMaterialId, out Material material) && _course.CourseMaterials.Contains(material))
+                        {
+                            _course.CourseMaterials.Remove(material);
+                            Console.WriteLine($"Матеріал {strMaterialId} успішно видалено\n" +
+                                               "Натисніть Enter");
+                            Console.ReadLine();
+                        }
+
+                        break;
+                    case _addCourseMaterials:
                         var userMaterials = _userService.GetByIndex(_userId).UserMaterials;
                         Console.WriteLine("Оберіть номери матеріалів, які ви хочете додати через кому з пробілом [, ]");
                         userMaterials.ForEach((mat) => Console.WriteLine($"{mat.Id} {mat.Title}"));
 
                         var strMaterialsIds = InputNotEmptyString(Console.ReadLine());
                         var listMaterialsIds = strMaterialsIds.Split(", ").ToList();
-                        listMaterialsIds.ForEach((strMatId) =>
+                        listMaterialsIds.ForEach((stringMatId) =>
                         {
-                            if (ValidateMaterial(strMatId, out Material material))
+                            if (ValidateMaterial(stringMatId, out Material material) && !_course.CourseMaterials.Contains(material))
                             {
                                 _course.CourseMaterials.Add(material);
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Матеріал з id {stringMatId} вже є у матеріалах курсу\n" +
+                                                       "Натисніть Enter");
+                                Console.ReadLine();
                             }
                         });
                         break;
@@ -162,16 +182,8 @@ namespace API.Controllers
             {
                 try
                 {
-                    material = _courseService.GetByIndex(_userId).CourseMaterials.FirstOrDefault(c => c.Id == materialId)
+                    material = _userService.GetByIndex(_userId).UserMaterials.FirstOrDefault(c => c.Id == materialId)
                         ?? throw new ArgumentOutOfRangeException(nameof(materialId));
-                    if (_course.CourseMaterials.Contains(material))
-                    {
-                        Console.WriteLine($"Матеріал з id {materialId} вже є у матеріалах курсу\n" +
-                                           "Натисніть Enter");
-                        Console.ReadLine();
-                        return false;
-                    }
-
                     return true;
                 }
                 catch (ArgumentOutOfRangeException)

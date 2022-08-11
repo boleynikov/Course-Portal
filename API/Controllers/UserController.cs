@@ -81,8 +81,8 @@ namespace API.Controllers
                                        "Список наявних курсів:");
                     foreach (var courseKeyValue in currentUser.UserCourses)
                     {
-                        var course = courseKeyValue.Item1;
-                        var progress = courseKeyValue.Item2;
+                        var course = courseKeyValue.Course;
+                        var progress = courseKeyValue.Progress;
                         Console.WriteLine("\t|{0, 2}.| {1,-40} | {2, 5}, {3, 3} %", course.Id, course.Name, progress.State, progress.Percentage);
                     }
                 }
@@ -197,13 +197,28 @@ namespace API.Controllers
 
             int id = _courseService.GetAll().ToList().Count + 1;
             var course = new Course(id, name, description);
+            List<Material> materials = new ();
+            if (_userService.GetByIndex(_userId).UserMaterials.Count > 0)
+            {
+                Console.WriteLine("Чи бажаете ви додати вже створені матеріали?\n" +
+                                  "1 - так\n" +
+                                  "2 - ні");
+                string cmd = InputNotEmptyString(Console.ReadLine());
+                if (cmd == "1")
+                {
+                    //materials = AddExistingMaterials();
+                }
+                else
+                {
+                    materials = CreateMaterials();
+                }
+            }
 
-            var materials = CreateMaterials();
             var skills = CreateSkills();
 
             foreach (var material in materials)
             {
-                course.AddMaterial(material);
+                course.CourseMaterials.Add(material);
             }
 
             foreach (var skill in skills)
@@ -217,6 +232,29 @@ namespace API.Controllers
             Console.Write("Курс успішно додано. Натисніть Enter");
             Console.ReadLine();
         }
+
+        //private List<Material> AddExistingMaterials()
+        //{
+        //    var userMaterials = _userService.GetByIndex(_userId).UserMaterials;
+        //    Console.WriteLine("Оберіть номери матеріалів, які ви хочете додати через кому з пробілом [, ]");
+        //    userMaterials.ForEach((mat) => Console.WriteLine($"{mat.Id} {mat.Title}"));
+
+        //    var strMaterialsIds = InputNotEmptyString(Console.ReadLine());
+        //    var listMaterialsIds = strMaterialsIds.Split(", ").ToList();
+        //    listMaterialsIds.ForEach((stringMatId) =>
+        //    {
+        //        if (ValidateMaterial(stringMatId, out Material material) && !_course.CourseMaterials.Contains(material))
+        //        {
+        //            _course.CourseMaterials.Add(material);
+        //        }
+        //        else
+        //        {
+        //            Console.WriteLine($"Матеріал з id {stringMatId} вже є у матеріалах курсу\n" +
+        //                                   "Натисніть Enter");
+        //            Console.ReadLine();
+        //        }
+        //    });
+        //}
 
         private List<Material> CreateMaterials()
         {
@@ -247,7 +285,7 @@ namespace API.Controllers
                         int id = _materialService.GetAll().ToList().Count + 1;
                         var articleMaterial = new ArticleMaterial(id, title, date, link);
 
-                        _userService.GetByIndex(_userId).AddMaterial(articleMaterial);
+                        _userService.GetByIndex(_userId).UserMaterials.Add(articleMaterial);
                         _materialService.Add(articleMaterial);
                         courseMaterials.Add(articleMaterial);
                         break;
@@ -266,7 +304,7 @@ namespace API.Controllers
                         id = _materialService.GetAll().ToList().Count + 1;
                         var publicationMaterial = new PublicationMaterial(id, title, author, pageCount, format, date);
 
-                        _userService.GetByIndex(_userId).AddMaterial(publicationMaterial);
+                        _userService.GetByIndex(_userId).UserMaterials.Add(publicationMaterial);
                         _materialService.Add(publicationMaterial);
                         courseMaterials.Add(publicationMaterial);
                         break;
@@ -281,7 +319,7 @@ namespace API.Controllers
                         id = _materialService.GetAll().ToList().Count + 1;
                         var videoMaterial = new VideoMaterial(id, title, duration, quality);
 
-                        _userService.GetByIndex(_userId).AddMaterial(videoMaterial);
+                        _userService.GetByIndex(_userId).UserMaterials.Add(videoMaterial);
                         _materialService.Add(videoMaterial);
                         courseMaterials.Add(videoMaterial);
                         break;
@@ -323,7 +361,7 @@ namespace API.Controllers
             {
                 try
                 {
-                    course = _userService.GetByIndex(_userId).UserCourses.FirstOrDefault(c => c.Item1.Id == courseId).Item1
+                    course = _userService.GetByIndex(_userId).UserCourses.FirstOrDefault(c => c.Course.Id == courseId).Course
                         ?? throw new ArgumentOutOfRangeException(nameof(courseId));
                     return true;
                 }

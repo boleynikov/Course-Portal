@@ -21,7 +21,8 @@ namespace API.Controllers
         private const string _registerCommand = "3";
         private const string _addCourseCommand = "4";
         private const string _openCourseCommand = "5";
-        private const string _exitCommand = "6";
+        private const string _logoutCommand = "6";
+        private const string _exitCommand = "7";
 
         private readonly IService<Course> _courseService;
         private readonly IService<User> _userService;
@@ -121,6 +122,7 @@ namespace API.Controllers
                                        $"Щоб переглянути свою сторінку - введіть {_userPage}\n" +
                                        $"Щоб переглянути якийсь курс - введіть {_openCourseCommand}\n" +
                                        $"Щоб додати до свого списку курс - введіть {_addCourseCommand}\n" +
+                                       $"Щоб вийти зі свого облікового запису - введіть {_logoutCommand}\n" +
                                        $"Щоб вийти звідси - введіть {_exitCommand}\n");
                     cmdLine = Console.ReadLine();
                     switch (cmdLine)
@@ -144,6 +146,9 @@ namespace API.Controllers
                                 page = new CourseController(_userService, _courseService, currentUser.Id, course).Launch();
                             }
 
+                            break;
+                        case _logoutCommand:
+                            _authService.Logout();
                             break;
                         case _exitCommand:
                             page = _exitCommand;

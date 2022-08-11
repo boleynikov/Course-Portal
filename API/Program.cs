@@ -7,8 +7,6 @@ namespace API
     using System;
     using System.Text;
     using API.Controllers;
-    using API.Controllers.Abstract;
-    using API.Interface;
     using Data.Repository;
     using Domain;
     using Domain.CourseMaterials;
@@ -22,18 +20,18 @@ namespace API
     {
         private const string _homePage = "home";
         private const string _userPage = "1";
-        private const string _exit = "6";
+        private const string _exit = "7";
 
         private static void Main()
         {
             Console.OutputEncoding = Encoding.Unicode;
             Console.InputEncoding = Encoding.Unicode;
 
-            IUnitOfWork<FileDbContext> unitOfWork = new UnitOfWork<FileDbContext>(new FileDbContext());
+            var context = new FileDbContext();
 
-            var materialService = unitOfWork.GetService<Material>();
-            var courseService = unitOfWork.GetService<Course>();
-            var userService = unitOfWork.GetService<User>();
+            IService<Material> materialService = new MaterialService(new MaterialRepository(context));
+            IService<Course> courseService = new CourseService(new CourseRepository(context));
+            IService<User> userService = new UserService(new UserRepository(context));
 
             IAuthorizationService authorizationService = new AuthorizationService(userService);
 
