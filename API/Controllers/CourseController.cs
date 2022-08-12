@@ -28,8 +28,8 @@ namespace API.Controllers
 
         private readonly IService<User> _userService;
         private readonly IService<Course> _courseService;
-        private readonly Course _course;
-        private readonly int _userId;
+        private readonly IAuthorizationService _authorizedUser;
+        private readonly IOpenedCourseService _openedCourse;
         private readonly string _redirectPage;
 
         /// <summary>
@@ -37,20 +37,20 @@ namespace API.Controllers
         /// </summary>
         /// <param name="userService">User service instance.</param>
         /// <param name="courseService">Course service instance.</param>
-        /// <param name="userId">Id of current user.</param>
+        /// <param name="authorizedUser">Current authorized user service</param>
         /// <param name="course">Course, that displayed.</param>
         /// <param name="redirectPage">String of page for redirect back.</param>
         public CourseController(
             IService<User> userService,
             IService<Course> courseService,
-            int userId,
-            Course course,
+            IAuthorizationService authorizedUser,
+            IOpenedCourseService openedCourse,
             string redirectPage = "home")
         {
             _userService = userService;
             _courseService = courseService;
-            _course = course;
-            _userId = userId;
+            _openedCourse = openedCourse;
+            _authorizedUser = authorizedUser;
             _redirectPage = redirectPage;
         }
 
@@ -61,23 +61,24 @@ namespace API.Controllers
             while (page == _coursePage)
             {
                 Console.Clear();
-                var currentUser = _userService.GetByIndex(_userId);
-                Console.WriteLine($"Курс: {_course.Name}");
-                var pulledCourseTuple = currentUser.UserCourses.Find(c => c.Course.Id == _course.Id);
+                var currentUser = _authorizedUser.GetCurrentAccount();
+                var currentCourse = _openedCourse.Get();
+                Console.WriteLine($"Курс: {currentCourse.Name}");
+                var pulledCourseTuple = currentUser.UserCourses.Find(c => c.Course.Id == currentCourse.Id);
                 if (pulledCourseTuple.Course != null)
                 {
                     Console.WriteLine($"\tВаш прогрес: {pulledCourseTuple.Progress.State} {pulledCourseTuple.Progress.Percentage} %");
                 }
 
-                Console.WriteLine($"Опис: {_course.Description}\n" +
+                Console.WriteLine($"Опис: {currentCourse.Description}\n" +
                                    "Матеріали курсу:");
-                foreach (var material in _course.CourseMaterials)
+                foreach (var material in currentCourse.CourseMaterials)
                 {
                     Console.WriteLine("\t{0, 2} {1,20} | {2,5}", material.Id, material.Type, material.Title);
                 }
 
                 Console.WriteLine("Навички, які ви отримаєте при проходженні курсу:");
-                foreach (var skill in _course.CourseSkills)
+                foreach (var skill in currentCourse.CourseSkills)
                 {
                     Console.WriteLine("\t{0,20} | {1,5}", skill.Name, skill.Points);
                 }
@@ -89,13 +90,13 @@ namespace API.Controllers
                 switch (cmdLine)
                 {
                     case _addCommand:
-                        currentUser.AddCourse(_course);
+                        _authorizedUser.AddCourse(currentCourse);
                         _userService.Save();
                         break;
                     case _editCommand:
                         EditCourse();
-                        currentUser.UpdateCourseInfo(_course);
-                        _courseService.Update(_course);
+                        _authorizedUser.UpdateCourseInfo(currentCourse);
+                        _courseService.Update(currentCourse);
                         _userService.Update(currentUser);
                         break;
                     case _exitCommand:
@@ -114,8 +115,9 @@ namespace API.Controllers
 
         private void EditCourse()
         {
-            var name = _course.Name;
-            var description = _course.Description;
+            var currentCourse = _openedCourse.Get();
+            var name = currentCourse.Name;
+            var description = currentCourse.Description;
             Console.WriteLine("Введіть цифри у відповідності до того що саме ви хочете відредагувати\n" +
                               "через кому пробіл [, ]\n" +
                               $"{_editCourseName} - змінити назву\n" +
@@ -132,17 +134,19 @@ namespace API.Controllers
                     case _editCourseName:
                         Console.Write("Введіть нову назву курсу: ");
                         name = InputNotEmptyString(Console.ReadLine());
+                        currentCourse.Name = name;
                         break;
                     case _editCourseDescription:
                         Console.Write("Введіть новий опис курсу: ");
                         description = InputNotEmptyString(Console.ReadLine());
+                        currentCourse.Description = description;
                         break;
                     case _deleteCourseMaterial:
                         Console.Write("Введіть ідентифікатор матеріалу: ");
                         var strMaterialId = InputNotEmptyString(Console.ReadLine());
-                        if (ValidateMaterial(strMaterialId, out Material material) && _course.CourseMaterials.Contains(material))
+                        if (ValidateMaterial(strMaterialId, out Material material) && currentCourse.CourseMaterials.Contains(material))
                         {
-                            _course.CourseMaterials.Remove(material);
+                            currentCourse.CourseMaterials.Remove(material);
                             Console.WriteLine($"Матеріал {strMaterialId} успішно видалено\n" +
                                                "Натисніть Enter");
                             Console.ReadLine();
@@ -150,7 +154,7 @@ namespace API.Controllers
 
                         break;
                     case _addCourseMaterials:
-                        var userMaterials = _userService.GetByIndex(_userId).UserMaterials;
+                        var userMaterials = _authorizedUser.GetCurrentAccount().UserMaterials;
                         Console.WriteLine("Оберіть номери матеріалів, які ви хочете додати через кому з пробілом [, ]");
                         userMaterials.ForEach((mat) => Console.WriteLine($"{mat.Id} {mat.Title}"));
 
@@ -158,9 +162,9 @@ namespace API.Controllers
                         var listMaterialsIds = strMaterialsIds.Split(", ").ToList();
                         listMaterialsIds.ForEach((stringMatId) =>
                         {
-                            if (ValidateMaterial(stringMatId, out Material material) && !_course.CourseMaterials.Contains(material))
+                            if (ValidateMaterial(stringMatId, out Material material) && !currentCourse.CourseMaterials.Contains(material))
                             {
-                                _course.CourseMaterials.Add(material);
+                                currentCourse.CourseMaterials.Add(material);
                             }
                             else
                             {
@@ -172,8 +176,6 @@ namespace API.Controllers
                         break;
                 }
             }
-
-            _course.UpdateInfo(name, description, _course.CourseMaterials, _course.CourseSkills);
         }
 
         private bool ValidateMaterial(string strMaterialId, out Material material)
@@ -182,7 +184,7 @@ namespace API.Controllers
             {
                 try
                 {
-                    material = _userService.GetByIndex(_userId).UserMaterials.FirstOrDefault(c => c.Id == materialId)
+                    material = _authorizedUser.GetCurrentAccount().UserMaterials.FirstOrDefault(c => c.Id == materialId)
                         ?? throw new ArgumentOutOfRangeException(nameof(materialId));
                     return true;
                 }

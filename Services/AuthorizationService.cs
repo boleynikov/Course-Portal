@@ -9,6 +9,7 @@ namespace Services
     using System.Linq;
     using System.Text.RegularExpressions;
     using Domain;
+    using Domain.Enum;
     using Services.Interface;
 
     /// <summary>
@@ -26,6 +27,46 @@ namespace Services
         public AuthorizationService(IService<User> service)
         {
             _userService = service;
+        }
+
+        /// <inheritdoc/>
+        public void AddCourse(Course newCourse)
+        {
+            if (newCourse == null)
+            {
+                throw new ArgumentNullException(nameof(newCourse));
+            }
+
+            if (_account.UserCourses.Find(course => course.Course.Name == newCourse.Name &&
+                                           course.Course.Description == newCourse.Description).Course != null)
+            {
+                Console.WriteLine("Даний курс у вас уже є\n" +
+                                  "Натисніть Enter");
+                Console.ReadLine();
+                return;
+            }
+
+            _account.UserCourses.Add((newCourse, new CourseProgress() { State = State.NotCompleted, Percentage = 0f }));
+        }
+
+        /// <inheritdoc/>
+        public void AddSkill(Skill skill)
+        {
+            var skills = _account.UserSkills;
+            if (skill == null)
+            {
+                throw new ArgumentNullException(nameof(skill));
+            }
+
+            if (_account.UserSkills.Find(c => c.Name == skill.Name) != null)
+            {
+                var index = skills.IndexOf(skills.Find(c => c.Name == skill.Name));
+                skills[index].Points += skill.Points;
+            }
+            else
+            {
+                skills.Add(new Skill { Name = skill.Name, Points = skill.Points });
+            }
         }
 
         /// <inheritdoc/>
@@ -70,6 +111,40 @@ namespace Services
                                   "Натисніть Enter");
                 Console.ReadLine();
             }
+        }
+
+        /// <inheritdoc/>
+        public void RemoveCourse(int id)
+        {
+            var courses = _account.UserCourses;
+            var pulledCourse = courses.Find(course => course.Course.Id == id).Course;
+            if (pulledCourse == null)
+            {
+                return;
+            }
+
+            var pulledProgress = courses.Find(course => course.Course.Id == id).Progress;
+            courses.Remove((pulledCourse, pulledProgress));
+        }
+
+        /// <inheritdoc/>
+        public void UpdateCourseInfo(Course editedCourse)
+        {
+            var courses = _account.UserCourses;
+            if (editedCourse == null)
+            {
+                throw new ArgumentNullException(nameof(editedCourse));
+            }
+
+            var pulledUserCourse = courses.Find(course => course.Course.Id == editedCourse.Id).Course;
+            if (pulledUserCourse == null)
+            {
+                return;
+            }
+
+            var pulledProgress = courses.Find(course => course.Course.Id == editedCourse.Id).Progress;
+            var index = courses.IndexOf((pulledUserCourse, pulledProgress));
+            courses[index] = (editedCourse, pulledProgress);
         }
 
         private bool IsValidEmail(string email)

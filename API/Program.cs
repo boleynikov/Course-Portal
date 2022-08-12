@@ -45,7 +45,7 @@ namespace API
                         break;
                     case _userPage:
                         int userId = authorizationService.GetCurrentAccount().Id;
-                        page = new UserController(courseService, materialService, userService, userId).Launch();
+                        page = new UserController(courseService, materialService, userService, authorizationService).Launch();
                         break;
                     default:
                         Console.WriteLine("Невідома сторінка\nНатисніть Enter");

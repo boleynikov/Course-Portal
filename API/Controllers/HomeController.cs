@@ -8,6 +8,7 @@ namespace API.Controllers
     using System.Linq;
     using API.Controllers.Abstract;
     using Domain;
+    using Services;
     using Services.Interface;
 
     /// <summary>
@@ -26,7 +27,7 @@ namespace API.Controllers
 
         private readonly IService<Course> _courseService;
         private readonly IService<User> _userService;
-        private readonly IAuthorizationService _authService;
+        private readonly IAuthorizationService _authorizedUser;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HomeController"/> class.
@@ -41,7 +42,7 @@ namespace API.Controllers
         {
             _courseService = courseService;
             _userService = userService;
-            _authService = authService;
+            _authorizedUser = authService;
         }
 
         /// <inheritdoc/>
@@ -73,7 +74,7 @@ namespace API.Controllers
                 }
 
                 Console.WriteLine();
-                var currentUser = _authService.GetCurrentAccount();
+                var currentUser = _authorizedUser.GetCurrentAccount();
                 string cmdLine;
                 if (currentUser == null)
                 {
@@ -88,10 +89,10 @@ namespace API.Controllers
                             string email = InputNotEmptyString(Console.ReadLine());
                             Console.Write("Введіть пароль: ");
                             string password = InputNotEmptyString(Console.ReadLine());
-                            var loginResult = _authService.Login(email, password);
+                            var loginResult = _authorizedUser.Login(email, password);
                             if (loginResult)
                             {
-                                Console.WriteLine($"З поверненням {_authService.GetCurrentAccount().Name}\n" +
+                                Console.WriteLine($"З поверненням {_authorizedUser.GetCurrentAccount().Name}\n" +
                                                    "Натисніть Enter");
                                 Console.ReadLine();
                             }
@@ -109,7 +110,7 @@ namespace API.Controllers
                             email = InputNotEmptyString(Console.ReadLine());
                             Console.Write("Введіть пароль: ");
                             password = InputNotEmptyString(Console.ReadLine());
-                            _authService.Register(name, email, password);
+                            _authorizedUser.Register(name, email, password);
                             break;
                         case _exitCommand:
                             page = _exitCommand;
@@ -134,7 +135,7 @@ namespace API.Controllers
                             Console.Write("Введіть номер курсу: ");
                             if (ValidateCourse(Console.ReadLine(), out Course course))
                             {
-                                currentUser.AddCourse(course);
+                                _authorizedUser.AddCourse(course);
                                 _userService.Save();
                             }
 
@@ -143,12 +144,12 @@ namespace API.Controllers
                             Console.Write("Введіть номер курсу: ");
                             if (ValidateCourse(Console.ReadLine(), out course))
                             {
-                                page = new CourseController(_userService, _courseService, currentUser.Id, course).Launch();
+                                page = new CourseController(_userService, _courseService, _authorizedUser, new OpenedCourseService(course)).Launch();
                             }
 
                             break;
                         case _logoutCommand:
-                            _authService.Logout();
+                            _authorizedUser.Logout();
                             break;
                         case _exitCommand:
                             page = _exitCommand;

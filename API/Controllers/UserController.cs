@@ -11,6 +11,7 @@ namespace API.Controllers
     using Domain;
     using Domain.CourseMaterials;
     using Domain.Enum;
+    using Services;
     using Services.Interface;
 
     /// <summary>
@@ -33,7 +34,7 @@ namespace API.Controllers
         private readonly IService<Course> _courseService;
         private readonly IService<Material> _materialService;
         private readonly IService<User> _userService;
-        private readonly int _userId;
+        private readonly IAuthorizationService _authorizedUser;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserController"/> class.
@@ -41,17 +42,17 @@ namespace API.Controllers
         /// <param name="courseService">Course service instance.</param>
         /// <param name="materialService">Material service instance.</param>
         /// <param name="userService">User service instance.</param>
-        /// <param name="userId">Current user id.</param>
+        /// <param name="authorizedUser">Current authorized user service</param>
         public UserController(
             IService<Course> courseService,
             IService<Material> materialService,
             IService<User> userService,
-            int userId)
+            IAuthorizationService authorizedUser)
         {
             _courseService = courseService;
             _materialService = materialService;
             _userService = userService;
-            _userId = userId;
+            _authorizedUser = authorizedUser;
         }
 
         /// <inheritdoc/>
@@ -62,7 +63,7 @@ namespace API.Controllers
 
         private string View()
         {
-            var currentUser = _userService.GetByIndex(_userId);
+            var currentUser = _authorizedUser.GetCurrentAccount();
             string page = _userPage;
 
             while (page == _userPage)
@@ -103,7 +104,7 @@ namespace API.Controllers
                         Console.Write("Введіть номер курсу: ");
                         if (ValidateCourse(Console.ReadLine(), out Course course))
                         {
-                            page = new CourseController(_userService, _courseService, currentUser.Id, course, _userPage).Launch();
+                            page = new CourseController(_userService, _courseService, _authorizedUser, new OpenedCourseService(course), _userPage).Launch();
                         }
 
                         break;
@@ -111,7 +112,7 @@ namespace API.Controllers
                         Console.Write("Введіть номер курсу: ");
                         if (ValidateCourse(Console.ReadLine(), out course))
                         {
-                            currentUser.RemoveCourse(course.Id);
+                            _authorizedUser.RemoveCourse(course.Id);
                             _userService.Save();
                         }
 
@@ -198,7 +199,7 @@ namespace API.Controllers
             int id = _courseService.GetAll().ToList().Count + 1;
             var course = new Course(id, name, description);
             List<Material> materials = new ();
-            if (_userService.GetByIndex(_userId).UserMaterials.Count > 0)
+            if (_authorizedUser.GetCurrentAccount().UserMaterials.Count > 0)
             {
                 Console.WriteLine("Чи бажаете ви додати вже створені матеріали?\n" +
                                   "1 - так\n" +
@@ -223,10 +224,10 @@ namespace API.Controllers
 
             foreach (var skill in skills)
             {
-                course.AddSkill(skill, skill.Points);
+                course.CourseSkills.Add( new Skill { Name = skill.Name, Points = skill.Points });
             }
 
-            _userService.GetByIndex(_userId).AddCourse(course);
+            _authorizedUser.AddCourse(course);
             _userService.Save();
             _courseService.Add(course);
             Console.Write("Курс успішно додано. Натисніть Enter");
@@ -235,7 +236,7 @@ namespace API.Controllers
 
         private List<Material> AddExistingMaterials(Course course)
         {
-            var userMaterials = _userService.GetByIndex(_userId).UserMaterials;
+            var userMaterials = _authorizedUser.GetCurrentAccount().UserMaterials;
             var newListMaterials = new List<Material>();
             Console.WriteLine("Оберіть номери матеріалів, які ви хочете додати через кому з пробілом [, ]");
             userMaterials.ForEach((mat) => Console.WriteLine($"{mat.Id} {mat.Title}"));
@@ -282,7 +283,7 @@ namespace API.Controllers
                         int id = _materialService.GetAll().ToList().Count + 1;
                         var articleMaterial = new ArticleMaterial(id, title, date, link);
 
-                        _userService.GetByIndex(_userId).UserMaterials.Add(articleMaterial);
+                        _authorizedUser.GetCurrentAccount().UserMaterials.Add(articleMaterial);
                         _materialService.Add(articleMaterial);
                         courseMaterials.Add(articleMaterial);
                         break;
@@ -301,7 +302,7 @@ namespace API.Controllers
                         id = _materialService.GetAll().ToList().Count + 1;
                         var publicationMaterial = new PublicationMaterial(id, title, author, pageCount, format, date);
 
-                        _userService.GetByIndex(_userId).UserMaterials.Add(publicationMaterial);
+                        _authorizedUser.GetCurrentAccount().UserMaterials.Add(publicationMaterial);
                         _materialService.Add(publicationMaterial);
                         courseMaterials.Add(publicationMaterial);
                         break;
@@ -316,7 +317,7 @@ namespace API.Controllers
                         id = _materialService.GetAll().ToList().Count + 1;
                         var videoMaterial = new VideoMaterial(id, title, duration, quality);
 
-                        _userService.GetByIndex(_userId).UserMaterials.Add(videoMaterial);
+                        _authorizedUser.GetCurrentAccount().UserMaterials.Add(videoMaterial);
                         _materialService.Add(videoMaterial);
                         courseMaterials.Add(videoMaterial);
                         break;
@@ -400,7 +401,7 @@ namespace API.Controllers
             {
                 try
                 {
-                    material = _userService.GetByIndex(_userId).UserMaterials.FirstOrDefault(c => c.Id == materialId)
+                    material = _authorizedUser.GetCurrentAccount().UserMaterials.FirstOrDefault(c => c.Id == materialId)
                         ?? throw new ArgumentOutOfRangeException(nameof(materialId));
                     return true;
                 }
@@ -429,7 +430,7 @@ namespace API.Controllers
             {
                 try
                 {
-                    course = _userService.GetByIndex(_userId).UserCourses.FirstOrDefault(c => c.Course.Id == courseId).Course
+                    course = _authorizedUser.GetCurrentAccount().UserCourses.FirstOrDefault(c => c.Course.Id == courseId).Course
                         ?? throw new ArgumentOutOfRangeException(nameof(courseId));
                     return true;
                 }
