@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace API.Controllers.Helper
+namespace Services.Helper
 {
     /// <summary>
     /// Helper for valid user input

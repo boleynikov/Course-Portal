@@ -8,12 +8,12 @@ namespace API.Controllers
     using System.Collections.Generic;
     using System.Linq;
     using API.Controllers.Abstract;
-    using API.Controllers.Helper;
     using API.View;
     using Domain;
     using Domain.CourseMaterials;
     using Domain.Enum;
     using Services;
+    using Services.Helper;
     using Services.Interface;
 
     /// <summary>
@@ -110,7 +110,7 @@ namespace API.Controllers
                 string cmd = UserInput.NotEmptyString(() => Console.ReadLine());
                 if (cmd == "1")
                 {
-                    materials = AddExistingMaterials(course);
+                    materials = AddExistingMaterials();
                 }
                 else
                 {
@@ -205,11 +205,11 @@ namespace API.Controllers
             Console.Clear();
             while (cmdLine != Command.StopAddingCommand)
             {
-                Console.WriteLine($"Введіть номер типу матеріалу, який хочете додати до курсу\n" +
+                Console.WriteLine($"Введіть тип матеріалу, який хочете додати до курсу\n" +
                                    "Доступні матеріали:\n" +
-                                   "1 - Article,\n" +
-                                   "2 - Publication,\n" +
-                                   "3 - Video\n" +
+                                   $"{Command.ArticleInputCase} - Article,\n" +
+                                   $"{Command.PublicationInputCase} - Publication,\n" +
+                                   $"{Command.VideoInputCase} - Video\n" +
                                   $"Або введіть {Command.StopAddingCommand}, щоб зупинитися");
                 Console.Write("Обраний матеріал: ");
                 cmdLine = UserInput.NotEmptyString(() => Console.ReadLine());
@@ -281,7 +281,7 @@ namespace API.Controllers
             return courseMaterials;
         }
 
-        private List<Material> AddExistingMaterials(Course course)
+        private List<Material> AddExistingMaterials()
         {
             var userMaterials = _authorizedUser.Get().UserMaterials.ToList();
             var newListMaterials = new List<Material>();
@@ -309,7 +309,7 @@ namespace API.Controllers
                 try
                 {
                     material = _authorizedUser.Get().UserMaterials.FirstOrDefault(c => c.Id == materialId)
-                        ?? throw new ArgumentOutOfRangeException(nameof(materialId));
+                        ?? throw new ArgumentOutOfRangeException(nameof(material));
                     return true;
                 }
                 catch (ArgumentOutOfRangeException)
@@ -338,7 +338,7 @@ namespace API.Controllers
                 try
                 {
                     course = _authorizedUser.Get().UserCourses.FirstOrDefault(c => c.Course.Id == courseId).Course
-                        ?? throw new ArgumentOutOfRangeException(nameof(courseId));
+                        ?? throw new ArgumentOutOfRangeException(nameof(course));
                     return true;
                 }
                 catch (ArgumentOutOfRangeException)

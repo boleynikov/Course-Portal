@@ -12,7 +12,14 @@ namespace Services.Interface
         /// </summary>
         /// <param name="editedCourse"></param>
         void UpdateCourseInfo(Course editedCourse);
-
+        /// <summary>
+        /// Valid user input to course id
+        /// </summary>
+        /// <param name="courseSrevice"></param>
+        /// <param name="strCourseId"></param>
+        /// <param name="course"></param>
+        /// <returns></returns>
+        bool ValidateCourse(IService<Course> courseSrevice, string strCourseId, out Course course);
         /// <summary>
         /// Add new course to user list
         /// </summary>

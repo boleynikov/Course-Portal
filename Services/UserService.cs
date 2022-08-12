@@ -44,9 +44,9 @@ namespace Services
         }
 
         /// <inheritdoc/>
-        public User GetByIndex(int index)
+        public User GetById(int index)
         {
-            return _repository.GetByIndex(index);
+            return _repository.GetByID(index);
         }
 
         /// <inheritdoc/>

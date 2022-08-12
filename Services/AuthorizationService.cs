@@ -73,20 +73,20 @@ namespace Services
         public User Get() => _account;
 
         /// <inheritdoc/>
-        public bool Login(string email, string password)
+        public void Login(string email, string password)
         {
-            var allUsers = _userService.GetAll();
-            var pulledUser = allUsers.SingleOrDefault(user => user.Email == email);
-            if (pulledUser != null)
+            var loginResult = TryLogin(email, password);
+            if (loginResult)
             {
-                if (password == pulledUser.Password)
-                {
-                    _account = pulledUser;
-                    return true;
-                }
+                Console.WriteLine($"З поверненням {_account.Name}\n" +
+                                   "Натисніть Enter");
+                Console.ReadLine();
             }
-
-            return false;
+            else
+            {
+                Console.WriteLine("Невірний email чи пароль");
+                Console.ReadLine();
+            }
         }
 
         /// <inheritdoc/>
@@ -98,19 +98,7 @@ namespace Services
         /// <inheritdoc/>
         public void Register(string name, string email, string password)
         {
-            if (IsValidEmail(email))
-            {
-                var id = _userService.GetAll().ToList().Count + 1;
-                var newUser = new User(id, name, email, password);
-                _userService.Add(newUser);
-                _account = newUser;
-            }
-            else
-            {
-                Console.WriteLine("E-mail у неправильному форматі\n" +
-                                  "Натисніть Enter");
-                Console.ReadLine();
-            }
+            TryRegister(name, email, password);
         }
 
         /// <inheritdoc/>
@@ -147,6 +135,40 @@ namespace Services
             courses[index] = (editedCourse, pulledProgress);
         }
 
+        /// <inheritdoc/>
+        public bool ValidateCourse(IService<Course> courseService, string strCourseId, out Course course)
+        {
+            if (courseService == null)
+            {
+                throw new ArgumentNullException(nameof(courseService));
+            }
+
+            if (int.TryParse(strCourseId, out int courseId))
+            {
+                try
+                {
+                    course = courseService.GetById(courseId);
+                    return true;
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    course = null;
+                    Console.WriteLine($"Немає курсу з таким ідентифікатором {courseId}\n" +
+                                      "Натисніть Enter");
+                    Console.ReadLine();
+                    return false;
+                }
+            }
+            else
+            {
+                course = null;
+                Console.WriteLine("Неправильний формат вводу\n" +
+                                  "Натисніть Enter");
+                Console.ReadLine();
+                return false;
+            }
+        }
+
         private bool IsValidEmail(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
@@ -157,7 +179,7 @@ namespace Services
             try
             {
                 email = Regex.Replace(email, @"(@)(.+)$", DomainMapper, RegexOptions.None, TimeSpan.FromMilliseconds(200));
-                string DomainMapper(Match match)
+                static string DomainMapper(Match match)
                 {
                     var idn = new IdnMapping();
                     string domainName = idn.GetAscii(match.Groups[2].Value);
@@ -165,11 +187,11 @@ namespace Services
                     return match.Groups[1].Value + domainName;
                 }
             }
-            catch (RegexMatchTimeoutException e)
+            catch (RegexMatchTimeoutException)
             {
                 return false;
             }
-            catch (ArgumentException e)
+            catch (ArgumentException)
             {
                 return false;
             }
@@ -181,6 +203,39 @@ namespace Services
             catch (RegexMatchTimeoutException)
             {
                 return false;
+            }
+        }
+
+        private bool TryLogin(string email, string password)
+        {
+            var allUsers = _userService.GetAll();
+            var pulledUser = allUsers.SingleOrDefault(user => user.Email == email);
+            if (pulledUser != null)
+            {
+                if (password == pulledUser.Password)
+                {
+                    _account = pulledUser;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void TryRegister(string name, string email, string password)
+        {
+            if (IsValidEmail(email))
+            {
+                var id = _userService.GetAll().ToList().Count + 1;
+                var newUser = new User(id, name, email, password);
+                _userService.Add(newUser);
+                _account = newUser;
+            }
+            else
+            {
+                Console.WriteLine("E-mail у неправильному форматі\n" +
+                                  "Натисніть Enter");
+                Console.ReadLine();
             }
         }
     }

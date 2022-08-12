@@ -23,7 +23,7 @@ namespace Services.Interface
         /// </summary>
         /// <param name="index">Entity id.</param>
         /// <returns>Entity.</returns>
-        T GetByIndex(int index);
+        T GetById(int index);
 
         /// <summary>
         /// Update existing entity in repo.
