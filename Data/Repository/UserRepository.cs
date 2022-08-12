@@ -25,7 +25,7 @@ namespace Data.Repository
         public UserRepository(IDbContext dbContext)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            _users = dbContext.Get<User>();
+            _users = dbContext.Get<User>().ToList();
         }
 
         /// <inheritdoc/>

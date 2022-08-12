@@ -7,6 +7,7 @@ namespace API.Controllers
     using System;
     using System.Linq;
     using API.Controllers.Abstract;
+    using API.Controllers.Helper;
     using Domain;
     using Services;
     using Services.Interface;
@@ -86,9 +87,9 @@ namespace API.Controllers
                     {
                         case _loginCommand:
                             Console.Write("Введіть електронну адресу: ");
-                            string email = InputNotEmptyString(Console.ReadLine());
+                            string email = UserInput.NotEmptyString(() => Console.ReadLine());
                             Console.Write("Введіть пароль: ");
-                            string password = InputNotEmptyString(Console.ReadLine());
+                            string password = UserInput.NotEmptyString(() => Console.ReadLine());
                             var loginResult = _authorizedUser.Login(email, password);
                             if (loginResult)
                             {
@@ -105,11 +106,11 @@ namespace API.Controllers
                             break;
                         case _registerCommand:
                             Console.Write("Введіть своє ім'я: ");
-                            string name = InputNotEmptyString(Console.ReadLine());
+                            string name = UserInput.NotEmptyString(() => Console.ReadLine());
                             Console.Write("Введіть електронну адресу: ");
-                            email = InputNotEmptyString(Console.ReadLine());
+                            email = UserInput.NotEmptyString(() => Console.ReadLine());
                             Console.Write("Введіть пароль: ");
-                            password = InputNotEmptyString(Console.ReadLine());
+                            password = UserInput.NotEmptyString(() => Console.ReadLine());
                             _authorizedUser.Register(name, email, password);
                             break;
                         case _exitCommand:
@@ -161,21 +162,6 @@ namespace API.Controllers
             }
 
             return page;
-        }
-
-        private string InputNotEmptyString(string inputString)
-        {
-            while (string.IsNullOrWhiteSpace(inputString))
-            {
-                if (string.IsNullOrWhiteSpace(inputString))
-                {
-                    Console.Write("Ви ввели порожню строку. Спробуйте ще раз: ");
-                }
-
-                inputString = Console.ReadLine();
-            }
-
-            return inputString;
         }
 
         private bool ValidateCourse(string strCourseId, out Course course)

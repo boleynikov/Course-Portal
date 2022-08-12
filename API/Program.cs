@@ -44,7 +44,6 @@ namespace API
                         page = new HomeController(courseService, userService, authorizationService).Launch();
                         break;
                     case _userPage:
-                        int userId = authorizationService.GetCurrentAccount().Id;
                         page = new UserController(courseService, materialService, userService, authorizationService).Launch();
                         break;
                     default:

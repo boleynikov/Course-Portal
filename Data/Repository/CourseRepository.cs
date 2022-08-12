@@ -25,7 +25,7 @@ namespace Data.Repository
         public CourseRepository(IDbContext dbContext)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            _courses = dbContext.Get<Course>();
+            _courses = dbContext.Get<Course>().ToList();
         }
 
         /// <inheritdoc/>

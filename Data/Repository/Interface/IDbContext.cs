@@ -17,7 +17,7 @@ namespace Data.Repository.Interface
         /// </summary>
         /// <typeparam name="T">Type of objects in list.</typeparam>
         /// <returns>List of T objects.</returns>
-        List<T> Get<T>()
+        IEnumerable<T> Get<T>()
             where T : BaseEntity;
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace Data.Repository.Interface
         /// <typeparam name="T">Type of objects.</typeparam>
         /// <param name="listEntities">Type of objects in list.</param>
         /// <returns>Result.</returns>
-        bool Update<T>(List<T> listEntities)
+        bool Update<T>(IEnumerable<T> listEntities)
             where T : BaseEntity;
     }
 }

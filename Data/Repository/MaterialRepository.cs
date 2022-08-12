@@ -25,7 +25,7 @@ namespace Data.Repository
         public MaterialRepository(IDbContext dbContext)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            _materials = dbContext.Get<Material>();
+            _materials = dbContext.Get<Material>().ToList();
         }
 
         /// <inheritdoc/>

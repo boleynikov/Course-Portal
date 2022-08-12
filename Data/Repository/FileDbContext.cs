@@ -18,7 +18,7 @@ namespace Data.Repository
     public class FileDbContext : IDbContext
     {
         /// <inheritdoc/>
-        public List<T> Get<T>()
+        public IEnumerable<T> Get<T>()
             where T : BaseEntity
         {
             var name = typeof(T).Name;
@@ -42,7 +42,7 @@ namespace Data.Repository
         }
 
         /// <inheritdoc/>
-        public bool Update<T>(List<T> listEntities)
+        public bool Update<T>(IEnumerable<T> listEntities)
             where T : BaseEntity
         {
             var name = typeof(T).Name;

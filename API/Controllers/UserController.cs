@@ -8,6 +8,7 @@ namespace API.Controllers
     using System.Collections.Generic;
     using System.Linq;
     using API.Controllers.Abstract;
+    using API.Controllers.Helper;
     using Domain;
     using Domain.CourseMaterials;
     using Domain.Enum;
@@ -191,10 +192,10 @@ namespace API.Controllers
             Console.Clear();
 
             Console.Write("Введіть назву курсу: ");
-            string name = InputNotEmptyString(() => Console.ReadLine());
+            string name = UserInput.NotEmptyString(() => Console.ReadLine());
 
             Console.Write("Введіть опис курсу: ");
-            string description = InputNotEmptyString(() => Console.ReadLine());
+            string description = UserInput.NotEmptyString(() => Console.ReadLine());
 
             int id = _courseService.GetAll().ToList().Count + 1;
             var course = new Course(id, name, description);
@@ -204,7 +205,7 @@ namespace API.Controllers
                 Console.WriteLine("Чи бажаете ви додати вже створені матеріали?\n" +
                                   "1 - так\n" +
                                   "2 - ні");
-                string cmd = InputNotEmptyString(() => Console.ReadLine());
+                string cmd = UserInput.NotEmptyString(() => Console.ReadLine());
                 if (cmd == "1")
                 {
                     materials = AddExistingMaterials(course);
@@ -241,7 +242,7 @@ namespace API.Controllers
             Console.WriteLine("Оберіть номери матеріалів, які ви хочете додати через кому з пробілом [, ]");
             userMaterials.ForEach((mat) => Console.WriteLine($"{mat.Id} {mat.Title}"));
 
-            var strMaterialsIds = InputNotEmptyString(() => Console.ReadLine());
+            var strMaterialsIds = UserInput.NotEmptyString(() => Console.ReadLine());
             var listMaterialsIds = strMaterialsIds.Split(", ").ToList();
             listMaterialsIds.ForEach((stringMatId) =>
             {
@@ -269,16 +270,16 @@ namespace API.Controllers
                                    "3 - Video\n" +
                                   $"Або введіть {_stopAddingCommand}, щоб зупинитися");
                 Console.Write("Обраний матеріал: ");
-                cmdLine = InputNotEmptyString(() => Console.ReadLine());
+                cmdLine = UserInput.NotEmptyString(() => Console.ReadLine());
                 switch (cmdLine)
                 {
                     case _articleInputCase:
                         Console.Write("Введіть назву статті: ");
-                        string title = InputNotEmptyString(() => Console.ReadLine());
+                        string title = UserInput.NotEmptyString(() => Console.ReadLine());
                         Console.Write("Введіть дату публікації статті: ");
-                        DateTime date = InputValidDate(() => Console.ReadLine());
+                        DateTime date = UserInput.ValidDateTime(() => Console.ReadLine());
                         Console.Write("Введіть посиланя на статтю: ");
-                        string link = InputNotEmptyString(() => Console.ReadLine());
+                        string link = UserInput.NotEmptyString(() => Console.ReadLine());
 
                         int id = _materialService.GetAll().ToList().Count + 1;
                         var articleMaterial = new ArticleMaterial(id, title, date, link);
@@ -289,15 +290,15 @@ namespace API.Controllers
                         break;
                     case _publicationInputCase:
                         Console.Write("Введіть назву публікації: ");
-                        title = InputNotEmptyString(() => Console.ReadLine());
+                        title = UserInput.NotEmptyString(() => Console.ReadLine());
                         Console.Write("Введіть автора публікації: ");
-                        string author = InputNotEmptyString(() => Console.ReadLine());
+                        string author = UserInput.NotEmptyString(() => Console.ReadLine());
                         Console.Write("Введіть кількість сторінок публікації: ");
-                        int pageCount = InputValidInt(() => Console.ReadLine());
+                        int pageCount = UserInput.ValidInt(() => Console.ReadLine());
                         Console.Write("Введіть формат файлу публікації: ");
-                        string format = InputNotEmptyString(() => Console.ReadLine());
+                        string format = UserInput.NotEmptyString(() => Console.ReadLine());
                         Console.Write("Введіть дату публікації: ");
-                        date = InputValidDate(() => Console.ReadLine());
+                        date = UserInput.ValidDateTime(() => Console.ReadLine());
 
                         id = _materialService.GetAll().ToList().Count + 1;
                         var publicationMaterial = new PublicationMaterial(id, title, author, pageCount, format, date);
@@ -308,11 +309,11 @@ namespace API.Controllers
                         break;
                     case _videoInputCase:
                         Console.Write("Введіть назву відео: ");
-                        title = InputNotEmptyString(() => Console.ReadLine());
+                        title = UserInput.NotEmptyString(() => Console.ReadLine());
                         Console.Write("Введіть довжину відео: ");
-                        float duration = InputValidFloat(() => Console.ReadLine());
+                        float duration = UserInput.ValidFloat(() => Console.ReadLine());
                         Console.Write("Введіть якість відео: ");
-                        int quality = InputValidInt(() => Console.ReadLine());
+                        int quality = UserInput.ValidInt(() => Console.ReadLine());
 
                         id = _materialService.GetAll().ToList().Count + 1;
                         var videoMaterial = new VideoMaterial(id, title, duration, quality);
@@ -336,63 +337,6 @@ namespace API.Controllers
 
             _userService.Save();
             return courseMaterials;
-        }
-
-        private float InputValidFloat(Func<string> input)
-        {
-            float number;
-            string str = input?.Invoke();
-            while (!float.TryParse(str, out number))
-            {
-                Console.Write("Ви ввели не валідне значення. Спробуйте ще раз: ");
-                str = input.Invoke();
-            }
-
-            return number;
-        }
-
-        private int InputValidInt(Func<string> input)
-        {
-            int number;
-            string str = input?.Invoke();
-            while (!int.TryParse(str, out number))
-            {
-                Console.Write("Ви ввели не валідне значення для числа. Спробуйте ще раз: ");
-                str = input?.Invoke();
-            }
-
-            return number;
-        }
-
-        private DateTime InputValidDate(Func<string> input)
-        {
-            DateTime date = DateTime.Today;
-            string str = input?.Invoke();
-            while (!DateTime.TryParse(str, out DateTime newDate) ||
-                   (DateTime.TryParse(str, out newDate) && newDate.Year < 1800 || newDate > DateTime.Now))
-            {
-                Console.Write("Ви ввели не валідне значення для дати. Спробуйте ще раз: ");
-                str = input?.Invoke();
-                date = newDate;
-            }
-
-            return date;
-        }
-
-        private string InputNotEmptyString(Func<string> input)
-        {
-            string str = input?.Invoke();
-            while (string.IsNullOrWhiteSpace(str))
-            {
-                if (string.IsNullOrWhiteSpace(str))
-                {
-                    Console.Write("Ви ввели порожню строку. Спробуйте ще раз: ");
-                }
-
-                str = input?.Invoke();
-            }
-
-            return str;
         }
 
         private bool ValidateMaterial(string strMaterialId, out Material material)
