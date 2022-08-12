@@ -52,16 +52,16 @@ namespace Domain
         /// <summary>
         /// Gets user skills.
         /// </summary>
-        public IList<Skill> UserSkills { get; private set; }
+        public List<Skill> UserSkills { get; private set; }
 
         /// <summary>
         /// Gets user materials.
         /// </summary>
-        public IList<Material> UserMaterials { get; private set; }
+        public List<Material> UserMaterials { get; private set; }
 
         /// <summary>
         /// Gets user courses.
         /// </summary>
-        public IList<(Course Course, CourseProgress Progress)> UserCourses { get; private set; }
+        public List<(Course Course, CourseProgress Progress)> UserCourses { get; private set; }
     }
 }

@@ -46,7 +46,7 @@ namespace API.Controllers
 
             while (page == Command.HomePage)
             {
-                var currentUser = _authorizedUser.GetCurrentAccount();
+                var currentUser = _authorizedUser.Get();
                 string cmdLine;
                 if (currentUser == null)
                 {
@@ -55,32 +55,10 @@ namespace API.Controllers
                     switch (cmdLine)
                     {
                         case Command.LoginCommand:
-                            Console.Write("Введіть електронну адресу: ");
-                            string email = UserInput.NotEmptyString(() => Console.ReadLine());
-                            Console.Write("Введіть пароль: ");
-                            string password = UserInput.NotEmptyString(() => Console.ReadLine());
-                            var loginResult = _authorizedUser.Login(email, password);
-                            if (loginResult)
-                            {
-                                Console.WriteLine($"З поверненням {_authorizedUser.GetCurrentAccount().Name}\n" +
-                                                   "Натисніть Enter");
-                                Console.ReadLine();
-                            }
-                            else
-                            {
-                                Console.WriteLine("Невірний email чи пароль");
-                                Console.ReadLine();
-                            }
-
+                            Login();
                             break;
                         case Command.RegisterCommand:
-                            Console.Write("Введіть своє ім'я: ");
-                            string name = UserInput.NotEmptyString(() => Console.ReadLine());
-                            Console.Write("Введіть електронну адресу: ");
-                            email = UserInput.NotEmptyString(() => Console.ReadLine());
-                            Console.Write("Введіть пароль: ");
-                            password = UserInput.NotEmptyString(() => Console.ReadLine());
-                            _authorizedUser.Register(name, email, password);
+                            Register();
                             break;
                         case Command.ExitCommand:
                             page = Command.ExitCommand;
@@ -97,21 +75,10 @@ namespace API.Controllers
                             page = Command.UserPage;
                             break;
                         case Command.AddCourseCommand:
-                            Console.Write("Введіть номер курсу: ");
-                            if (ValidateCourse(Console.ReadLine(), out Course course))
-                            {
-                                _authorizedUser.AddCourse(course);
-                                _userService.Save();
-                            }
-
+                            AddCourse();
                             break;
                         case Command.OpenCourseCommand:
-                            Console.Write("Введіть номер курсу: ");
-                            if (ValidateCourse(Console.ReadLine(), out course))
-                            {
-                                page = new CourseController(_userService, _courseService, _authorizedUser, new OpenedCourseService(course)).Launch();
-                            }
-
+                            page = OpenCourse();
                             break;
                         case Command.LogoutCommand:
                             _authorizedUser.Logout();
@@ -126,6 +93,58 @@ namespace API.Controllers
             }
 
             return page;
+        }
+
+        private void Register()
+        {
+            Console.Write("Введіть своє ім'я: ");
+            string name = UserInput.NotEmptyString(() => Console.ReadLine());
+            Console.Write("Введіть електронну адресу: ");
+            string email = UserInput.NotEmptyString(() => Console.ReadLine());
+            Console.Write("Введіть пароль: ");
+            string password = UserInput.NotEmptyString(() => Console.ReadLine());
+            _authorizedUser.Register(name, email, password);
+        }
+
+        private void Login()
+        {
+            Console.Write("Введіть електронну адресу: ");
+            string email = UserInput.NotEmptyString(() => Console.ReadLine());
+            Console.Write("Введіть пароль: ");
+            string password = UserInput.NotEmptyString(() => Console.ReadLine());
+            var loginResult = _authorizedUser.Login(email, password);
+            if (loginResult)
+            {
+                Console.WriteLine($"З поверненням {_authorizedUser.Get().Name}\n" +
+                                   "Натисніть Enter");
+                Console.ReadLine();
+            }
+            else
+            {
+                Console.WriteLine("Невірний email чи пароль");
+                Console.ReadLine();
+            }
+        }
+
+        private void AddCourse()
+        {
+            Console.Write("Введіть номер курсу: ");
+            if (ValidateCourse(Console.ReadLine(), out Course course))
+            {
+                _authorizedUser.AddCourse(course);
+                _userService.Save();
+            }
+        }
+
+        private string OpenCourse()
+        {
+            Console.Write("Введіть номер курсу: ");
+            if (ValidateCourse(Console.ReadLine(), out Course course))
+            {
+                return new CourseController(_userService, _courseService, _authorizedUser, new OpenedCourseService(course)).Launch();
+            }
+
+            return Command.BackCommand;
         }
 
         private bool ValidateCourse(string strCourseId, out Course course)

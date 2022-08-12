@@ -15,7 +15,7 @@ namespace Services.Interface
         /// Get current authorized account.
         /// </summary>
         /// <returns>User instance.</returns>
-        User GetCurrentAccount();
+        User Get();
 
         /// <summary>
         /// Login to system.

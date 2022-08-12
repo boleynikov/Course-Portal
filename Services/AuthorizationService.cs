@@ -70,7 +70,7 @@ namespace Services
         }
 
         /// <inheritdoc/>
-        public User GetCurrentAccount() => _account;
+        public User Get() => _account;
 
         /// <inheritdoc/>
         public bool Login(string email, string password)

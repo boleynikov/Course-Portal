@@ -39,22 +39,22 @@ namespace API.View
 
             if (isAuthorized)
             {
-                AuthorizedView(userName);
+                AuthorizedNavigationView(userName);
             }
             else
             {
-                NotAuthorizedView();
+                NotAuthorizedNavigationView();
             }
         }
 
-        private static void NotAuthorizedView()
+        public static void NotAuthorizedNavigationView()
         {
             Console.WriteLine($"Увійдіть до свого облікового запису ввівши {Command.LoginCommand}\n" +
                                       $"Якщо такого ще немає, введіть {Command.RegisterCommand}\n" +
                                       $"Щоб вийти звідси - введіть {Command.ExitCommand}\n");
         }
 
-        private static void AuthorizedView(string userName)
+        public static void AuthorizedNavigationView(string userName)
         {
             Console.WriteLine($"\tОбліковий запис {userName}\n" +
                                        $"Щоб переглянути свою сторінку - введіть {Command.UserPage}\n" +

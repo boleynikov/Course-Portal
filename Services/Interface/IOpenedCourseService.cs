@@ -25,14 +25,5 @@ namespace Services.Interface
         /// <param name="skill"></param>
         /// <param name="value"></param>
         void AddSkill(Course currentCourse, Skill skill, int value);
-
-        /// <summary>
-        /// Update Course information.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="descript"></param>
-        /// <param name="materials"></param>
-        /// <param name="skills"></param>
-        void UpdateInfo(Course currentCourse, string name, string descript, List<Material> materials, List<Skill> skills);
     }
 }

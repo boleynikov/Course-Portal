@@ -48,7 +48,7 @@ namespace API.Controllers
         /// <inheritdoc/>
         public string Launch()
         {
-            var currentUser = _authorizedUser.GetCurrentAccount();
+            var currentUser = _authorizedUser.Get();
             string page = Command.UserPage;
 
             while (page == Command.UserPage)
@@ -56,12 +56,6 @@ namespace API.Controllers
                 Console.Clear();
                 var userCourses = currentUser.UserCourses;
                 UserPageView.Show(currentUser, userCourses);
-
-                Console.WriteLine();
-                Console.WriteLine($"Щоб створити курс - введіть {Command.CreateCourseCommand}\n" +
-                                  $"Щоб переглянути якийсь курс - введіть {Command.OpenCourseCommand}\n" +
-                                  $"Щоб видалити курс - введіть {Command.DeleteCourseCommand}\n" +
-                                  $"Щоб повернутися назад - введіть {Command.BackCommand}");
 
                 string cmdLine = Console.ReadLine();
                 switch (cmdLine)
@@ -108,7 +102,7 @@ namespace API.Controllers
             int id = _courseService.GetAll().ToList().Count + 1;
             var course = new Course(id, name, description);
             List<Material> materials = new ();
-            if (_authorizedUser.GetCurrentAccount().UserMaterials.ToList().Count > 0)
+            if (_authorizedUser.Get().UserMaterials.ToList().Count > 0)
             {
                 Console.WriteLine("Чи бажаете ви додати вже створені матеріали?\n" +
                                   "1 - так\n" +
@@ -232,7 +226,7 @@ namespace API.Controllers
                         int id = _materialService.GetAll().ToList().Count + 1;
                         var articleMaterial = new ArticleMaterial(id, title, date, link);
 
-                        _authorizedUser.GetCurrentAccount().UserMaterials.ToList().Add(articleMaterial);
+                        _authorizedUser.Get().UserMaterials.ToList().Add(articleMaterial);
                         _materialService.Add(articleMaterial);
                         courseMaterials.Add(articleMaterial);
                         break;
@@ -251,7 +245,7 @@ namespace API.Controllers
                         id = _materialService.GetAll().ToList().Count + 1;
                         var publicationMaterial = new PublicationMaterial(id, title, author, pageCount, format, date);
 
-                        _authorizedUser.GetCurrentAccount().UserMaterials.ToList().Add(publicationMaterial);
+                        _authorizedUser.Get().UserMaterials.ToList().Add(publicationMaterial);
                         _materialService.Add(publicationMaterial);
                         courseMaterials.Add(publicationMaterial);
                         break;
@@ -266,7 +260,7 @@ namespace API.Controllers
                         id = _materialService.GetAll().ToList().Count + 1;
                         var videoMaterial = new VideoMaterial(id, title, duration, quality);
 
-                        _authorizedUser.GetCurrentAccount().UserMaterials.ToList().Add(videoMaterial);
+                        _authorizedUser.Get().UserMaterials.ToList().Add(videoMaterial);
                         _materialService.Add(videoMaterial);
                         courseMaterials.Add(videoMaterial);
                         break;
@@ -289,8 +283,9 @@ namespace API.Controllers
 
         private List<Material> AddExistingMaterials(Course course)
         {
-            var userMaterials = _authorizedUser.GetCurrentAccount().UserMaterials.ToList();
+            var userMaterials = _authorizedUser.Get().UserMaterials.ToList();
             var newListMaterials = new List<Material>();
+
             Console.WriteLine("Оберіть номери матеріалів, які ви хочете додати через кому з пробілом [, ]");
             userMaterials.ForEach((mat) => Console.WriteLine($"{mat.Id} {mat.Title}"));
 
@@ -313,7 +308,7 @@ namespace API.Controllers
             {
                 try
                 {
-                    material = _authorizedUser.GetCurrentAccount().UserMaterials.FirstOrDefault(c => c.Id == materialId)
+                    material = _authorizedUser.Get().UserMaterials.FirstOrDefault(c => c.Id == materialId)
                         ?? throw new ArgumentOutOfRangeException(nameof(materialId));
                     return true;
                 }
@@ -342,7 +337,7 @@ namespace API.Controllers
             {
                 try
                 {
-                    course = _authorizedUser.GetCurrentAccount().UserCourses.FirstOrDefault(c => c.Course.Id == courseId).Course
+                    course = _authorizedUser.Get().UserCourses.FirstOrDefault(c => c.Course.Id == courseId).Course
                         ?? throw new ArgumentOutOfRangeException(nameof(courseId));
                     return true;
                 }

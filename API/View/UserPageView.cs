@@ -44,6 +44,12 @@ namespace API.View
                     Console.WriteLine("\t|{0, 2}.| {1,-40} | {2, 5}, {3, 3} %", course.Id, course.Name, progress.State, progress.Percentage);
                 }
             }
+
+            Console.WriteLine();
+            Console.WriteLine($"Щоб створити курс - введіть {Command.CreateCourseCommand}\n" +
+                              $"Щоб переглянути якийсь курс - введіть {Command.OpenCourseCommand}\n" +
+                              $"Щоб видалити курс - введіть {Command.DeleteCourseCommand}\n" +
+                              $"Щоб повернутися назад - введіть {Command.BackCommand}");
         }
     }
 }

@@ -45,14 +45,5 @@ namespace Services
                 skills.Add(new Skill { Name = skill.Name, Points = value });
             }
         }
-
-        /// <inheritdoc/>
-        public void UpdateInfo(Course currentCourse, string name, string descript, List<Material> materials, List<Skill> skills)
-        {
-            _course.Name = name;
-            _course.Description = descript;
-            _course.CourseMaterials = materials;
-            _course.CourseSkills = skills;
-        }
     }
 }

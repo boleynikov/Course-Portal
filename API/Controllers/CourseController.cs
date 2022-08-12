@@ -54,12 +54,9 @@ namespace API.Controllers
             while (page == Command.CoursePage)
             {
                 Console.Clear();
-                var currentUser = _authorizedUser.GetCurrentAccount();
+                var currentUser = _authorizedUser.Get();
                 var currentCourse = _openedCourse.Get();
-                CourseView.Show(currentUser, currentCourse);
-                Console.WriteLine($"Щоб додати до свого списку курс - введіть {Command.AddCourseCommand}\n" +
-                                  $"Щоб змінити назву опис чи додати матеріали до курсу - введіть {Command.EditCommand}\n" +
-                                  $"Щоб повернутися назад - введіть {Command.BackCommand}\n");
+                CoursePageView.Show(currentUser, currentCourse);
                 string cmdLine = Console.ReadLine();
                 switch (cmdLine)
                 {
@@ -92,13 +89,7 @@ namespace API.Controllers
             var currentCourse = _openedCourse.Get();
             var name = currentCourse.Name;
             var description = currentCourse.Description;
-            Console.WriteLine("Введіть цифри у відповідності до того що саме ви хочете відредагувати\n" +
-                              "через кому пробіл [, ]\n" +
-                              $"{Command.EditCourseName} - змінити назву\n" +
-                              $"{Command.EditCourseDescription} - змінити опис\n" +
-                              $"{Command.AddCourseMaterials} - додати матеріали із вже завантажених користувачем\n" +
-                              $"{Command.DeleteCourseMaterial} - видалити матеріал із курсу");
-
+            CoursePageView.EditNavigationView();
             var str = UserInput.NotEmptyString(() => Console.ReadLine());
             string[] editCmd = str.Split(", ");
             foreach (var cmd in editCmd)
@@ -106,50 +97,71 @@ namespace API.Controllers
                 switch (cmd)
                 {
                     case Command.EditCourseName:
-                        Console.Write("Введіть нову назву курсу: ");
-                        name = UserInput.NotEmptyString(() => Console.ReadLine());
-                        currentCourse.Name = name;
+                        EditCourseName();
                         break;
                     case Command.EditCourseDescription:
-                        Console.Write("Введіть новий опис курсу: ");
-                        description = UserInput.NotEmptyString(() => Console.ReadLine());
-                        currentCourse.Description = description;
+                        EditCourseDescription();
                         break;
                     case Command.DeleteCourseMaterial:
-                        Console.Write("Введіть ідентифікатор матеріалу: ");
-                        var strMaterialId = UserInput.NotEmptyString(() => Console.ReadLine());
-                        if (ValidateMaterial(strMaterialId, out Material material) && currentCourse.CourseMaterials.Contains(material))
-                        {
-                            currentCourse.CourseMaterials.Remove(material);
-                            Console.WriteLine($"Матеріал {strMaterialId} успішно видалено\n" +
-                                               "Натисніть Enter");
-                            Console.ReadLine();
-                        }
-
+                        DeleteCourseMaterial();
                         break;
                     case Command.AddCourseMaterials:
-                        var userMaterials = _authorizedUser.GetCurrentAccount().UserMaterials.ToList();
-                        Console.WriteLine("Оберіть номери матеріалів, які ви хочете додати через кому з пробілом [, ]");
-                        userMaterials.ForEach((mat) => Console.WriteLine($"{mat.Id} {mat.Title}"));
-
-                        var strMaterialsIds = UserInput.NotEmptyString(() => Console.ReadLine());
-                        var listMaterialsIds = strMaterialsIds.Split(", ").ToList();
-                        listMaterialsIds.ForEach((stringMatId) =>
-                        {
-                            if (ValidateMaterial(stringMatId, out Material material, "user") && !currentCourse.CourseMaterials.Contains(material))
-                            {
-                                currentCourse.CourseMaterials.Add(material);
-                            }
-                            else
-                            {
-                                Console.WriteLine($"Матеріал з id {stringMatId} вже є у матеріалах курсу\n" +
-                                                       "Натисніть Enter");
-                                Console.ReadLine();
-                            }
-                        });
+                        AddCourseMaterial();
                         break;
                 }
             }
+        }
+
+        private void EditCourseName()
+        {
+            Console.Write("Введіть нову назву курсу: ");
+            string name = UserInput.NotEmptyString(() => Console.ReadLine());
+            _openedCourse.Get().Name = name;
+        }
+
+        private void EditCourseDescription()
+        {
+            Console.Write("Введіть новий опис курсу: ");
+            string description = UserInput.NotEmptyString(() => Console.ReadLine());
+            _openedCourse.Get().Description = description;
+        }
+
+        private void DeleteCourseMaterial()
+        {
+            Console.Write("Введіть ідентифікатор матеріалу: ");
+            var currentCourse = _openedCourse.Get();
+            var strMaterialId = UserInput.NotEmptyString(() => Console.ReadLine());
+            if (ValidateMaterial(strMaterialId, out Material material) && currentCourse.CourseMaterials.Contains(material))
+            {
+                currentCourse.CourseMaterials.Remove(material);
+                Console.WriteLine($"Матеріал {strMaterialId} успішно видалено\n" +
+                                   "Натисніть Enter");
+                Console.ReadLine();
+            }
+        }
+
+        private void AddCourseMaterial()
+        {
+            var currentCourse = _openedCourse.Get();
+            var userMaterials = _authorizedUser.Get().UserMaterials.ToList();
+            Console.WriteLine("Оберіть номери матеріалів, які ви хочете додати через кому з пробілом [, ]");
+            userMaterials.ForEach((mat) => Console.WriteLine($"{mat.Id} {mat.Title}"));
+
+            var strMaterialsIds = UserInput.NotEmptyString(() => Console.ReadLine());
+            var listMaterialsIds = strMaterialsIds.Split(", ").ToList();
+            listMaterialsIds.ForEach((stringMatId) =>
+            {
+                if (ValidateMaterial(stringMatId, out Material material, "user") && !currentCourse.CourseMaterials.Contains(material))
+                {
+                    currentCourse.CourseMaterials.Add(material);
+                }
+                else
+                {
+                    Console.WriteLine($"Матеріал з id {stringMatId} вже є у матеріалах курсу\n" +
+                                           "Натисніть Enter");
+                    Console.ReadLine();
+                }
+            });
         }
 
         private bool ValidateMaterial(string strMaterialId, out Material material, string materialAttachedTo = "course")
@@ -157,7 +169,7 @@ namespace API.Controllers
             List<Material> materials;
             if (materialAttachedTo == "user")
             {
-                materials = _authorizedUser.GetCurrentAccount().UserMaterials.ToList();
+                materials = _authorizedUser.Get().UserMaterials.ToList();
             }
             else
             {
