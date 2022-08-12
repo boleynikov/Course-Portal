@@ -7,6 +7,7 @@ namespace API
     using System;
     using System.Text;
     using API.Controllers;
+    using API.Controllers.Helper;
     using Data.Repository;
     using Domain;
     using Domain.CourseMaterials;
@@ -18,10 +19,6 @@ namespace API
     /// </summary>
     internal class Program
     {
-        private const string _homePage = "home";
-        private const string _userPage = "1";
-        private const string _exit = "7";
-
         private static void Main()
         {
             Console.OutputEncoding = Encoding.Unicode;
@@ -35,21 +32,24 @@ namespace API
 
             IAuthorizationService authorizationService = new AuthorizationService(userService);
 
-            string page = _homePage;
-            while (page != _exit)
+            string page = Command.HomePage;
+            while (page != Command.ExitCommand)
             {
                 switch (page)
                 {
-                    case _homePage:
+                    case Command.HomePage:
                         page = new HomeController(courseService, userService, authorizationService).Launch();
                         break;
-                    case _userPage:
+                    case Command.UserPage:
                         page = new UserController(courseService, materialService, userService, authorizationService).Launch();
+                        break;
+                    case Command.BackCommand:
+                        page = Command.HomePage;
                         break;
                     default:
                         Console.WriteLine("Невідома сторінка\nНатисніть Enter");
                         Console.ReadLine();
-                        page = "home";
+                        page = Command.HomePage;
                         break;
                 }
             }

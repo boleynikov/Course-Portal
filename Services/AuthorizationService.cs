@@ -52,13 +52,13 @@ namespace Services
         /// <inheritdoc/>
         public void AddSkill(Skill skill)
         {
-            var skills = _account.UserSkills;
+            var skills = _account.UserSkills.ToList();
             if (skill == null)
             {
                 throw new ArgumentNullException(nameof(skill));
             }
 
-            if (_account.UserSkills.Find(c => c.Name == skill.Name) != null)
+            if (skills.Find(c => c.Name == skill.Name) != null)
             {
                 var index = skills.IndexOf(skills.Find(c => c.Name == skill.Name));
                 skills[index].Points += skill.Points;
