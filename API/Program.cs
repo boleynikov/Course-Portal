@@ -7,7 +7,6 @@ namespace API
     using System;
     using System.Text;
     using API.Controllers;
-    using API.Controllers.Helper;
     using Data.Repository;
     using Domain;
     using Domain.CourseMaterials;
