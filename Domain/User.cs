@@ -1,49 +1,67 @@
-﻿using EducationPortal.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// <copyright file="User.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
-namespace EducationPortal.Domain
+namespace Domain
 {
-    class User
+    using System;
+    using System.Collections.Generic;
+    using Domain.Abstract;
+    using Domain.CourseMaterials;
+    using Domain.Enum;
+
+    /// <summary>
+    /// User class.
+    /// </summary>
+    [Serializable]
+    public class User : BaseEntity
     {
-        public string Name { get; private set; }
-
-        public string Email { get; private set; }
-
-        public Dictionary<Skill, int> UserSkills { get; private set; }
-
-        public Dictionary<Course, CourseProgress> UserCourses { get; private set; }
-        
-        public User(string name, string email)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="User"/> class.
+        /// </summary>
+        /// <param name="id">User id.</param>
+        /// <param name="name">User name.</param>
+        /// <param name="email">User email.</param>
+        /// <param name="password">User password.</param>
+        public User(int id, string name, string email, string password)
+            : base(id)
         {
             Name = name;
             Email = email;
-            UserSkills = new Dictionary<Skill, int>();
-            UserCourses = new Dictionary<Course, CourseProgress>();
+            Password = password;
+            UserSkills = new List<Skill>();
+            UserMaterials = new List<Material>();
+            UserCourses = new List<(Course, CourseProgress)>();
         }
 
-        public void AddCourse(Course course)
-        {
-            if (UserCourses.ContainsKey(course))
-            {
-                return;
-            }
+        /// <summary>
+        /// Gets user Name.
+        /// </summary>
+        public string Name { get; private set; }
 
-            UserCourses.Add(course, new CourseProgress() { State = State.NotCompleted, Percentage = 0f }); 
-        }
-        public void AddSkill(Skill skill, int value)
-        {
-            if (UserSkills.ContainsKey(skill))
-            {
-                UserSkills[skill] += value;
-            }
-            else
-            {
-                UserSkills.Add(skill, value);
-            }
-        }
+        /// <summary>
+        /// Gets user email.
+        /// </summary>
+        public string Email { get; private set; }
+
+        /// <summary>
+        /// Gets user password.
+        /// </summary>
+        public string Password { get; private set; }
+
+        /// <summary>
+        /// Gets user skills.
+        /// </summary>
+        public List<Skill> UserSkills { get; private set; }
+
+        /// <summary>
+        /// Gets user materials.
+        /// </summary>
+        public List<Material> UserMaterials { get; private set; }
+
+        /// <summary>
+        /// Gets user courses.
+        /// </summary>
+        public List<(Course Course, CourseProgress Progress)> UserCourses { get; private set; }
     }
 }

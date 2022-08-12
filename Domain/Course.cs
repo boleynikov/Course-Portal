@@ -1,45 +1,53 @@
-﻿using EducationPortal.Domain.CourseMaterials;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// <copyright file="Course.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
-namespace EducationPortal.Domain
+namespace Domain
 {
-    public class Course
+    using System;
+    using System.Collections.Generic;
+    using Domain.Abstract;
+    using Domain.CourseMaterials;
+
+    /// <summary>
+    /// Course.
+    /// </summary>
+    [Serializable]
+    public class Course : BaseEntity
     {
-        public string Name { get; private set; }
-
-        public string Description { get; private set; }
-
-        public List<Material> CourseMaterials { get; private set; }
-
-        public Dictionary<Skill, int> CourseSkills { get; private set; }
-
-        public Course(string name, string description)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Course"/> class.
+        /// </summary>
+        /// <param name="id">Course id.</param>
+        /// <param name="name">Course name.</param>
+        /// <param name="description">Course description.</param>
+        public Course(int id, string name, string description)
+            : base(id)
         {
             Name = name;
             Description = description;
             CourseMaterials = new List<Material>();
-            CourseSkills = new Dictionary<Skill, int>();
+            CourseSkills = new List<Skill>();
         }
 
-        public void AddMaterial(Material material)
-        {
-            CourseMaterials.Add(material);
-        }
+        /// <summary>
+        /// Gets course name.
+        /// </summary>
+        public string Name { get; set; }
 
-        public void AddSkill(Skill skill, int value)
-        {
-            if (CourseSkills.ContainsKey(skill))
-            {
-                CourseSkills[skill]+=value;
-            }
-            else
-            {
-                CourseSkills.Add(skill, value);
-            }
-        }
+        /// <summary>
+        /// Gets course description.
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Gets materials in course.
+        /// </summary>
+        public List<Material> CourseMaterials { get; set; }
+
+        /// <summary>
+        /// Gets skills, that user can get after complete.
+        /// </summary>
+        public List<Skill> CourseSkills { get; set; }
     }
 }

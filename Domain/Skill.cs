@@ -1,19 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// <copyright file="Skill.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
-namespace EducationPortal.Domain
+namespace Domain
 {
-    public enum Skill
+    using Domain.Enum;
+    using System;
+
+    /// <summary>
+    /// Skill class.
+    /// </summary>
+    [Serializable]
+    public class Skill
     {
-        Programming = 0,
-        Music = 1,
-        HealthCare = 3,
-        TimeManagment = 4,
-        Communication = 5,
-        Illustration = 6,
-        Photo = 7
+        /// <summary>
+        /// Gets or sets name of skill.
+        /// </summary>
+        public SkillKind Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets level of current skill.
+        /// </summary>
+        public int Points { get; set; }
     }
 }
