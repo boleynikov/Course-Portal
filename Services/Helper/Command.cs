@@ -1,4 +1,4 @@
-﻿namespace API
+﻿namespace Services.Helper
 {
     /// <summary>
     /// Console Input Keys

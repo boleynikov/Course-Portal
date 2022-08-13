@@ -41,13 +41,5 @@ namespace Services.Interface
         /// Add material which user is own to course
         /// </summary>
         void AddCourseMaterial(List<Material> userMaterials);
-        /// <summary>
-        /// Input string and convert to valid id of user material
-        /// </summary>
-        /// <param name="strMaterialId"></param>
-        /// <param name="material"></param>
-        /// <param name="materialAttachedTo"></param>
-        /// <returns></returns>
-        bool ValidateMaterial(string strMaterialId, out Material material, List<Material> userMaterials);
     }
 }

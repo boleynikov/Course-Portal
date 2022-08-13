@@ -21,6 +21,7 @@ namespace API.Controllers
         private readonly IService<Course> _courseService;
         private readonly IService<User> _userService;
         private readonly IAuthorizationService _authorizedUser;
+        private readonly Validator _validatorService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HomeController"/> class.
@@ -31,17 +32,18 @@ namespace API.Controllers
         public HomeController(
             IService<Course> courseService,
             IService<User> userService,
-            IAuthorizationService authService)
+            IAuthorizationService authService,
+            Validator validatorService)
         {
             _courseService = courseService;
             _userService = userService;
             _authorizedUser = authService;
+            _validatorService = validatorService;
         }
 
         /// <inheritdoc/>
         public string Launch()
         {
-            var courses = _courseService.GetAll().ToList();
             string page = Command.HomePage;
 
             while (page == Command.HomePage)
@@ -50,67 +52,85 @@ namespace API.Controllers
                 string cmdLine;
                 if (currentUser == null)
                 {
-                    HomepageView.Show(courses, false);
-                    cmdLine = Console.ReadLine();
-                    switch (cmdLine)
-                    {
-                        case Command.LoginCommand:
-                            Console.Write("Введіть електронну адресу: ");
-                            string email = UserInput.NotEmptyString(() => Console.ReadLine());
-                            Console.Write("Введіть пароль: ");
-                            string password = UserInput.NotEmptyString(() => Console.ReadLine());
-                            _authorizedUser.Login(email, password);
-                            break;
-                        case Command.RegisterCommand:
-                            Console.Write("Введіть своє ім'я: ");
-                            string name = UserInput.NotEmptyString(() => Console.ReadLine());
-                            Console.Write("Введіть електронну адресу: ");
-                            email = UserInput.NotEmptyString(() => Console.ReadLine());
-                            Console.Write("Введіть пароль: ");
-                            password = UserInput.NotEmptyString(() => Console.ReadLine());
-                            _authorizedUser.Register(name, email, password);
-                            break;
-                        case Command.ExitCommand:
-                            page = Command.ExitCommand;
-                            break;
-                    }
+                    page = NotAuthorized();
                 }
                 else
                 {
-                    HomepageView.Show(courses, true, currentUser.Name);
-                    cmdLine = Console.ReadLine();
-                    switch (cmdLine)
-                    {
-                        case Command.UserPage:
-                            page = Command.UserPage;
-                            break;
-                        case Command.AddCourseCommand:
-                            Console.Write("Введіть номер курсу: ");
-                            if (_authorizedUser.ValidateCourse(_courseService, Console.ReadLine(), out Course course))
-                            {
-                                _authorizedUser.AddCourse(course);
-                                _userService.Save();
-                            }
-
-                            break;
-                        case Command.OpenCourseCommand:
-                            Console.Write("Введіть номер курсу: ");
-                            if (_authorizedUser.ValidateCourse(_courseService, Console.ReadLine(), out course))
-                            {
-                                page = new CourseController(_userService, _courseService, _authorizedUser, new OpenedCourseService(course)).Launch();
-                            }
-
-                            break;
-                        case Command.LogoutCommand:
-                            _authorizedUser.Logout();
-                            break;
-                        case Command.ExitCommand:
-                            page = Command.ExitCommand;
-                            break;
-                        default:
-                            return page;
-                    }
+                    page = Authorized();
                 }
+            }
+
+            return page;
+        }
+
+        private string NotAuthorized()
+        {
+            var courses = _courseService.GetAll().ToList();
+            HomepageView.Show(courses, false);
+            string page = Command.HomePage;
+            string cmdLine = Console.ReadLine();
+            switch (cmdLine)
+            {
+                case Command.LoginCommand:
+                    Console.Write("Введіть електронну адресу: ");
+                    string email = UserInput.NotEmptyString(() => Console.ReadLine());
+                    Console.Write("Введіть пароль: ");
+                    string password = UserInput.NotEmptyString(() => Console.ReadLine());
+                    _authorizedUser.Login(email, password);
+                    break;
+                case Command.RegisterCommand:
+                    Console.Write("Введіть своє ім'я: ");
+                    string name = UserInput.NotEmptyString(() => Console.ReadLine());
+                    Console.Write("Введіть електронну адресу: ");
+                    email = UserInput.NotEmptyString(() => Console.ReadLine());
+                    Console.Write("Введіть пароль: ");
+                    password = UserInput.NotEmptyString(() => Console.ReadLine());
+                    _authorizedUser.Register(name, email, password);
+                    break;
+                case Command.ExitCommand:
+                    page = Command.ExitCommand;
+                    break;
+            }
+
+            return page;
+        }
+
+        private string Authorized()
+        {
+            var courses = _courseService.GetAll().ToList();
+            HomepageView.Show(courses, true, _authorizedUser.Get().Name);
+            string page = Command.HomePage;
+            string cmdLine = Console.ReadLine();
+            switch (cmdLine)
+            {
+                case Command.UserPage:
+                    page = Command.UserPage;
+                    break;
+                case Command.AddCourseCommand:
+                    Console.Write("Введіть номер курсу: ");
+                    if (_validatorService.Course.Validate(courses, Console.ReadLine(), out Course course))
+                    {
+                        _authorizedUser.AddCourse(course);
+                        _userService.Save();
+                    }
+
+                    break;
+                case Command.OpenCourseCommand:
+                    Console.Write("Введіть номер курсу: ");
+                    if (_validatorService.Course.Validate(courses, Console.ReadLine(), out course))
+                    {
+                        page = new CourseController(_userService, _courseService, _authorizedUser, new OpenedCourseService(course, new Validator())).Launch();
+                    }
+
+                    break;
+                case Command.LogoutCommand:
+                    _authorizedUser.Logout();
+                    break;
+                case Command.ExitCommand:
+                    page = Command.ExitCommand;
+                    break;
+                default:
+                    return page;
             }
 
             return page;
