@@ -5,13 +5,10 @@
 namespace API.Controllers
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using API.Controllers.Abstract;
-    using API.Controllers.Helper;
     using API.View;
     using Domain;
-    using Domain.CourseMaterials;
+    using Services.Helper;
     using Services.Interface;
 
     /// <summary>
@@ -97,109 +94,18 @@ namespace API.Controllers
                 switch (cmd)
                 {
                     case Command.EditCourseName:
-                        EditCourseName();
+                        _openedCourse.EditCourseName();
                         break;
                     case Command.EditCourseDescription:
-                        EditCourseDescription();
+                        _openedCourse.EditCourseDescription();
                         break;
                     case Command.DeleteCourseMaterial:
-                        DeleteCourseMaterial();
+                        _openedCourse.DeleteCourseMaterial();
                         break;
                     case Command.AddCourseMaterials:
-                        AddCourseMaterial();
+                        _openedCourse.AddCourseMaterial(_authorizedUser.Get().UserMaterials);
                         break;
                 }
-            }
-        }
-
-        private void EditCourseName()
-        {
-            Console.Write("Введіть нову назву курсу: ");
-            string name = UserInput.NotEmptyString(() => Console.ReadLine());
-            _openedCourse.Get().Name = name;
-        }
-
-        private void EditCourseDescription()
-        {
-            Console.Write("Введіть новий опис курсу: ");
-            string description = UserInput.NotEmptyString(() => Console.ReadLine());
-            _openedCourse.Get().Description = description;
-        }
-
-        private void DeleteCourseMaterial()
-        {
-            Console.Write("Введіть ідентифікатор матеріалу: ");
-            var currentCourse = _openedCourse.Get();
-            var strMaterialId = UserInput.NotEmptyString(() => Console.ReadLine());
-            if (ValidateMaterial(strMaterialId, out Material material) && currentCourse.CourseMaterials.Contains(material))
-            {
-                currentCourse.CourseMaterials.Remove(material);
-                Console.WriteLine($"Матеріал {strMaterialId} успішно видалено\n" +
-                                   "Натисніть Enter");
-                Console.ReadLine();
-            }
-        }
-
-        private void AddCourseMaterial()
-        {
-            var currentCourse = _openedCourse.Get();
-            var userMaterials = _authorizedUser.Get().UserMaterials.ToList();
-            Console.WriteLine("Оберіть номери матеріалів, які ви хочете додати через кому з пробілом [, ]");
-            userMaterials.ForEach((mat) => Console.WriteLine($"{mat.Id} {mat.Title}"));
-
-            var strMaterialsIds = UserInput.NotEmptyString(() => Console.ReadLine());
-            var listMaterialsIds = strMaterialsIds.Split(", ").ToList();
-            listMaterialsIds.ForEach((stringMatId) =>
-            {
-                if (ValidateMaterial(stringMatId, out Material material, "user") && !currentCourse.CourseMaterials.Contains(material))
-                {
-                    currentCourse.CourseMaterials.Add(material);
-                }
-                else
-                {
-                    Console.WriteLine($"Матеріал з id {stringMatId} вже є у матеріалах курсу\n" +
-                                           "Натисніть Enter");
-                    Console.ReadLine();
-                }
-            });
-        }
-
-        private bool ValidateMaterial(string strMaterialId, out Material material, string materialAttachedTo = "course")
-        {
-            List<Material> materials;
-            if (materialAttachedTo == "user")
-            {
-                materials = _authorizedUser.Get().UserMaterials.ToList();
-            }
-            else
-            {
-                materials = _openedCourse.Get().CourseMaterials;
-            }
-
-            if (int.TryParse(strMaterialId, out int materialId))
-            {
-                try
-                {
-                    material = materials.FirstOrDefault(c => c.Id == materialId)
-                        ?? throw new ArgumentOutOfRangeException(nameof(materialId));
-                    return true;
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    material = null;
-                    Console.WriteLine($"Немає матеріалу з таким ідентифікатором {materialId}\n" +
-                                      "Натисніть Enter");
-                    Console.ReadLine();
-                    return false;
-                }
-            }
-            else
-            {
-                material = null;
-                Console.WriteLine("Неправильний формат вводу\n" +
-                                  "Натисніть Enter");
-                Console.ReadLine();
-                return false;
             }
         }
     }

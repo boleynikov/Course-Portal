@@ -49,9 +49,10 @@ namespace Data.Repository
         }
 
         /// <inheritdoc/>
-        public Material GetByIndex(int id)
+        public Material GetByID(int id)
         {
-            return _materials[id];
+            var material = _materials.FirstOrDefault(c => c.Id == id);
+            return material ?? throw new ArgumentOutOfRangeException(nameof(id));
         }
 
         /// <inheritdoc/>

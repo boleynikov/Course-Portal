@@ -44,9 +44,9 @@ namespace Services
         }
 
         /// <inheritdoc/>
-        public Material GetByIndex(int index)
+        public Material GetById(int index)
         {
-            return _repository.GetByIndex(index);
+            return _repository.GetByID(index);
         }
 
         /// <inheritdoc/>

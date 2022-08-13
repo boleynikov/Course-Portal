@@ -29,7 +29,7 @@ namespace Data.Repository.Interface
         /// </summary>
         /// <param name="id">Object id.</param>
         /// <returns>T entity.</returns>
-        T GetByIndex(int id);
+        T GetByID(int id);
 
         /// <summary>
         /// Update T object in repository.

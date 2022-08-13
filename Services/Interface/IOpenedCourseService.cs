@@ -25,5 +25,21 @@ namespace Services.Interface
         /// <param name="skill"></param>
         /// <param name="value"></param>
         void AddSkill(Course currentCourse, Skill skill, int value);
+        /// <summary>
+        /// Edit course name
+        /// </summary>
+        void EditCourseName();
+        /// <summary>
+        /// Edit course description
+        /// </summary>
+        void EditCourseDescription();
+        /// <summary>
+        /// Delete material in opened course
+        /// </summary>
+        void DeleteCourseMaterial();
+        /// <summary>
+        /// Add material which user is own to course
+        /// </summary>
+        void AddCourseMaterial(List<Material> userMaterials);
     }
 }

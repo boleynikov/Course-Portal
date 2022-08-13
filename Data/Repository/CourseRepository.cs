@@ -52,7 +52,7 @@ namespace Data.Repository
         }
 
         /// <inheritdoc/>
-        public Course GetByIndex(int id)
+        public Course GetByID(int id)
         {
             var course = _courses.FirstOrDefault(c => c.Id == id);
             return course ?? throw new ArgumentOutOfRangeException(nameof(id));

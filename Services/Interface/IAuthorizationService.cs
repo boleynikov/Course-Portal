@@ -23,7 +23,7 @@ namespace Services.Interface
         /// <param name="email">User email.</param>
         /// <param name="password">User password.</param>
         /// <returns>Result of authorisation.</returns>
-        bool Login(string email, string password);
+        void Login(string email, string password);
 
         /// <summary>
         /// Logout from user account.

@@ -49,9 +49,10 @@ namespace Data.Repository
         }
 
         /// <inheritdoc/>
-        public User GetByIndex(int id)
+        public User GetByID(int id)
         {
-            return _users.SingleOrDefault(user => user.Id == id);
+            var user = _users.FirstOrDefault(c => c.Id == id);
+            return user ?? throw new ArgumentOutOfRangeException(nameof(id));
         }
 
         /// <inheritdoc/>
