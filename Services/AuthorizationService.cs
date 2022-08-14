@@ -42,8 +42,7 @@ namespace Services
                 throw new ArgumentNullException(nameof(newCourse));
             }
 
-            if (_account.UserCourses.Find(course => course.Course.Name == newCourse.Name &&
-                                           course.Course.Description == newCourse.Description).Course != null)
+            if (_account.UserCourses.FirstOrDefault(c => c.Key == newCourse.Id).Key != 0)
             {
                 Console.WriteLine("Даний курс у вас уже є\n" +
                                   "Натисніть Enter");
@@ -51,7 +50,8 @@ namespace Services
                 return;
             }
 
-            _account.UserCourses.Add((newCourse, new CourseProgress() { State = State.NotCompleted, Percentage = 0f }));
+            var item = new KeyValuePair<int, CourseProgress>(newCourse.Id, new CourseProgress() { State = State.NotCompleted, Percentage = 0f });
+            _account.UserCourses.Add(item.Key, item.Value);
         }
         /// <inheritdoc/>
         public Course CreateCourse(IService<Course> courseService, IService<Material> materialService)
@@ -67,7 +67,7 @@ namespace Services
             string description = UserInput.NotEmptyString(() => Console.ReadLine());
             int id = courseService.GetAll().ToList().Count + 1;
             var course = new Course(id, name, description);
-            List<Material>? materials = new();
+            List<Material> materials = new();
             if (_account.UserMaterials.ToList().Count > 0)
             {
                 Console.WriteLine("Чи бажаете ви додати вже створені матеріали?\n" +
@@ -124,7 +124,7 @@ namespace Services
                     break;
                 }
 
-                Skill? skill = CreateSkill(cmdLine);
+                Skill skill = CreateSkill(cmdLine);
                 if (skill != null)
                 {
                     course.CourseSkills.Add(skill);
@@ -303,14 +303,13 @@ namespace Services
         public void RemoveCourse(int id)
         {
             var courses = _account.UserCourses;
-            var pulledCourse = courses.Find(course => course.Course.Id == id).Course;
-            if (pulledCourse == null)
+            var pulledCourse = courses.FirstOrDefault(course => course.Key == id);
+            if (pulledCourse.Value == null)
             {
                 return;
             }
 
-            var pulledProgress = courses.Find(course => course.Course.Id == id).Progress;
-            courses.Remove((pulledCourse, pulledProgress));
+            courses.Remove(pulledCourse.Key);
         }
 
         /// <inheritdoc/>
@@ -322,15 +321,14 @@ namespace Services
                 throw new ArgumentNullException(nameof(editedCourse));
             }
 
-            var pulledUserCourse = courses.Find(course => course.Course.Id == editedCourse.Id).Course;
-            if (pulledUserCourse == null)
+            var pulledUserCourse = courses.FirstOrDefault(course => course.Key == editedCourse.Id);
+            if (pulledUserCourse.Value == null)
             {
                 return;
             }
 
-            var pulledProgress = courses.Find(course => course.Course.Id == editedCourse.Id).Progress;
-            var index = courses.IndexOf((pulledUserCourse, pulledProgress));
-            courses[index] = (editedCourse, pulledProgress);
+            courses.Remove(pulledUserCourse.Key);
+            AddCourse(editedCourse);
         }
 
         private ArticleMaterial ArticleUserInput(int id)

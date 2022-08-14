@@ -57,10 +57,11 @@ namespace API.Controllers
             while (page == Command.UserPage)
             {
                 Console.Clear();
-                var courseProgressPair = currentUser.UserCourses;
-                UserPageView.Show(currentUser, courseProgressPair);
+                var userCourses = currentUser.UserCourses.Select(c => c.Key).ToList();
+                var courses = _courseService.GetAll().Where(c => userCourses.Contains(c.Id));
+                UserPageView.Show(currentUser, courses.ToList());
+                // ?????
 
-                var userCourses = courseProgressPair.Select(c => c.Course).ToList();
                 string cmdLine = Console.ReadLine();
                 switch (cmdLine)
                 {
@@ -74,7 +75,7 @@ namespace API.Controllers
                         break;
                     case Command.OpenCourseCommand:
                         Console.Write("Введіть номер курсу: ");
-                        if (_validateService.Course.Validate(userCourses, Console.ReadLine(), out course))
+                        if (_validateService.Course.Validate(courses.ToList(), Console.ReadLine(), out course))
                         {
                             page = new CourseController(_userService, _courseService, _authorizedUser, new OpenedCourseService(course, _validateService), Command.UserPage).Launch();
                         }
@@ -82,7 +83,7 @@ namespace API.Controllers
                         break;
                     case Command.DeleteCourseCommand:
                         Console.Write("Введіть номер курсу: ");
-                        if (_validateService.Course.Validate(userCourses, Console.ReadLine(), out course))
+                        if (_validateService.Course.Validate(courses.ToList(), Console.ReadLine(), out course))
                         {
                             _authorizedUser.RemoveCourse(course.Id);
                             _userService.Save();

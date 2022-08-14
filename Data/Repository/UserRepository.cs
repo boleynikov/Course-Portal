@@ -7,69 +7,78 @@ namespace Data.Repository
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Data.Context;
     using Data.Repository.Interface;
     using Domain;
+    using Microsoft.EntityFrameworkCore;
 
     /// <summary>
     /// User repository.
     /// </summary>
     public class UserRepository : IRepository<User>
     {
-        private readonly IDbContext _dbContext;
-        private readonly List<User> _users;
+        private readonly DbContextFactory _contextFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserRepository"/> class.
         /// </summary>
-        /// <param name="dbContext">DBContext.</param>
-        public UserRepository(IDbContext dbContext)
+        /// <param name="contextFactory">DBContextFactory.</param>
+        public UserRepository(DbContextFactory contextFactory)
         {
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            _users = dbContext.Get<User>().ToList();
+            _contextFactory = contextFactory;
         }
 
         /// <inheritdoc/>
         public void Add(User user)
         {
-            _users.Add(user);
-            Save();
+            var context = _contextFactory.Get();
+            context.Users.Add(user);
+            context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Users] ON");
+            context.SaveChanges();
+            context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Users] OFF");
         }
 
         /// <inheritdoc/>
         public void DeleteByIndex(int id)
         {
-            _users.Remove(_users[id]);
-            Save();
+            var context = _contextFactory.Get();
+            var user = context.Users.FirstOrDefault(u => u.Id == id);
+            context.Users.Remove(user);
+            context.SaveChanges();
         }
 
         /// <inheritdoc/>
         public IEnumerable<User> GetAll()
         {
-            return _users.ToArray();
+            var context = _contextFactory.Get();
+            return context.Users;
         }
 
         /// <inheritdoc/>
         public User GetByID(int id)
         {
-            var user = _users.FirstOrDefault(c => c.Id == id);
-            return user ?? throw new ArgumentOutOfRangeException(nameof(id));
+            var context = _contextFactory.Get();
+            return context.Users.FirstOrDefault(u => u.Id == id);
         }
 
         /// <inheritdoc/>
         public void Save()
         {
-            _dbContext.Update(_users);
+            var context = _contextFactory.Get();
+
+            context.SaveChanges();
         }
 
         /// <inheritdoc/>
         public void Update(User editedUser)
         {
-            var user = _users.FirstOrDefault(u => u.Id == editedUser.Id);
+            var context = _contextFactory.Get();
+            var user = context.Users.FirstOrDefault(u => u.Id == editedUser.Id);
             if (user != null)
             {
-                int i = _users.IndexOf(user);
-                _users[i] = editedUser;
-                Save();
+                context.Users.Remove(user);
+                context.Users.Add(editedUser);
+                context.SaveChanges();
             }
         }
     }

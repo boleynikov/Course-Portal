@@ -7,6 +7,7 @@ namespace Data.Repository
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Data.Context;
     using Data.Repository.Interface;
     using Domain.CourseMaterials;
 
@@ -15,61 +16,65 @@ namespace Data.Repository
     /// </summary>
     public class MaterialRepository : IRepository<Material>
     {
-        private readonly IDbContext _dbContext;
-        private readonly List<Material> _materials;
+        private readonly DbContextFactory _contextFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MaterialRepository"/> class.
         /// </summary>
-        /// <param name="dbContext">DBContext.</param>
-        public MaterialRepository(IDbContext dbContext)
+        /// <param name="contextFactory">DBContextFactory.</param>
+        public MaterialRepository(DbContextFactory contextFactory)
         {
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            _materials = dbContext.Get<Material>().ToList();
+            _contextFactory = contextFactory;
         }
 
         /// <inheritdoc/>
         public void Add(Material material)
         {
-            _materials.Add(material);
-            Save();
+            var context = _contextFactory.Get();
+            context.Materials.Add(material);
+            context.SaveChanges();
         }
 
         /// <inheritdoc/>
         public void DeleteByIndex(int id)
         {
-            _materials.Remove(_materials[id]);
-            Save();
+            var context = _contextFactory.Get();
+            var material = context.Materials.FirstOrDefault(u => u.Id == id);
+            context.Materials.Remove(material);
+            context.SaveChanges();
         }
 
         /// <inheritdoc/>
         public IEnumerable<Material> GetAll()
         {
-            return _materials.ToArray();
+            var context = _contextFactory.Get();
+            return context.Materials;
         }
 
         /// <inheritdoc/>
         public Material GetByID(int id)
         {
-            var material = _materials.FirstOrDefault(c => c.Id == id);
-            return material ?? throw new ArgumentOutOfRangeException(nameof(id));
+            var context = _contextFactory.Get();
+            return context.Materials.FirstOrDefault(u => u.Id == id);
         }
 
         /// <inheritdoc/>
         public void Save()
         {
-            _dbContext.Update(_materials);
+            var context = _contextFactory.Get();
+            context.SaveChanges();
         }
 
         /// <inheritdoc/>
         public void Update(Material editedMaterial)
         {
-            var material = _materials.FirstOrDefault(u => u.Id == editedMaterial.Id);
+            var context = _contextFactory.Get();
+            var material = context.Materials.FirstOrDefault(u => u.Id == editedMaterial.Id);
             if (material != null)
             {
-                int i = _materials.IndexOf(material);
-                _materials[i] = editedMaterial;
-                Save();
+                context.Materials.Remove(material);
+                context.Materials.Add(editedMaterial);
+                context.SaveChanges();
             }
         }
     }

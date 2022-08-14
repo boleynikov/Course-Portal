@@ -1,13 +1,14 @@
 ﻿using Domain;
 using Services.Helper;
 using System;
+using System.Linq;
 
 namespace API.View
 {
     /// <summary>
     /// Course console view
     /// </summary>
-    public class CoursePageView
+    public static class CoursePageView
     {
         /// <summary>
         /// Show to console
@@ -27,10 +28,10 @@ namespace API.View
             }
 
             Console.WriteLine($"Курс: {currentCourse.Name}");
-            var pulledCourseTuple = currentUser.UserCourses.Find(c => c.Course.Id == currentCourse.Id);
-            if (pulledCourseTuple.Course != null)
+            var pulledCourseTuple = currentUser.UserCourses.FirstOrDefault(c => c.Key == currentCourse.Id);
+            if (pulledCourseTuple.Value != null)
             {
-                Console.WriteLine($"\tВаш прогрес: {pulledCourseTuple.Progress.State} {pulledCourseTuple.Progress.Percentage} %");
+                Console.WriteLine($"\tВаш прогрес: {pulledCourseTuple.Value.State} {pulledCourseTuple.Value.Percentage} %");
             }
 
             Console.WriteLine($"Опис: {currentCourse.Description}\n" +
@@ -51,6 +52,9 @@ namespace API.View
                                   $"Щоб повернутися назад - введіть {Command.BackCommand}\n");
         }
 
+        /// <summary>
+        /// Botttom navigation
+        /// </summary>
         public static void EditNavigationView()
         {
             Console.WriteLine("Введіть цифри у відповідності до того що саме ви хочете відредагувати\n" +

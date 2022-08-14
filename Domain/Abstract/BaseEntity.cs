@@ -15,7 +15,7 @@ namespace Domain.Abstract
         /// <param name="id">Entity id.</param>
         protected BaseEntity(int id)
         {
-            Id = id;
+            //Id = id;
         }
 
         /// <summary>
