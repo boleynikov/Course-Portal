@@ -17,18 +17,10 @@ namespace Data
     /// </summary>
     public class AppDbContext : DbContext
     {
-        ///// <summary>
-        ///// Value comparer for dictionary
-        ///// </summary>
-        //private static readonly ValueComparer _dictionaryComparer =
-        //             new ValueComparer<Dictionary<string, string>>(
-        //                 (dictionary1, dictionary2) => dictionary1.SequenceEqual(dictionary2),
-        //                 dictionary => dictionary.Aggregate(
-        //                     0,
-        //                     (a, p) => HashCode.Combine(HashCode.Combine(a, p.Key.GetHashCode(StringComparison.InvariantCultureIgnoreCase), p.Value.GetHashCode(StringComparison.InvariantCultureIgnoreCase))
-        //                         )
-        //                     )
-        //                 );
+        /// <summary>
+        /// Value comparer for dictionary
+        /// </summary>
+        private static readonly ValueComparer _dictionaryComparer = new ValueComparer<Dictionary<int, CourseProgress>> ((dictionary1, dictionary2) => dictionary1.SequenceEqual(dictionary2), dictionary => dictionary.Aggregate(0, (a, p) => HashCode.Combine(HashCode.Combine(a, p.Key.GetHashCode(), p.Value.GetHashCode()))));
         /// <summary>
         /// Set of users
         /// </summary>
@@ -70,8 +62,8 @@ namespace Data
             action.Property(u => u.UserCourses)
                   .HasConversion(
                     value => JsonConvert.SerializeObject(value),
-                    value => JsonConvert.DeserializeObject<Dictionary<int, CourseProgress>>(value));
-                      //.Metadata.SetValueComparer(_dictionaryComparer);
+                    value => JsonConvert.DeserializeObject<Dictionary<int, CourseProgress>>(value))
+                      .Metadata.SetValueComparer(_dictionaryComparer);
             });
 
             //modelBuilder.Entity<User>()

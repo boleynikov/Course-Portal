@@ -10,6 +10,7 @@ namespace Data.Repository
     using Data.Context;
     using Data.Repository.Interface;
     using Domain;
+    using Microsoft.EntityFrameworkCore;
 
     /// <summary>
     /// Course repository.
@@ -32,7 +33,9 @@ namespace Data.Repository
         {
             var context = _contextFactory.Get();
             context.Courses.Add(course);
+            context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Courses] ON");
             context.SaveChanges();
+            context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Courses] OFF");
         }
 
         /// <inheritdoc/>
@@ -41,7 +44,9 @@ namespace Data.Repository
             var context = _contextFactory.Get();
             var course = context.Courses.FirstOrDefault(u => u.Id == id);
             context.Courses.Remove(course);
+            context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Courses] ON");
             context.SaveChanges();
+            context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Courses] OFF");
         }
 
         /// <inheritdoc/>
@@ -60,7 +65,9 @@ namespace Data.Repository
             {
                 context.Courses.Remove(course);
                 context.Courses.Add(editedCourse);
+                context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Courses] ON");
                 context.SaveChanges();
+                context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Courses] OFF");
             }
         }
 
@@ -68,7 +75,9 @@ namespace Data.Repository
         public void Save()
         {
             var context = _contextFactory.Get();
+            context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Courses] ON");
             context.SaveChanges();
+            context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Courses] OFF");
         }
 
         /// <inheritdoc/>

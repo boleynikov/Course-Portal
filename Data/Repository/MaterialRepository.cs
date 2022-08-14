@@ -10,6 +10,7 @@ namespace Data.Repository
     using Data.Context;
     using Data.Repository.Interface;
     using Domain.CourseMaterials;
+    using Microsoft.EntityFrameworkCore;
 
     /// <summary>
     /// Material Repository.
@@ -32,7 +33,9 @@ namespace Data.Repository
         {
             var context = _contextFactory.Get();
             context.Materials.Add(material);
+            context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Materials] ON");
             context.SaveChanges();
+            context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Materials] OFF");
         }
 
         /// <inheritdoc/>
@@ -41,7 +44,9 @@ namespace Data.Repository
             var context = _contextFactory.Get();
             var material = context.Materials.FirstOrDefault(u => u.Id == id);
             context.Materials.Remove(material);
+            context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Materials] ON");
             context.SaveChanges();
+            context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Materials] OFF");
         }
 
         /// <inheritdoc/>
@@ -62,7 +67,9 @@ namespace Data.Repository
         public void Save()
         {
             var context = _contextFactory.Get();
+            context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Materials] ON");
             context.SaveChanges();
+            context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Materials] OFF");
         }
 
         /// <inheritdoc/>
@@ -74,7 +81,9 @@ namespace Data.Repository
             {
                 context.Materials.Remove(material);
                 context.Materials.Add(editedMaterial);
+                context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Materials] ON");
                 context.SaveChanges();
+                context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Materials] OFF");
             }
         }
     }
