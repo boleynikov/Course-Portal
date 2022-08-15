@@ -22,9 +22,7 @@ namespace Data.Migrations
             modelBuilder.Entity("Domain.Course", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -40,9 +38,7 @@ namespace Data.Migrations
             modelBuilder.Entity("Domain.CourseMaterials.Material", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
 
                     b.Property<int?>("CourseId")
                         .HasColumnType("int");
@@ -71,35 +67,10 @@ namespace Data.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("Material");
                 });
 
-            modelBuilder.Entity("Domain.Skill", b =>
-                {
-                    b.Property<int>("Name")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CourseId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Points")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Name");
-
-                    b.HasIndex("CourseId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Skill");
-                });
-
             modelBuilder.Entity("Domain.User", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -174,29 +145,14 @@ namespace Data.Migrations
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("Domain.Skill", b =>
-                {
-                    b.HasOne("Domain.Course", null)
-                        .WithMany("CourseSkills")
-                        .HasForeignKey("CourseId");
-
-                    b.HasOne("Domain.User", null)
-                        .WithMany("UserSkills")
-                        .HasForeignKey("UserId");
-                });
-
             modelBuilder.Entity("Domain.Course", b =>
                 {
                     b.Navigation("CourseMaterials");
-
-                    b.Navigation("CourseSkills");
                 });
 
             modelBuilder.Entity("Domain.User", b =>
                 {
                     b.Navigation("UserMaterials");
-
-                    b.Navigation("UserSkills");
                 });
 #pragma warning restore 612, 618
         }

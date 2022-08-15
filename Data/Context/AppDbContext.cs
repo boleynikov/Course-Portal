@@ -66,10 +66,15 @@ namespace Data
                       .Metadata.SetValueComparer(_dictionaryComparer);
             });
 
-            //modelBuilder.Entity<User>()
-            //.Property(a => a.Id)
+            modelBuilder.Entity<User>()
+            .Property(a => a.Id).ValueGeneratedNever();
 
-            //base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Course>()
+            .Property(a => a.Id).ValueGeneratedNever();
+
+            modelBuilder.Entity<Material>()
+            .Property(a => a.Id).ValueGeneratedNever();
+
         }
 
         /// <summary>

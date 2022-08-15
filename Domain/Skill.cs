@@ -5,13 +5,13 @@
 namespace Domain
 {
     using Domain.Enum;
-    using System;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     /// <summary>
     /// Skill class.
     /// </summary>
-    [Serializable]
+    [NotMapped]
     public class Skill
     {
         /// <summary>

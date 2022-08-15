@@ -33,9 +33,7 @@ namespace Data.Repository
         {
             var context = _contextFactory.Get();
             context.Users.Add(user);
-            context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Users] ON");
             context.SaveChanges();
-            context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Users] OFF");
         }
 
         /// <inheritdoc/>
@@ -44,9 +42,7 @@ namespace Data.Repository
             var context = _contextFactory.Get();
             var user = context.Users.FirstOrDefault(u => u.Id == id);
             context.Users.Remove(user);
-            context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Users] ON");
             context.SaveChanges();
-            context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Users] OFF");
         }
 
         /// <inheritdoc/>
@@ -68,9 +64,7 @@ namespace Data.Repository
         {
             var context = _contextFactory.Get();
 
-            context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Users] ON");
             context.SaveChanges();
-            context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Users] OFF");
         }
 
         /// <inheritdoc/>
@@ -82,9 +76,7 @@ namespace Data.Repository
             {
                 context.Users.Remove(user);
                 context.Users.Add(editedUser);
-                context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Users] ON");
                 context.SaveChanges();
-                context.Database.ExecuteSqlRaw(@"SET IDENTITY_INSERT [dbo].[Users] OFF");
             }
         }
     }
