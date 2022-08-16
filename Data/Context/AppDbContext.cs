@@ -75,13 +75,6 @@ namespace Data
             modelBuilder.Entity<User>()
             .Property(a => a.Id).ValueGeneratedNever();
 
-            modelBuilder.Entity<User>(action =>
-            {
-                action.Property(u => u.UserCourses)
-                      .HasConversion(
-                        value => JsonConvert.SerializeObject(value),
-                        value => JsonConvert.DeserializeObject<Dictionary<int, CourseProgress>>(value));
-            });
             JsonConverter[] converters = { new MaterialConverter() };
             modelBuilder?.Entity<User>(action =>
             {
@@ -89,6 +82,16 @@ namespace Data
                       .HasConversion(
                         value => JsonConvert.SerializeObject(value),
                         value => JsonConvert.DeserializeObject<List<Material>>(value, new JsonSerializerSettings() { Converters = converters }));
+
+                action.Property(u => u.UserCourses)
+                      .HasConversion(
+                        value => JsonConvert.SerializeObject(value),
+                        value => JsonConvert.DeserializeObject<Dictionary<int, CourseProgress>>(value));
+
+                action.Property(u => u.UserSkills)
+                      .HasConversion(
+                        value => JsonConvert.SerializeObject(value),
+                        value => JsonConvert.DeserializeObject<List<Skill>>(value));
             });
         }
 
@@ -104,6 +107,11 @@ namespace Data
                       .HasConversion(
                         value => JsonConvert.SerializeObject(value),
                         value => JsonConvert.DeserializeObject<List<Material>>(value, new JsonSerializerSettings() { Converters = converters }));
+
+                action.Property(u => u.CourseSkills)
+                      .HasConversion(
+                        value => JsonConvert.SerializeObject(value),
+                        value => JsonConvert.DeserializeObject<List<Skill>>(value));
             });
         }
 
