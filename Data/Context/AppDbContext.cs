@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using Data.Repository;
+using Domain;
 using Domain.CourseMaterials;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -17,10 +18,6 @@ namespace Data
     /// </summary>
     public class AppDbContext : DbContext
     {
-        /// <summary>
-        /// Value comparer for dictionary
-        /// </summary>
-        private static readonly ValueComparer _dictionaryComparer = new ValueComparer<Dictionary<int, CourseProgress>> ((dictionary1, dictionary2) => dictionary1.SequenceEqual(dictionary2), dictionary => dictionary.Aggregate(0, (a, p) => HashCode.Combine(HashCode.Combine(a, p.Key.GetHashCode(), p.Value.GetHashCode()))));
         /// <summary>
         /// Set of users
         /// </summary>
@@ -57,24 +54,10 @@ namespace Data
         /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder?.Entity<User>(action =>
-            {
-            action.Property(u => u.UserCourses)
-                  .HasConversion(
-                    value => JsonConvert.SerializeObject(value),
-                    value => JsonConvert.DeserializeObject<Dictionary<int, CourseProgress>>(value))
-                      .Metadata.SetValueComparer(_dictionaryComparer);
-            });
 
-            modelBuilder.Entity<User>()
-            .Property(a => a.Id).ValueGeneratedNever();
-
-            modelBuilder.Entity<Course>()
-            .Property(a => a.Id).ValueGeneratedNever();
-
-            modelBuilder.Entity<Material>()
-            .Property(a => a.Id).ValueGeneratedNever();
-
+            BuildUsers(modelBuilder);
+            BuildCourses(modelBuilder);
+            BuildMaterials(modelBuilder);
         }
 
         /// <summary>
@@ -84,6 +67,50 @@ namespace Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb; Database=CoursePortal; Trusted_Connection=true;");
+        }
+
+
+        private void BuildUsers(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>()
+            .Property(a => a.Id).ValueGeneratedNever();
+
+            modelBuilder.Entity<User>(action =>
+            {
+                action.Property(u => u.UserCourses)
+                      .HasConversion(
+                        value => JsonConvert.SerializeObject(value),
+                        value => JsonConvert.DeserializeObject<Dictionary<int, CourseProgress>>(value));
+            });
+            JsonConverter[] converters = { new MaterialConverter() };
+            modelBuilder?.Entity<User>(action =>
+            {
+                action.Property(u => u.UserMaterials)
+                      .HasConversion(
+                        value => JsonConvert.SerializeObject(value),
+                        value => JsonConvert.DeserializeObject<List<Material>>(value, new JsonSerializerSettings() { Converters = converters }));
+            });
+        }
+
+        private void BuildCourses(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Course>()
+            .Property(a => a.Id).ValueGeneratedNever();
+
+            JsonConverter[] converters = { new MaterialConverter() };
+            modelBuilder?.Entity<Course>(action =>
+            {
+                action.Property(u => u.CourseMaterials)
+                      .HasConversion(
+                        value => JsonConvert.SerializeObject(value),
+                        value => JsonConvert.DeserializeObject<List<Material>>(value, new JsonSerializerSettings() { Converters = converters }));
+            });
+        }
+
+        private void BuildMaterials(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Material>()
+            .Property(a => a.Id).ValueGeneratedNever();
         }
     }
 }

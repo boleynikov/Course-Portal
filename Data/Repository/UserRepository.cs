@@ -71,13 +71,8 @@ namespace Data.Repository
         public void Update(User editedUser)
         {
             var context = _contextFactory.Get();
-            var user = context.Users.FirstOrDefault(u => u.Id == editedUser.Id);
-            if (user != null)
-            {
-                context.Users.Remove(user);
-                context.Users.Add(editedUser);
-                context.SaveChanges();
-            }
+            context.Entry(editedUser).State = EntityState.Modified;
+            context.SaveChanges();
         }
     }
 }

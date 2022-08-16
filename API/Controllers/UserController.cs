@@ -5,13 +5,11 @@
 namespace API.Controllers
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using API.Controllers.Abstract;
     using API.View;
     using Domain;
     using Domain.CourseMaterials;
-    using Domain.Enum;
     using Services;
     using Services.Helper;
     using Services.Interface;
@@ -86,7 +84,7 @@ namespace API.Controllers
                         if (_validateService.Course.Validate(courses.ToList(), Console.ReadLine(), out course))
                         {
                             _authorizedUser.RemoveCourse(course.Id);
-                            _userService.Save();
+                            _userService.Update(currentUser);
                         }
 
                         break;

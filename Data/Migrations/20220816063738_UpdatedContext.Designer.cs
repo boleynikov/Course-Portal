@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220815131900_ValueGeneratedNever")]
-    partial class ValueGeneratedNever
+    [Migration("20220816063738_UpdatedContext")]
+    partial class UpdatedContext
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -25,6 +25,9 @@ namespace Data.Migrations
                 {
                     b.Property<int>("Id")
                         .HasColumnType("int");
+
+                    b.Property<string>("CourseMaterials")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -42,9 +45,6 @@ namespace Data.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CourseId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -55,41 +55,11 @@ namespace Data.Migrations
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Materials");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Material");
-                });
-
-            modelBuilder.Entity("Domain.Skill", b =>
-                {
-                    b.Property<int>("Name")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CourseId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Points")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Name");
-
-                    b.HasIndex("CourseId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Skill");
                 });
 
             modelBuilder.Entity("Domain.User", b =>
@@ -107,6 +77,9 @@ namespace Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserCourses")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserMaterials")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -157,42 +130,6 @@ namespace Data.Migrations
                         .HasColumnType("int");
 
                     b.HasDiscriminator().HasValue("VideoMaterial");
-                });
-
-            modelBuilder.Entity("Domain.CourseMaterials.Material", b =>
-                {
-                    b.HasOne("Domain.Course", null)
-                        .WithMany("CourseMaterials")
-                        .HasForeignKey("CourseId");
-
-                    b.HasOne("Domain.User", null)
-                        .WithMany("UserMaterials")
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("Domain.Skill", b =>
-                {
-                    b.HasOne("Domain.Course", null)
-                        .WithMany("CourseSkills")
-                        .HasForeignKey("CourseId");
-
-                    b.HasOne("Domain.User", null)
-                        .WithMany("UserSkills")
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("Domain.Course", b =>
-                {
-                    b.Navigation("CourseMaterials");
-
-                    b.Navigation("CourseSkills");
-                });
-
-            modelBuilder.Entity("Domain.User", b =>
-                {
-                    b.Navigation("UserMaterials");
-
-                    b.Navigation("UserSkills");
                 });
 #pragma warning restore 612, 618
         }

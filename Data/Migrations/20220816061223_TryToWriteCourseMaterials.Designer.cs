@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220815132937_NotMappedSkill")]
-    partial class NotMappedSkill
+    [Migration("20220816061223_TryToWriteCourseMaterials")]
+    partial class TryToWriteCourseMaterials
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -25,6 +25,9 @@ namespace Data.Migrations
                 {
                     b.Property<int>("Id")
                         .HasColumnType("int");
+
+                    b.Property<string>("CourseMaterials")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -42,9 +45,6 @@ namespace Data.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CourseId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -59,8 +59,6 @@ namespace Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
 
                     b.HasIndex("UserId");
 
@@ -138,18 +136,9 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Domain.CourseMaterials.Material", b =>
                 {
-                    b.HasOne("Domain.Course", null)
-                        .WithMany("CourseMaterials")
-                        .HasForeignKey("CourseId");
-
                     b.HasOne("Domain.User", null)
                         .WithMany("UserMaterials")
                         .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("Domain.Course", b =>
-                {
-                    b.Navigation("CourseMaterials");
                 });
 
             modelBuilder.Entity("Domain.User", b =>

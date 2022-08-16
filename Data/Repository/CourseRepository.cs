@@ -56,13 +56,8 @@ namespace Data.Repository
         public void Update(Course editedCourse)
         {
             var context = _contextFactory.Get();
-            var course = context.Courses.FirstOrDefault(u => u.Id == editedCourse.Id);
-            if (course != null)
-            {
-                context.Courses.Remove(course);
-                context.Courses.Add(editedCourse);
-                context.SaveChanges();
-            }
+            context.Entry(editedCourse).State = EntityState.Modified;
+            context.SaveChanges();
         }
 
         /// <inheritdoc/>

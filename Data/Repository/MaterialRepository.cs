@@ -70,13 +70,8 @@ namespace Data.Repository
         public void Update(Material editedMaterial)
         {
             var context = _contextFactory.Get();
-            var material = context.Materials.FirstOrDefault(u => u.Id == editedMaterial.Id);
-            if (material != null)
-            {
-                context.Materials.Remove(material);
-                context.Materials.Add(editedMaterial);
-                context.SaveChanges();
-            }
+            context.Entry(editedMaterial).State = EntityState.Modified;
+            context.SaveChanges();
         }
     }
 }

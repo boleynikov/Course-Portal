@@ -24,6 +24,9 @@ namespace Data.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
+                    b.Property<string>("CourseMaterials")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -40,9 +43,6 @@ namespace Data.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CourseId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -53,14 +53,7 @@ namespace Data.Migrations
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Materials");
 
@@ -82,6 +75,9 @@ namespace Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserCourses")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserMaterials")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -132,27 +128,6 @@ namespace Data.Migrations
                         .HasColumnType("int");
 
                     b.HasDiscriminator().HasValue("VideoMaterial");
-                });
-
-            modelBuilder.Entity("Domain.CourseMaterials.Material", b =>
-                {
-                    b.HasOne("Domain.Course", null)
-                        .WithMany("CourseMaterials")
-                        .HasForeignKey("CourseId");
-
-                    b.HasOne("Domain.User", null)
-                        .WithMany("UserMaterials")
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("Domain.Course", b =>
-                {
-                    b.Navigation("CourseMaterials");
-                });
-
-            modelBuilder.Entity("Domain.User", b =>
-                {
-                    b.Navigation("UserMaterials");
                 });
 #pragma warning restore 612, 618
         }

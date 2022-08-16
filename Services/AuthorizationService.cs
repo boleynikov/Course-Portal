@@ -52,6 +52,7 @@ namespace Services
 
             var item = new KeyValuePair<int, CourseProgress>(newCourse.Id, new CourseProgress() { State = State.NotCompleted, Percentage = 0f });
             _account.UserCourses.Add(item.Key, item.Value);
+            _userService.Update(_account);
         }
         /// <inheritdoc/>
         public Course CreateCourse(IService<Course> courseService, IService<Material> materialService)
