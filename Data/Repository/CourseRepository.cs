@@ -4,11 +4,10 @@
 
 namespace Data.Repository
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Data.Context;
-    using Data.Repository.Interface;
+    using Context;
+    using Interface;
     using Domain;
     using Microsoft.EntityFrameworkCore;
 

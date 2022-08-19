@@ -4,8 +4,7 @@
 
 namespace Domain
 {
-    using Domain.Enum;
-    using System.ComponentModel.DataAnnotations;
+    using Enum;
     using System.ComponentModel.DataAnnotations.Schema;
 
     /// <summary>
@@ -17,7 +16,6 @@ namespace Domain
         /// <summary>
         /// Gets or sets name of skill.
         /// </summary>
-        [Key]
         public SkillKind Name { get; set; }
 
         /// <summary>

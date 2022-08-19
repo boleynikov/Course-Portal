@@ -6,12 +6,12 @@ namespace API.Controllers
 {
     using System;
     using System.Linq;
-    using API.Controllers.Abstract;
-    using API.View;
+    using Abstract;
     using Domain;
     using Services;
     using Services.Helper;
     using Services.Interface;
+    using View;
 
     /// <summary>
     /// Home Controller.

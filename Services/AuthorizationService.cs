@@ -12,8 +12,8 @@ namespace Services
     using Domain;
     using Domain.CourseMaterials;
     using Domain.Enum;
-    using Services.Helper;
-    using Services.Interface;
+    using Helper;
+    using Interface;
 
     /// <summary>
     /// Authentication service.
@@ -138,9 +138,6 @@ namespace Services
             }
 
             return course;
-            //AddCourse(course);
-            //_userService.Save();
-            //courseService.Add(course);
         }
         /// <inheritdoc/>
         public IEnumerable<Material> CreateMaterials(IService<Material> materialService)

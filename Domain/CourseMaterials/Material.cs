@@ -4,7 +4,7 @@
 
 namespace Domain.CourseMaterials
 {
-    using Domain.Abstract;
+    using Abstract;
 
     /// <summary>
     /// Abstract material class.

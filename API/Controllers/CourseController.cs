@@ -5,11 +5,11 @@
 namespace API.Controllers
 {
     using System;
-    using API.Controllers.Abstract;
-    using API.View;
+    using Abstract;
     using Domain;
     using Services.Helper;
     using Services.Interface;
+    using View;
 
     /// <summary>
     /// Course Controller.

@@ -6,7 +6,7 @@ namespace API
 {
     using System;
     using System.Text;
-    using API.Controllers;
+    using Controllers;
     using Data.Context;
     using Data.Repository;
     using Domain;
@@ -54,6 +54,8 @@ namespace API
                         break;
                 }
             }
+
+            contextFactory.Get().Dispose();
         }
     }
 }

@@ -9,7 +9,7 @@ using System.Linq;
 namespace Services
 {
     /// <summary>
-    /// Opened Course functionallity
+    /// Opened Course functionality
     /// </summary>
     public class OpenedCourseService : IOpenedCourseService
     {
