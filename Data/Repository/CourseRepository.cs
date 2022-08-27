@@ -48,7 +48,7 @@ namespace Data.Repository
         public Course GetByID(int id)
         {
             var context = _contextFactory.Get();
-            return context.Courses.FirstOrDefault(u => u.Id == id);
+            return context.Courses.Include(c => c.CourseMaterials).FirstOrDefault(u => u.Id == id);
         }
 
         /// <inheritdoc/>
@@ -70,7 +70,7 @@ namespace Data.Repository
         public IEnumerable<Course> GetAll()
         {
             var context = _contextFactory.Get();
-            return context.Courses;
+            return context.Courses.Include(c => c.CourseMaterials);
         }
     }
 }

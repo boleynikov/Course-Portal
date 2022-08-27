@@ -2,14 +2,9 @@
 using Domain;
 using Domain.CourseMaterials;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Data
 {
@@ -54,6 +49,10 @@ namespace Data
         /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            if (modelBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(modelBuilder));
+            }
 
             BuildUsers(modelBuilder);
             BuildCourses(modelBuilder);
@@ -78,10 +77,6 @@ namespace Data
             JsonConverter[] converters = { new MaterialConverter() };
             modelBuilder?.Entity<User>(action =>
             {
-                action.Property(u => u.UserMaterials)
-                      .HasConversion(
-                        value => JsonConvert.SerializeObject(value),
-                        value => JsonConvert.DeserializeObject<List<Material>>(value, new JsonSerializerSettings() { Converters = converters }));
 
                 action.Property(u => u.UserCourses)
                       .HasConversion(
@@ -100,14 +95,8 @@ namespace Data
             modelBuilder.Entity<Course>()
             .Property(a => a.Id).ValueGeneratedNever();
 
-            JsonConverter[] converters = { new MaterialConverter() };
             modelBuilder?.Entity<Course>(action =>
             {
-                action.Property(u => u.CourseMaterials)
-                      .HasConversion(
-                        value => JsonConvert.SerializeObject(value),
-                        value => JsonConvert.DeserializeObject<List<Material>>(value, new JsonSerializerSettings() { Converters = converters }));
-
                 action.Property(u => u.CourseSkills)
                       .HasConversion(
                         value => JsonConvert.SerializeObject(value),
@@ -119,6 +108,9 @@ namespace Data
         {
             modelBuilder.Entity<Material>()
             .Property(a => a.Id).ValueGeneratedNever();
+
+            modelBuilder.Entity<Material>()
+                .HasOne(m => m.User).WithMany(u => u.UserMaterials);
         }
     }
 }

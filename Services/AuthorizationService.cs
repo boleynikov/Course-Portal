@@ -40,7 +40,7 @@ namespace Services
             if (newCourse == null)
             {
                 throw new ArgumentNullException(nameof(newCourse));
-            }
+            } 
 
             if (_account.UserCourses.FirstOrDefault(c => c.Key == newCourse.Id).Key != 0)
             {
