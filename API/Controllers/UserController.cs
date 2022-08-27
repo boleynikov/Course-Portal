@@ -58,7 +58,6 @@ namespace API.Controllers
                 var userCourses = currentUser.UserCourses.Select(c => c.Key).ToList();
                 var courses = _courseService.GetAll().Where(c => userCourses.Contains(c.Id));
                 UserPageView.Show(currentUser, courses.ToList());
-                // ?????
 
                 string cmdLine = Console.ReadLine();
                 switch (cmdLine)
@@ -85,6 +84,7 @@ namespace API.Controllers
                         {
                             _authorizedUser.RemoveCourse(course.Id);
                             _userService.Update(currentUser);
+                            _courseService.DeleteByIndex(course.Id);
                         }
 
                         break;

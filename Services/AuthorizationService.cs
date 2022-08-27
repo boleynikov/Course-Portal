@@ -66,7 +66,8 @@ namespace Services
             string name = UserInput.NotEmptyString(() => Console.ReadLine());
             Console.Write("Введіть опис курсу: ");
             string description = UserInput.NotEmptyString(() => Console.ReadLine());
-            int id = courseService.GetAll().ToList().Count + 1;
+            int coursesCount = courseService.GetAll().Count();
+            int id = courseService.GetAll().ToList()[coursesCount - 1].Id + 1;
             var course = new Course(id, name, description);
             List<Material> materials = new();
             if (_account.UserMaterials.ToList().Count > 0)
