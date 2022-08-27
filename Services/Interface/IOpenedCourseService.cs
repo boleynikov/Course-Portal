@@ -36,7 +36,8 @@ namespace Services.Interface
         /// <summary>
         /// Delete material in opened course
         /// </summary>
-        void DeleteCourseMaterial();
+        /// <returns>Index of removed material</returns>
+        int DeleteCourseMaterial();
         /// <summary>
         /// Add material which user is own to course
         /// </summary>

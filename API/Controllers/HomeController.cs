@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using Domain.CourseMaterials;
+
 namespace API.Controllers
 {
     using System;
@@ -11,6 +13,7 @@ namespace API.Controllers
     using Services;
     using Services.Helper;
     using Services.Interface;
+    using Services.Validators;
     using View;
 
     /// <summary>
@@ -20,6 +23,7 @@ namespace API.Controllers
     {
         private readonly IService<Course> _courseService;
         private readonly IService<User> _userService;
+        private readonly IService<Material> _materialService;
         private readonly IAuthorizationService _authorizedUser;
         private readonly Validator _validatorService;
 
@@ -32,11 +36,13 @@ namespace API.Controllers
         public HomeController(
             IService<Course> courseService,
             IService<User> userService,
+            IService<Material> materialService,
             IAuthorizationService authService,
             Validator validatorService)
         {
             _courseService = courseService;
             _userService = userService;
+            _materialService = materialService;
             _authorizedUser = authService;
             _validatorService = validatorService;
         }
@@ -49,7 +55,6 @@ namespace API.Controllers
             while (page == Command.HomePage)
             {
                 var currentUser = _authorizedUser.Get();
-                string cmdLine;
                 if (currentUser == null)
                 {
                     page = NotAuthorized();
@@ -119,7 +124,7 @@ namespace API.Controllers
                     Console.Write("Введіть номер курсу: ");
                     if (_validatorService.Course.Validate(courses, Console.ReadLine(), out course))
                     {
-                        page = new CourseController(_userService, _courseService, _authorizedUser, new OpenedCourseService(course, new Validator())).Launch();
+                        page = new CourseController(_userService, _courseService, _materialService, _authorizedUser, new OpenedCourseService(course, new Validator())).Launch();
                     }
 
                     break;

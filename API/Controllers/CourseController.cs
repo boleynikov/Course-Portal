@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using Domain.CourseMaterials;
+
 namespace API.Controllers
 {
     using System;
@@ -18,6 +20,7 @@ namespace API.Controllers
     {
         private readonly IService<User> _userService;
         private readonly IService<Course> _courseService;
+        private readonly IService<Material> _materialService;
         private readonly IAuthorizationService _authorizedUser;
         private readonly IOpenedCourseService _openedCourse;
         private readonly string _redirectPage;
@@ -33,12 +36,14 @@ namespace API.Controllers
         public CourseController(
             IService<User> userService,
             IService<Course> courseService,
+            IService<Material> materialService,
             IAuthorizationService authorizedUser,
             IOpenedCourseService openedCourse,
             string redirectPage = "home")
         {
             _userService = userService;
             _courseService = courseService;
+            _materialService = materialService;
             _openedCourse = openedCourse;
             _authorizedUser = authorizedUser;
             _redirectPage = redirectPage;
@@ -100,7 +105,19 @@ namespace API.Controllers
                         _openedCourse.EditCourseDescription();
                         break;
                     case Command.DeleteCourseMaterial:
-                        _openedCourse.DeleteCourseMaterial();
+                        try
+                        {
+                            int matId = _openedCourse.DeleteCourseMaterial();
+                            if (_materialService.GetById(matId).User.Id == _authorizedUser.Get().Id)
+                            {
+                                _materialService.DeleteByIndex(matId);
+                            }
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Такого ідентифікатору немає");
+                        }
+
                         break;
                     case Command.AddCourseMaterials:
                         _openedCourse.AddCourseMaterial(_authorizedUser.Get().UserMaterials);

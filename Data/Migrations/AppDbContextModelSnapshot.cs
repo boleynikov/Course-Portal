@@ -48,7 +48,12 @@ namespace Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Courses");
                 });
@@ -165,6 +170,15 @@ namespace Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Domain.Course", b =>
+                {
+                    b.HasOne("Domain.User", "User")
+                        .WithMany("CreatedCourses")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.CourseMaterials.Material", b =>
                 {
                     b.HasOne("Domain.User", "User")
@@ -176,6 +190,8 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Domain.User", b =>
                 {
+                    b.Navigation("CreatedCourses");
+
                     b.Navigation("UserMaterials");
                 });
 #pragma warning restore 612, 618

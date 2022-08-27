@@ -14,6 +14,7 @@ namespace API
     using Services;
     using Services.Helper;
     using Services.Interface;
+    using Services.Validators;
 
     /// <summary>
     /// Start Program class.
@@ -39,7 +40,7 @@ namespace API
                 switch (page)
                 {
                     case Command.HomePage:
-                        page = new HomeController(courseService, userService, authorizationService, validator).Launch();
+                        page = new HomeController(courseService, userService, materialService, authorizationService, validator).Launch();
                         break;
                     case Command.UserPage:
                         page = new UserController(courseService, materialService, userService, authorizationService, validator).Launch();

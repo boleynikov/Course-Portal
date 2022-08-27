@@ -14,6 +14,7 @@ namespace Services
     using Domain.Enum;
     using Helper;
     using Interface;
+    using Services.Validators;
 
     /// <summary>
     /// Authentication service.
@@ -154,7 +155,8 @@ namespace Services
             {
                 Console.Write("Обраний матеріал: ");
                 cmdLine = UserInput.NotEmptyString(() => Console.ReadLine());
-                int id = materialService.GetAll().ToList().Count + 1;
+                int materialsCount = materialService.GetAll().Count();
+                int id = materialService.GetAll().ToList()[materialsCount - 1].Id + 1;
                 switch (cmdLine)
                 {
                     case Command.ArticleInputCase:

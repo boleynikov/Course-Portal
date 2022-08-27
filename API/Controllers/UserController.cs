@@ -12,6 +12,7 @@ namespace API.Controllers
     using Services;
     using Services.Helper;
     using Services.Interface;
+    using Services.Validators;
     using View;
 
     /// <summary>
@@ -74,7 +75,7 @@ namespace API.Controllers
                         Console.Write("Введіть номер курсу: ");
                         if (_validateService.Course.Validate(courses.ToList(), Console.ReadLine(), out course))
                         {
-                            page = new CourseController(_userService, _courseService, _authorizedUser, new OpenedCourseService(course, _validateService), Command.UserPage).Launch();
+                            page = new CourseController(_userService, _courseService, _materialService, _authorizedUser, new OpenedCourseService(course, _validateService), Command.UserPage).Launch();
                         }
 
                         break;

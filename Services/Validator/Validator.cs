@@ -1,4 +1,4 @@
-﻿namespace Services
+﻿namespace Services.Validators
 {
     public class Validator
     {
