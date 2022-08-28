@@ -4,7 +4,6 @@
 
 namespace Services.Interface
 {
-    using Domain;
 
     /// <summary>
     /// Interface of Authorization Service.

@@ -10,7 +10,6 @@ namespace Data.Repository
     using Interface;
     using Domain;
     using Microsoft.EntityFrameworkCore;
-    using System;
 
     /// <summary>
     /// Course repository.
