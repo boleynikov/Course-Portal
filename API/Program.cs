@@ -32,18 +32,18 @@ namespace API
             IService<Course> courseService = new CourseService(new CourseRepository(contextFactory));
             IService<User> userService = new UserService(new UserRepository(contextFactory));
             Validator validator = new ();
-            IAuthorizationService authorizationService = new AuthorizationService(userService, validator);
-
+            IAuthorizedUserService authorizedUserService = new AuthorizedUserService(userService, validator);
+            IAuthorizationService authorizationService = new AuthorizationService(userService, authorizedUserService);
             string page = Command.HomePage;
             while (page != Command.ExitCommand)
             {
                 switch (page)
                 {
                     case Command.HomePage:
-                        page = new HomeController(courseService, userService, materialService, authorizationService, validator).Launch();
+                        page = new HomeController(courseService, userService, materialService, authorizationService, authorizedUserService, validator).Launch();
                         break;
                     case Command.UserPage:
-                        page = new UserController(courseService, materialService, userService, authorizationService, validator).Launch();
+                        page = new UserController(courseService, materialService, userService, authorizedUserService, validator).Launch();
                         break;
                     case Command.BackCommand:
                         page = Command.HomePage;

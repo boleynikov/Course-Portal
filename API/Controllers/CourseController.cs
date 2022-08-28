@@ -21,7 +21,7 @@ namespace API.Controllers
         private readonly IService<User> _userService;
         private readonly IService<Course> _courseService;
         private readonly IService<Material> _materialService;
-        private readonly IAuthorizationService _authorizedUser;
+        private readonly IAuthorizedUserService _authorizedUser;
         private readonly IOpenedCourseService _openedCourse;
         private readonly string _redirectPage;
 
@@ -37,7 +37,7 @@ namespace API.Controllers
             IService<User> userService,
             IService<Course> courseService,
             IService<Material> materialService,
-            IAuthorizationService authorizedUser,
+            IAuthorizedUserService authorizedUser,
             IOpenedCourseService openedCourse,
             string redirectPage = "home")
         {
@@ -56,7 +56,7 @@ namespace API.Controllers
             while (page == Command.CoursePage)
             {
                 Console.Clear();
-                var currentUser = _authorizedUser.Get();
+                var currentUser = _authorizedUser.Account;
                 var currentCourse = _openedCourse.Get();
                 CoursePageView.Show(currentUser, currentCourse);
                 string cmdLine = Console.ReadLine();
@@ -68,7 +68,6 @@ namespace API.Controllers
                         break;
                     case Command.EditCommand:
                         EditCourse();
-                        _authorizedUser.UpdateCourseInfo(currentCourse);
                         _courseService.Update(currentCourse);
                         _userService.Update(currentUser);
                         break;
@@ -108,7 +107,7 @@ namespace API.Controllers
                         try
                         {
                             int matId = _openedCourse.DeleteCourseMaterial();
-                            if (_materialService.GetById(matId).User.Id == _authorizedUser.Get().Id)
+                            if (_materialService.GetById(matId).User.Id == _authorizedUser.Account.Id)
                             {
                                 _materialService.DeleteByIndex(matId);
                             }
@@ -120,7 +119,7 @@ namespace API.Controllers
 
                         break;
                     case Command.AddCourseMaterials:
-                        _openedCourse.AddCourseMaterial(_authorizedUser.Get().UserMaterials);
+                        _openedCourse.AddCourseMaterial(_authorizedUser.Account.UserMaterials);
                         break;
                 }
             }

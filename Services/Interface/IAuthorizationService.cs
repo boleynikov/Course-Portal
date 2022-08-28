@@ -9,13 +9,8 @@ namespace Services.Interface
     /// <summary>
     /// Interface of Authorization Service.
     /// </summary>
-    public interface IAuthorizationService : IAuthorizedUserService
+    public interface IAuthorizationService
     {
-        /// <summary>
-        /// Get current authorized account.
-        /// </summary>
-        /// <returns>User instance.</returns>
-        User Get();
 
         /// <summary>
         /// Login to system.

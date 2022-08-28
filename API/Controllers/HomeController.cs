@@ -24,7 +24,8 @@ namespace API.Controllers
         private readonly IService<Course> _courseService;
         private readonly IService<User> _userService;
         private readonly IService<Material> _materialService;
-        private readonly IAuthorizationService _authorizedUser;
+        private readonly IAuthorizationService _authorization;
+        private readonly IAuthorizedUserService _authorizedUser;
         private readonly Validator _validatorService;
 
         /// <summary>
@@ -37,13 +38,15 @@ namespace API.Controllers
             IService<Course> courseService,
             IService<User> userService,
             IService<Material> materialService,
-            IAuthorizationService authService,
+            IAuthorizationService authorizationService,
+            IAuthorizedUserService authorizedUserService,
             Validator validatorService)
         {
             _courseService = courseService;
             _userService = userService;
             _materialService = materialService;
-            _authorizedUser = authService;
+            _authorization = authorizationService;
+            _authorizedUser = authorizedUserService;
             _validatorService = validatorService;
         }
 
@@ -54,7 +57,7 @@ namespace API.Controllers
 
             while (page == Command.HomePage)
             {
-                var currentUser = _authorizedUser.Get();
+                var currentUser = _authorizedUser.Account;
                 if (currentUser == null)
                 {
                     page = NotAuthorized();
@@ -81,7 +84,7 @@ namespace API.Controllers
                     string email = UserInput.NotEmptyString(() => Console.ReadLine());
                     Console.Write("Введіть пароль: ");
                     string password = UserInput.NotEmptyString(() => Console.ReadLine());
-                    _authorizedUser.Login(email, password);
+                    _authorization.Login(email, password);
                     break;
                 case Command.RegisterCommand:
                     Console.Write("Введіть своє ім'я: ");
@@ -90,7 +93,7 @@ namespace API.Controllers
                     email = UserInput.NotEmptyString(() => Console.ReadLine());
                     Console.Write("Введіть пароль: ");
                     password = UserInput.NotEmptyString(() => Console.ReadLine());
-                    _authorizedUser.Register(name, email, password);
+                    _authorization.Register(name, email, password);
                     break;
                 case Command.ExitCommand:
                     page = Command.ExitCommand;
@@ -103,7 +106,7 @@ namespace API.Controllers
         private string Authorized()
         {
             var courses = _courseService.GetAll().ToList();
-            HomepageView.Show(courses, true, _authorizedUser.Get().Name);
+            HomepageView.Show(courses, true, _authorizedUser.Account.Name);
             string page = Command.HomePage;
             string cmdLine = Console.ReadLine();
             switch (cmdLine)
@@ -129,7 +132,7 @@ namespace API.Controllers
 
                     break;
                 case Command.LogoutCommand:
-                    _authorizedUser.Logout();
+                    _authorization.Logout();
                     break;
                 case Command.ExitCommand:
                     page = Command.ExitCommand;

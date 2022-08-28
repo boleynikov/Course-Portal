@@ -24,7 +24,7 @@ namespace API.Controllers
         private readonly IService<Material> _materialService;
         private readonly IService<User> _userService;
         private readonly Validator _validateService;
-        private readonly IAuthorizationService _authorizedUser;
+        private readonly IAuthorizedUserService _authorizedUser;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserController"/> class.
@@ -37,7 +37,7 @@ namespace API.Controllers
             IService<Course> courseService,
             IService<Material> materialService,
             IService<User> userService,
-            IAuthorizationService authorizedUser,
+            IAuthorizedUserService authorizedUser,
             Validator validateService)
         {
             _courseService = courseService;
@@ -50,7 +50,7 @@ namespace API.Controllers
         /// <inheritdoc/>
         public string Launch()
         {
-            var currentUser = _authorizedUser.Get();
+            var currentUser = _authorizedUser.Account;
             string page = Command.UserPage;
 
             while (page == Command.UserPage)
