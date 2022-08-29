@@ -1,30 +1,27 @@
-﻿using Domain.CourseMaterials;
+﻿using Domain;
 using Services.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Services
+namespace Services.Validators
 {
-    public class MaterialsValidator : IValidateService<Material>
+    public class CourseValidator : IValidateService<Course>
     {
-        public bool Validate(List<Material> userOrCourseMaterials, string strEntityId, out Material entity)
+        public bool Validate(List<Course> Entities, string strEntityId, out Course entity)
         {
-
-            if (int.TryParse(strEntityId, out int materialId))
+            if (int.TryParse(strEntityId, out int courseId))
             {
                 try
                 {
-                    entity = userOrCourseMaterials.FirstOrDefault(c => c.Id == materialId)
-                        ?? throw new ArgumentOutOfRangeException(nameof(materialId));
+                    entity = Entities.FirstOrDefault(c => c.Id == courseId)
+                        ?? throw new ArgumentOutOfRangeException(nameof(entity));
                     return true;
                 }
                 catch (ArgumentOutOfRangeException)
                 {
                     entity = null;
-                    Console.WriteLine($"Немає матеріалу з таким ідентифікатором {materialId}\n" +
+                    Console.WriteLine("Немає курсу з таким ідентифікатором\n" +
                                       "Натисніть Enter");
                     Console.ReadLine();
                     return false;

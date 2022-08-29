@@ -1,10 +1,6 @@
 ﻿using Domain;
 using Domain.CourseMaterials;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Interface
 {
@@ -36,7 +32,8 @@ namespace Services.Interface
         /// <summary>
         /// Delete material in opened course
         /// </summary>
-        void DeleteCourseMaterial();
+        /// <returns>Index of removed material</returns>
+        int DeleteCourseMaterial();
         /// <summary>
         /// Add material which user is own to course
         /// </summary>

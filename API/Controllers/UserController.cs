@@ -5,16 +5,15 @@
 namespace API.Controllers
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
-    using API.Controllers.Abstract;
-    using API.View;
+    using Abstract;
     using Domain;
     using Domain.CourseMaterials;
-    using Domain.Enum;
     using Services;
     using Services.Helper;
     using Services.Interface;
+    using Services.Validators;
+    using View;
 
     /// <summary>
     /// User Controller.
@@ -25,7 +24,7 @@ namespace API.Controllers
         private readonly IService<Material> _materialService;
         private readonly IService<User> _userService;
         private readonly Validator _validateService;
-        private readonly IAuthorizationService _authorizedUser;
+        private readonly IAuthorizedUserService _authorizedUser;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserController"/> class.
@@ -38,7 +37,7 @@ namespace API.Controllers
             IService<Course> courseService,
             IService<Material> materialService,
             IService<User> userService,
-            IAuthorizationService authorizedUser,
+            IAuthorizedUserService authorizedUser,
             Validator validateService)
         {
             _courseService = courseService;
@@ -51,16 +50,16 @@ namespace API.Controllers
         /// <inheritdoc/>
         public string Launch()
         {
-            var currentUser = _authorizedUser.Get();
+            var currentUser = _authorizedUser.Account;
             string page = Command.UserPage;
 
             while (page == Command.UserPage)
             {
                 Console.Clear();
-                var courseProgressPair = currentUser.UserCourses;
-                UserPageView.Show(currentUser, courseProgressPair);
+                var userCourses = currentUser.UserCourses.Select(c => c.Key).ToList();
+                var courses = _courseService.GetAll().Where(c => userCourses.Contains(c.Id));
+                UserPageView.Show(currentUser, courses.ToList());
 
-                var userCourses = courseProgressPair.Select(c => c.Course).ToList();
                 string cmdLine = Console.ReadLine();
                 switch (cmdLine)
                 {
@@ -74,18 +73,19 @@ namespace API.Controllers
                         break;
                     case Command.OpenCourseCommand:
                         Console.Write("Введіть номер курсу: ");
-                        if (_validateService.Course.Validate(userCourses, Console.ReadLine(), out course))
+                        if (_validateService.Course.Validate(courses.ToList(), Console.ReadLine(), out course))
                         {
-                            page = new CourseController(_userService, _courseService, _authorizedUser, new OpenedCourseService(course, _validateService), Command.UserPage).Launch();
+                            page = new CourseController(_userService, _courseService, _materialService, _authorizedUser, new OpenedCourseService(course, _validateService), Command.UserPage).Launch();
                         }
 
                         break;
                     case Command.DeleteCourseCommand:
                         Console.Write("Введіть номер курсу: ");
-                        if (_validateService.Course.Validate(userCourses, Console.ReadLine(), out course))
+                        if (_validateService.Course.Validate(courses.ToList(), Console.ReadLine(), out course))
                         {
                             _authorizedUser.RemoveCourse(course.Id);
-                            _userService.Save();
+                            _userService.Update(currentUser);
+                            _courseService.DeleteByIndex(course.Id);
                         }
 
                         break;

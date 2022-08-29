@@ -6,13 +6,15 @@ namespace API
 {
     using System;
     using System.Text;
-    using API.Controllers;
+    using Controllers;
+    using Data.Context;
     using Data.Repository;
     using Domain;
     using Domain.CourseMaterials;
     using Services;
     using Services.Helper;
     using Services.Interface;
+    using Services.Validators;
 
     /// <summary>
     /// Start Program class.
@@ -24,24 +26,24 @@ namespace API
             Console.OutputEncoding = Encoding.Unicode;
             Console.InputEncoding = Encoding.Unicode;
 
-            var context = new FileDbContext();
+            var contextFactory = new DbContextFactory();
 
-            IService<Material> materialService = new MaterialService(new MaterialRepository(context));
-            IService<Course> courseService = new CourseService(new CourseRepository(context));
-            IService<User> userService = new UserService(new UserRepository(context));
-            Validator validator = new Validator();
-            IAuthorizationService authorizationService = new AuthorizationService(userService, validator);
-
+            IService<Material> materialService = new MaterialService(new MaterialRepository(contextFactory));
+            IService<Course> courseService = new CourseService(new CourseRepository(contextFactory));
+            IService<User> userService = new UserService(new UserRepository(contextFactory));
+            Validator validator = new ();
+            IAuthorizedUserService authorizedUserService = new AuthorizedUserService(userService, validator);
+            IAuthorizationService authorizationService = new AuthorizationService(userService, authorizedUserService);
             string page = Command.HomePage;
             while (page != Command.ExitCommand)
             {
                 switch (page)
                 {
                     case Command.HomePage:
-                        page = new HomeController(courseService, userService, authorizationService, validator).Launch();
+                        page = new HomeController(courseService, userService, materialService, authorizationService, authorizedUserService, validator).Launch();
                         break;
                     case Command.UserPage:
-                        page = new UserController(courseService, materialService, userService, authorizationService, validator).Launch();
+                        page = new UserController(courseService, materialService, userService, authorizedUserService, validator).Launch();
                         break;
                     case Command.BackCommand:
                         page = Command.HomePage;
@@ -53,6 +55,8 @@ namespace API
                         break;
                 }
             }
+
+            contextFactory.Get().Dispose();
         }
     }
 }

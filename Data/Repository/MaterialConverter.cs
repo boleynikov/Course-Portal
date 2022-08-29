@@ -30,11 +30,11 @@ namespace Data.Repository
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             JObject jo = JObject.Load(reader);
-            return jo["type"].Value<string>() == "Article"
+            return jo["Type"].Value<string>() == "Article"
                 ? jo.ToObject<ArticleMaterial>(serializer)
-                : jo["type"].Value<string>() == "Publication"
+                : jo["Type"].Value<string>() == "Publication"
                 ? jo.ToObject<PublicationMaterial>(serializer)
-                : jo["type"].Value<string>() == "Video" ? jo.ToObject<VideoMaterial>(serializer) : null;
+                : jo["Type"].Value<string>() == "Video" ? jo.ToObject<VideoMaterial>(serializer) : null;
         }
 
         /// <inheritdoc/>

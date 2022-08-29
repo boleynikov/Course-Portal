@@ -2,9 +2,11 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Collections.Generic;
+
 namespace Domain.CourseMaterials
 {
-    using Domain.Abstract;
+    using Abstract;
 
     /// <summary>
     /// Abstract material class.
@@ -34,5 +36,15 @@ namespace Domain.CourseMaterials
         /// Gets or sets title of material.
         /// </summary>
         public string Title { get; set; }
+
+        /// <summary>
+        /// Gets or sets creator of material
+        /// </summary>
+        public User User { get; set; }
+
+        /// <summary>
+        /// List of attached courses
+        /// </summary>
+        public List<Course> Courses { get; set; }
     }
 }

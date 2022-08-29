@@ -2,34 +2,41 @@
 using Services.Helper;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace API.View
 {
     /// <summary>
     /// User Page console view
     /// </summary>
-    public class UserPageView
+    public static class UserPageView
     {
         /// <summary>
         /// Show user page to console
         /// </summary>
         /// <param name="currentUser"></param>
         /// <param name="userCourses"></param>
-        public static void Show(User currentUser, List<(Course, CourseProgress)> userCourses)
+        public static void Show(User currentUser, List<Course> userCourses)
         {
-            if (userCourses == null)
-            {
-                throw new ArgumentNullException(nameof(userCourses));
-            }
-
             if (currentUser == null)
             {
                 throw new ArgumentNullException(nameof(currentUser));
             }
 
+            if (userCourses == null)
+            {
+                throw new ArgumentNullException(nameof(userCourses));
+            }
+
             Console.WriteLine($"Обліковий запис\n" +
                                   $"Ім'я: {currentUser.Name}\n" +
                                   $"Email: {currentUser.Email}\n");
+            var userCoursesDictionary = userCourses.Zip(currentUser.UserCourses.Values, (k, v) => new
+            {
+                k,
+                v
+            }).ToDictionary(x => x.k, x => x.v);
+
             if (userCourses.Count <= 0)
             {
                 Console.WriteLine("У вас ще немає доданих чи створених курсів.");
@@ -38,10 +45,10 @@ namespace API.View
             {
                 Console.WriteLine($"Кількість курсів користувача: {userCourses.Count}\n" +
                                    "Список наявних курсів:");
-                foreach (var courseKeyValue in currentUser.UserCourses)
+                foreach (var courseKeyValue in userCoursesDictionary)
                 {
-                    var course = courseKeyValue.Course;
-                    var progress = courseKeyValue.Progress;
+                    var course = courseKeyValue.Key;
+                    var progress = courseKeyValue.Value;
                     Console.WriteLine("\t|{0, 2}.| {1,-40} | {2, 5}, {3, 3} %", course.Id, course.Name, progress.State, progress.Percentage);
                 }
             }

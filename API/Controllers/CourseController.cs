@@ -2,14 +2,16 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using Domain.CourseMaterials;
+
 namespace API.Controllers
 {
     using System;
-    using API.Controllers.Abstract;
-    using API.View;
+    using Abstract;
     using Domain;
     using Services.Helper;
     using Services.Interface;
+    using View;
 
     /// <summary>
     /// Course Controller.
@@ -18,7 +20,8 @@ namespace API.Controllers
     {
         private readonly IService<User> _userService;
         private readonly IService<Course> _courseService;
-        private readonly IAuthorizationService _authorizedUser;
+        private readonly IService<Material> _materialService;
+        private readonly IAuthorizedUserService _authorizedUser;
         private readonly IOpenedCourseService _openedCourse;
         private readonly string _redirectPage;
 
@@ -33,12 +36,14 @@ namespace API.Controllers
         public CourseController(
             IService<User> userService,
             IService<Course> courseService,
-            IAuthorizationService authorizedUser,
+            IService<Material> materialService,
+            IAuthorizedUserService authorizedUser,
             IOpenedCourseService openedCourse,
             string redirectPage = "home")
         {
             _userService = userService;
             _courseService = courseService;
+            _materialService = materialService;
             _openedCourse = openedCourse;
             _authorizedUser = authorizedUser;
             _redirectPage = redirectPage;
@@ -51,7 +56,7 @@ namespace API.Controllers
             while (page == Command.CoursePage)
             {
                 Console.Clear();
-                var currentUser = _authorizedUser.Get();
+                var currentUser = _authorizedUser.Account;
                 var currentCourse = _openedCourse.Get();
                 CoursePageView.Show(currentUser, currentCourse);
                 string cmdLine = Console.ReadLine();
@@ -63,7 +68,6 @@ namespace API.Controllers
                         break;
                     case Command.EditCommand:
                         EditCourse();
-                        _authorizedUser.UpdateCourseInfo(currentCourse);
                         _courseService.Update(currentCourse);
                         _userService.Update(currentUser);
                         break;
@@ -100,10 +104,22 @@ namespace API.Controllers
                         _openedCourse.EditCourseDescription();
                         break;
                     case Command.DeleteCourseMaterial:
-                        _openedCourse.DeleteCourseMaterial();
+                        try
+                        {
+                            int matId = _openedCourse.DeleteCourseMaterial();
+                            if (_materialService.GetById(matId).User.Id == _authorizedUser.Account.Id)
+                            {
+                                _materialService.DeleteByIndex(matId);
+                            }
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Такого ідентифікатору немає");
+                        }
+
                         break;
                     case Command.AddCourseMaterials:
-                        _openedCourse.AddCourseMaterial(_authorizedUser.Get().UserMaterials);
+                        _openedCourse.AddCourseMaterial(_authorizedUser.Account.UserMaterials);
                         break;
                 }
             }

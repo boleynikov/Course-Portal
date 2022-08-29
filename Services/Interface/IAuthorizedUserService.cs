@@ -10,14 +10,14 @@ namespace Services.Interface
     public interface IAuthorizedUserService
     {
         /// <summary>
+        /// Get current account
+        /// </summary>
+        /// <returns></returns>
+        public User Account { get; set; }
+        /// <summary>
         /// Create new course
         /// </summary>
         Course CreateCourse(IService<Course> courseService, IService<Material> materialService);
-        /// <summary>
-        /// Update existing course in user list
-        /// </summary>
-        /// <param name="editedCourse"></param>
-        void UpdateCourseInfo(Course editedCourse);
         /// <summary>
         /// Add new course to user list
         /// </summary>

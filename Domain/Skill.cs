@@ -4,13 +4,13 @@
 
 namespace Domain
 {
-    using Domain.Enum;
-    using System;
+    using Enum;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     /// <summary>
     /// Skill class.
     /// </summary>
-    [Serializable]
+    [NotMapped]
     public class Skill
     {
         /// <summary>

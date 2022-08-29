@@ -2,6 +2,7 @@
 using Domain.CourseMaterials;
 using Services.Helper;
 using Services.Interface;
+using Services.Validators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Linq;
 namespace Services
 {
     /// <summary>
-    /// Opened Course functionallity
+    /// Opened Course functionality
     /// </summary>
     public class OpenedCourseService : IOpenedCourseService
     {
@@ -63,7 +64,7 @@ namespace Services
             _course.Description = description;
         }
         /// <inheritdoc/>
-        public void DeleteCourseMaterial()
+        public int DeleteCourseMaterial()
         {
             Console.Write("Введіть ідентифікатор матеріалу: ");
             var currentCourse = _course;
@@ -74,8 +75,12 @@ namespace Services
                 Console.WriteLine($"Матеріал {strMaterialId} успішно видалено\n" +
                                    "Натисніть Enter");
                 Console.ReadLine();
+                return material.Id;
             }
+
+            throw new ArgumentOutOfRangeException();
         }
+
         /// <inheritdoc/>
         public void AddCourseMaterial(List<Material> userMaterials)
         {

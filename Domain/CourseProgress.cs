@@ -4,7 +4,7 @@
 
 namespace Domain
 {
-    using Domain.Enum;
+    using Enum;
     using System;
 
     /// <summary>

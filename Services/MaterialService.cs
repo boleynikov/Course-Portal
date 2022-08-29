@@ -6,7 +6,7 @@ namespace Services
 {
     using Data.Repository.Interface;
     using Domain.CourseMaterials;
-    using Services.Interface;
+    using Interface;
     using System.Collections.Generic;
 
     /// <summary>

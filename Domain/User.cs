@@ -6,9 +6,8 @@ namespace Domain
 {
     using System;
     using System.Collections.Generic;
-    using Domain.Abstract;
-    using Domain.CourseMaterials;
-    using Domain.Enum;
+    using Abstract;
+    using CourseMaterials;
 
     /// <summary>
     /// User class.
@@ -31,7 +30,7 @@ namespace Domain
             Password = password;
             UserSkills = new List<Skill>();
             UserMaterials = new List<Material>();
-            UserCourses = new List<(Course, CourseProgress)>();
+            UserCourses = new Dictionary<int, CourseProgress>();
         }
 
         /// <summary>
@@ -60,8 +59,8 @@ namespace Domain
         public List<Material> UserMaterials { get; private set; }
 
         /// <summary>
-        /// Gets user courses.
+        /// User courses
         /// </summary>
-        public List<(Course Course, CourseProgress Progress)> UserCourses { get; private set; }
+        public Dictionary<int, CourseProgress> UserCourses { get; private set; }
     }
 }
