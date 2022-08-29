@@ -38,11 +38,11 @@ namespace Services
                 throw new ArgumentNullException(nameof(skill));
             }
 
-            var skillExist = skills.Find(c => c.Name == skill.Name);
+            var skillExist = skills.ToList().Find(c => c.Name == skill.Name);
             if (skillExist != null)
             {
-                var index = skills.IndexOf(skillExist);
-                skills[index].Points += value;
+                var index = skills.ToList().IndexOf(skillExist);
+                skills.ElementAt(index).Points += value;
             }
             else
             {
@@ -69,7 +69,7 @@ namespace Services
             Console.Write("Введіть ідентифікатор матеріалу: ");
             var currentCourse = _course;
             var strMaterialId = UserInput.NotEmptyString(() => Console.ReadLine());
-            if (_validateService.Material.Validate(currentCourse.CourseMaterials, strMaterialId, out Material material) && currentCourse.CourseMaterials.Contains(material))
+            if (_validateService.Material.Validate(currentCourse.CourseMaterials.ToList(), strMaterialId, out Material material) && currentCourse.CourseMaterials.Contains(material))
             {
                 currentCourse.CourseMaterials.Remove(material);
                 Console.WriteLine($"Матеріал {strMaterialId} успішно видалено\n" +

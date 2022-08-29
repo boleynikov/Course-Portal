@@ -51,12 +51,12 @@ namespace Domain
         /// <summary>
         /// Gets user skills.
         /// </summary>
-        public List<Skill> UserSkills { get; private set; }
+        public ICollection<Skill> UserSkills { get; private set; }
 
         /// <summary>
         /// Gets user materials.
         /// </summary>
-        public List<Material> UserMaterials { get; private set; }
+        public ICollection<Material> UserMaterials { get; private set; }
 
         /// <summary>
         /// User courses

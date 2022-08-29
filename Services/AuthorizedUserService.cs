@@ -54,7 +54,7 @@ namespace Services
         public IEnumerable<Material> AddExistingMaterials()
         {
             List<Material> newMaterials = new();
-            var userMaterials = Account.UserMaterials;
+            var userMaterials = Account.UserMaterials.ToList();
             Console.WriteLine("Оберіть номери матеріалів, які ви хочете додати через кому з пробілом [, ]");
             userMaterials?.ForEach((mat) => Console.WriteLine($"{mat.Id} {mat.Title}"));
 

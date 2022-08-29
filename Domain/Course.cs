@@ -43,11 +43,11 @@ namespace Domain
         /// <summary>
         /// Gets materials in course.
         /// </summary>
-        public List<Material> CourseMaterials { get; private set; }
+        public ICollection<Material> CourseMaterials { get; private set; }
 
         /// <summary>
         /// Gets skills, that user can get after complete.
         /// </summary>
-        public List<Skill> CourseSkills { get; private set; }
+        public ICollection<Skill> CourseSkills { get; private set; }
     }
 }
