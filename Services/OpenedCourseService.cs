@@ -55,17 +55,19 @@ namespace Services
             }
 
             var skills = _currentCourse.CourseSkills;
-            var skillExist = skills.ToList().Find(c => c.Name == skill.Name);
+            var existingSkill = skills.ToList().Find(c => c.Name == skill.Name);
 
-            if (skillExist != null)
+            if (existingSkill != null)
             {
-                var index = skills.ToList().IndexOf(skillExist);
+                var index = skills.ToList().IndexOf(existingSkill);
                 skills.ElementAt(index).Points += skill.Points;
             }
             else
             {
                 skills.Add(new Skill { Name = skill.Name, Points = skill.Points });
             }
+
+            _currentCourse.Status = CourseStatus.InEditing;
         }
         /// <inheritdoc/>
         public void DeleteSkill()
@@ -76,6 +78,7 @@ namespace Services
             {
                 var skill = _currentCourse.CourseSkills.ToList().Find(s => s.Name == name);
                 _currentCourse.CourseSkills.Remove(skill);
+                _currentCourse.Status = CourseStatus.InEditing;
             }
         }
         /// <inheritdoc/>

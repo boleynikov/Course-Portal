@@ -47,9 +47,18 @@ namespace API.View
                 Console.WriteLine("\t{0,20} | {1,5}", skill.Name, skill.Points);
             }
 
-            Console.WriteLine($"Щоб додати до свого списку курс - введіть {Command.AddCourseCommand}\n" +
+            if (currentUser.UserCourses.FirstOrDefault(c => c.Key == currentCourse.Id).Key != 0)
+            {
+                Console.WriteLine($"Щоб продовжити курс - введіть {Command.OpenCourseCommand}\n" +
                                   $"Щоб змінити назву опис чи додати матеріали до курсу - введіть {Command.EditCommand}\n" +
                                   $"Щоб повернутися назад - введіть {Command.BackCommand}\n");
+            }
+            else
+            {
+                Console.WriteLine($"Щоб додати до свого списку курс - введіть {Command.AddCourseCommand}\n" +
+                                  $"Щоб змінити назву опис чи додати матеріали до курсу - введіть {Command.EditCommand}\n" +
+                                  $"Щоб повернутися назад - введіть {Command.BackCommand}\n");
+            }
         }
 
         /// <summary>

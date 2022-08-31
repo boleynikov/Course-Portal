@@ -51,6 +51,15 @@ namespace Services
             _userService.Update(Account);
         }
 
+        public void EditCourseProgress(int courseId, float percentage)
+        {
+            var key = Account.UserCourses.FirstOrDefault(c => c.Key == courseId).Key;
+            Account.UserCourses[key].Percentage += percentage;
+            if (Account.UserCourses[key].Percentage >= 100f)
+            {
+                Account.UserCourses[key].State = State.Completed;
+            }
+        }
         public IEnumerable<Material> AddExistingMaterials()
         {
             List<Material> newMaterials = new();
@@ -73,16 +82,18 @@ namespace Services
 
         public void AddSkill(Skill skill)
         {
-            var skills = Account.UserSkills.ToList();
             if (skill == null)
             {
                 throw new ArgumentNullException(nameof(skill));
             }
 
-            if (skills.Find(c => c.Name == skill.Name) != null)
+            var skills = Account.UserSkills;
+            var existingSkill = skills.ToList().Find(c => c.Name == skill.Name);
+            
+            if (existingSkill != null)
             {
-                var index = skills.IndexOf(skills.Find(c => c.Name == skill.Name));
-                skills[index].Points += skill.Points;
+                var index = skills.ToList().IndexOf(existingSkill);
+                skills.ElementAt(index).Points += skill.Points;
             }
             else
             {
@@ -330,5 +341,6 @@ namespace Services
 
             return new VideoMaterial(id, title, duration, quality);
         }
+
     }
 }

@@ -31,11 +31,14 @@ namespace API.View
             Console.WriteLine($"Обліковий запис\n" +
                                   $"Ім'я: {currentUser.Name}\n" +
                                   $"Email: {currentUser.Email}\n");
-            var userCoursesDictionary = userCourses.Zip(currentUser.UserCourses.Values, (k, v) => new
+            Console.WriteLine("Навички, якими ви володієте:");
+            foreach (var skill in currentUser.UserSkills)
             {
-                k,
-                v
-            }).ToDictionary(x => x.k, x => x.v);
+                Console.WriteLine("\t{0,20} | {1,5}", skill.Name, skill.Points);
+            }
+
+            var userCoursesDictionary = userCourses.Zip(currentUser.UserCourses.Values.Reverse(),
+                                                        (k, v) => new { v, k }).ToDictionary(x => x.k, x => x.v);
 
             if (userCourses.Count <= 0)
             {
