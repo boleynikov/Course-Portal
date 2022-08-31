@@ -122,6 +122,12 @@ namespace API.Controllers
                     case Command.AddCourseMaterials:
                         _openedCourse.AddCourseMaterial(_authorizedUser.Account.UserMaterials.ToList());
                         break;
+                    case Command.AddNewOrEditSkill:
+                        _openedCourse.AddOrEditSkill();
+                        break;
+                    case Command.DeleteSkill:
+                        _openedCourse.DeleteSkill();
+                        break;
                 }
             }
         }

@@ -62,7 +62,9 @@ namespace API.View
                               $"{Command.EditCourseName} - змінити назву\n" +
                               $"{Command.EditCourseDescription} - змінити опис\n" +
                               $"{Command.AddCourseMaterials} - додати матеріали із вже завантажених користувачем\n" +
-                              $"{Command.DeleteCourseMaterial} - видалити матеріал із курсу");
+                              $"{Command.DeleteCourseMaterial} - видалити матеріал із курсу\n" +
+                              $"{Command.AddNewOrEditSkill} - додати нову навичку до курсу або відредагувати навичку\n" +
+                              $"{Command.DeleteSkill} - видалити якусь навичку з курсу\n");
         }
     }
 }

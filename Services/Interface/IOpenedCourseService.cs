@@ -14,13 +14,14 @@ namespace Services.Interface
         /// </summary>
         /// <returns></returns>
         Course Get();
-
         /// <summary>
         /// Add skill to course
         /// </summary>
-        /// <param name="skill"></param>
-        /// <param name="value"></param>
-        void AddSkill(Course currentCourse, Skill skill, int value);
+        void AddOrEditSkill();
+        /// <summary>
+        /// Delete skill from course
+        /// </summary>
+        void DeleteSkill();
         /// <summary>
         /// Edit course name
         /// </summary>

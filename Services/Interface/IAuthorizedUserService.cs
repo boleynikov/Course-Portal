@@ -36,12 +36,6 @@ namespace Services.Interface
         /// <param name="skill"></param>
         void AddSkill(Skill skill);
         /// <summary>
-        /// Create skill from command line
-        /// </summary>
-        /// <param name="cmdLine"></param>
-        /// <returns></returns>
-        Skill CreateSkill(string cmdLine);
-        /// <summary>
         /// Create Material in command line
         /// </summary>
         /// <returns></returns>

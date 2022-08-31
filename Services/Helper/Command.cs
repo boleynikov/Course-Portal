@@ -33,5 +33,7 @@
         public const string EditCourseDescription = "9";
         public const string AddCourseMaterials = "10";
         public const string DeleteCourseMaterial = "11";
+        public const string AddNewOrEditSkill = "12";
+        public const string DeleteSkill = "13";
     }
 }

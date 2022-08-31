@@ -243,7 +243,7 @@ namespace Services
             return courseMaterials;
         }
 
-        public Skill CreateSkill(string cmdLine)
+        public static Skill CreateSkill(string cmdLine)
         {
             Skill newSkill;
             string[] skillStr = cmdLine?.Split(" = ");
