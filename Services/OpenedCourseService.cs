@@ -6,6 +6,7 @@ using Services.Validators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Enum;
 
 namespace Services
 {
@@ -14,25 +15,25 @@ namespace Services
     /// </summary>
     public class OpenedCourseService : IOpenedCourseService
     {
-        private readonly Course _course;
+        private readonly Course _currentCourse;
         private readonly Validator _validateService;
         /// <summary>
         /// Initializes a new instance of the <see cref="OpenedCourseService"/> class.
         /// </summary>
-        /// <param name="course">Course, which will be opened</param>
-        public OpenedCourseService(Course course, Validator validateService)
+        /// <param name="currentCourse">Course, which will be opened</param>
+        public OpenedCourseService(Course currentCourse, Validator validateService)
         {
-            _course = course;
+            _currentCourse = currentCourse;
             _validateService = validateService;
         }
 
         /// <inheritdoc/>
-        public Course Get() => _course;
+        public Course Get() => _currentCourse;
 
         /// <inheritdoc/>
         public void AddSkill(Course currentCourse, Skill skill, int value)
         {
-            var skills = _course.CourseSkills;
+            var skills = _currentCourse.CourseSkills;
             if (skill == null)
             {
                 throw new ArgumentNullException(nameof(skill));
@@ -54,24 +55,26 @@ namespace Services
         {
             Console.Write("Введіть нову назву курсу: ");
             string name = UserInput.NotEmptyString(() => Console.ReadLine());
-            _course.Name = name;
+            _currentCourse.Name = name;
+            _currentCourse.Status = CourseStatus.InEditing;
         }
         /// <inheritdoc/>
         public void EditCourseDescription()
         {
             Console.Write("Введіть новий опис курсу: ");
             string description = UserInput.NotEmptyString(() => Console.ReadLine());
-            _course.Description = description;
+            _currentCourse.Description = description;
+            _currentCourse.Status = CourseStatus.InEditing;
         }
         /// <inheritdoc/>
         public int DeleteCourseMaterial()
         {
             Console.Write("Введіть ідентифікатор матеріалу: ");
-            var currentCourse = _course;
             var strMaterialId = UserInput.NotEmptyString(() => Console.ReadLine());
-            if (_validateService.Material.Validate(currentCourse.CourseMaterials.ToList(), strMaterialId, out Material material) && currentCourse.CourseMaterials.Contains(material))
+            if (_validateService.Material.Validate(_currentCourse.CourseMaterials.ToList(), strMaterialId, out Material material) && _currentCourse.CourseMaterials.Contains(material))
             {
-                currentCourse.CourseMaterials.Remove(material);
+                _currentCourse.CourseMaterials.Remove(material);
+                _currentCourse.Status = CourseStatus.InEditing;
                 Console.WriteLine($"Матеріал {strMaterialId} успішно видалено\n" +
                                    "Натисніть Enter");
                 Console.ReadLine();
@@ -88,7 +91,7 @@ namespace Services
             {
                 throw new ArgumentNullException(nameof(userMaterials));
             }
-            var currentCourse = _course;
+
             Console.WriteLine("Оберіть номери матеріалів, які ви хочете додати через кому з пробілом [, ]");
             userMaterials.ForEach((mat) => Console.WriteLine($"{mat.Id} {mat.Title}"));
 
@@ -96,9 +99,10 @@ namespace Services
             var listMaterialsIds = strMaterialsIds.Split(", ").ToList();
             listMaterialsIds.ForEach((stringMatId) =>
             {
-                if (_validateService.Material.Validate(userMaterials, stringMatId, out Material material) && !currentCourse.CourseMaterials.Contains(material))
+                if (_validateService.Material.Validate(userMaterials, stringMatId, out Material material) && !_currentCourse.CourseMaterials.Contains(material))
                 {
-                    currentCourse.CourseMaterials.Add(material);
+                    _currentCourse.CourseMaterials.Add(material);
+                    _currentCourse.Status = CourseStatus.InEditing;
                 }
                 else
                 {

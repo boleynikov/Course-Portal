@@ -8,6 +8,7 @@ namespace Domain
     using System.Collections.Generic;
     using Abstract;
     using CourseMaterials;
+    using Enum;
 
     /// <summary>
     /// Course.
@@ -21,11 +22,13 @@ namespace Domain
         /// <param name="id">Course id.</param>
         /// <param name="name">Course name.</param>
         /// <param name="description">Course description.</param>
-        public Course(int id, string name, string description)
+        /// <param name ="status">Editing course status</param>
+        public Course(int id, string name, string description, CourseStatus status = CourseStatus.CompletelyDone)
             : base(id)
         {
             Name = name;
             Description = description;
+            Status = status;
             CourseMaterials = new List<Material>();
             CourseSkills = new List<Skill>();
         }
@@ -39,6 +42,8 @@ namespace Domain
         /// Gets course description.
         /// </summary>
         public string Description { get; set; }
+
+        public CourseStatus Status { get; set; }
 
         /// <summary>
         /// Gets materials in course.

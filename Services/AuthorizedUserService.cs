@@ -102,7 +102,15 @@ namespace Services
             Console.Write("Введіть опис курсу: ");
             string description = UserInput.NotEmptyString(() => Console.ReadLine());
             int coursesCount = courseService.GetAll().Count();
-            int id = courseService.GetAll().ToList()[coursesCount - 1].Id + 1;
+            int id;
+            if (coursesCount == 0)
+            {
+                id = 1;
+            }
+            else
+            {
+                id = courseService.GetAll().ToList()[coursesCount - 1].Id + 1;
+            }
             var course = new Course(id, name, description);
             List<Material> materials = new();
             if (Account.UserMaterials.ToList().Count > 0)
@@ -190,7 +198,16 @@ namespace Services
                 Console.Write("Обраний матеріал: ");
                 cmdLine = UserInput.NotEmptyString(() => Console.ReadLine());
                 int materialsCount = materialService.GetAll().Count();
-                int id = materialService.GetAll().ToList()[materialsCount - 1].Id + 1;
+                int id;
+                if (materialsCount == 0)
+                {
+                    id = 1;
+                }
+                else
+                {
+                    id = materialService.GetAll().ToList()[materialsCount - 1].Id + 1;
+                }
+
                 switch (cmdLine)
                 {
                     case Command.ArticleInputCase:
