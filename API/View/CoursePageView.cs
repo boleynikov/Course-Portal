@@ -27,7 +27,7 @@ namespace API.View
                 throw new ArgumentNullException(nameof(currentUser));
             }
 
-            Console.WriteLine($"Курс: {currentCourse.Name}");
+            Console.WriteLine($"Курс: {currentCourse.Name} | *{currentCourse.Status}\n");
             var pulledCourseTuple = currentUser.UserCourses.FirstOrDefault(c => c.Key == currentCourse.Id);
             if (pulledCourseTuple.Value != null)
             {

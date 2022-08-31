@@ -2,6 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Linq;
 using Domain.CourseMaterials;
 
 namespace API.Controllers
@@ -119,7 +120,7 @@ namespace API.Controllers
 
                         break;
                     case Command.AddCourseMaterials:
-                        _openedCourse.AddCourseMaterial(_authorizedUser.Account.UserMaterials);
+                        _openedCourse.AddCourseMaterial(_authorizedUser.Account.UserMaterials.ToList());
                         break;
                 }
             }

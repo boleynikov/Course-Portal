@@ -45,6 +45,6 @@ namespace Domain.CourseMaterials
         /// <summary>
         /// List of attached courses
         /// </summary>
-        public List<Course> Courses { get; set; }
+        public ICollection<Course> Courses { get; set; }
     }
 }
