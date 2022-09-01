@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using API.Controllers.Abstract;
 using API.View;
 using Domain;
-using Domain.CourseMaterials;
 using Services.Helper;
 using Services.Interface;
 
