@@ -13,6 +13,7 @@ namespace Domain.Enum
     public enum State
     {
         NotCompleted = 0,
-        Completed = 1
+        Completed = 1,
+        PreCompleted = 2
     }
 }

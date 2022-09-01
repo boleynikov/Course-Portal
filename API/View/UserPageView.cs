@@ -31,10 +31,18 @@ namespace API.View
             Console.WriteLine($"Обліковий запис\n" +
                                   $"Ім'я: {currentUser.Name}\n" +
                                   $"Email: {currentUser.Email}\n");
-            Console.WriteLine("Навички, якими ви володієте:");
-            foreach (var skill in currentUser.UserSkills)
+
+            if (currentUser.UserSkills.Count <= 0)
             {
-                Console.WriteLine("\t{0,20} | {1,5}", skill.Name, skill.Points);
+                Console.WriteLine("Ви ще не освоїли ніяких навичок\n");
+            }
+            else
+            {
+                Console.WriteLine("Навички, якими ви володієте:");
+                foreach (var skill in currentUser.UserSkills)
+                {
+                    Console.WriteLine("\t{0,20} | {1,5}", skill.Name, skill.Points);
+                }
             }
 
             var userCoursesDictionary = userCourses.Zip(currentUser.UserCourses.Values.Reverse(),

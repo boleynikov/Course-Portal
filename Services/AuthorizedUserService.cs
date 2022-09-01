@@ -60,7 +60,7 @@ namespace Services
             Account.UserCourses[key].Percentage += percentage;
             if (Account.UserCourses[key].Percentage >= 100f)
             {
-                Account.UserCourses[key].State = State.Completed;
+                Account.UserCourses[key].State = State.PreCompleted;
             }
         }
         public IEnumerable<Material> AddExistingMaterials()

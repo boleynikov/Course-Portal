@@ -68,12 +68,14 @@ namespace API.Controllers
                     {
                         case Command.OpenCourseCommand:
                             page = new MaterialController(_authorizedUser, currentCourse).Launch();
-                            if (currentUser.UserCourses[_openedCourse.Get().Id].State == State.Completed)
+                            if (currentUser.UserCourses[_openedCourse.Get().Id].State == State.PreCompleted)
                             {
                                 foreach (var courseSkill in _openedCourse.Get().CourseSkills)
                                 {
                                     _authorizedUser.AddSkill(courseSkill);
                                 }
+
+                                currentUser.UserCourses[_openedCourse.Get().Id].State = State.Completed;
                             }
 
                             _userService.Update(currentUser);
