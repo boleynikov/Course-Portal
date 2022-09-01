@@ -40,6 +40,7 @@ namespace Services.Helper
 
         //material page
         public const string NextMaterial = "n";
+        public const string PreviousMaterial = "p";
         public const string BackToCourse = "b";
     }
 }

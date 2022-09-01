@@ -54,6 +54,11 @@ namespace Services
         public void EditCourseProgress(int courseId, float percentage)
         {
             var key = Account.UserCourses.FirstOrDefault(c => c.Key == courseId).Key;
+            if (Account.UserCourses[key].State == State.Completed)
+            {
+                return;
+            }
+
             Account.UserCourses[key].Percentage += percentage;
             if (Account.UserCourses[key].Percentage >= 100f)
             {
