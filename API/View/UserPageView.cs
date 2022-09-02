@@ -45,7 +45,7 @@ namespace API.View
                 }
             }
 
-            var userCoursesDictionary = userCourses.Zip(currentUser.UserCourses.Values.Reverse(),
+            var userCoursesDictionary = userCourses.Zip(currentUser.UserCourses.Values,
                                                         (k, v) => new { v, k }).ToDictionary(x => x.k, x => x.v);
 
             if (userCourses.Count <= 0)

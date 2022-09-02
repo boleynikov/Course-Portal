@@ -261,7 +261,8 @@ namespace Services
         {
             Skill newSkill;
             string[] skillStr = cmdLine?.Split(" = ");
-            if (Enum.TryParse(skillStr[0], out SkillKind skillKind) && int.TryParse(skillStr[1], out int points))
+
+            if (skillStr.Length > 1 && Enum.TryParse(skillStr[0], out SkillKind skillKind) && int.TryParse(skillStr[1], out int points))
             {
                 if ((int)skillKind > 7 || (int)skillKind < 0)
                 {
