@@ -31,23 +31,54 @@ namespace Services
         public Course Get() => _currentCourse;
 
         /// <inheritdoc/>
-        public void AddSkill(Course currentCourse, Skill skill, int value)
+        public void AddOrEditSkill()
         {
-            var skills = _currentCourse.CourseSkills;
+            string cmdLine = string.Empty;
+            Console.WriteLine("Оберіть навички, які можна отримати пройшовши курс:");
+            Console.WriteLine($"Доступні навички:\n" +
+                                  "0 - Programming,\n" +
+                                  "1 - Music,\n" +
+                                  "2 - Physics,\n" +
+                                  "3 - HealthCare,\n" +
+                                  "4 - TimeManagment,\n" +
+                                  "5 - Communication,\n" +
+                                  "6 - Illustration,\n" +
+                                  "7 - Photo\n" +
+                                  "Введіть номер навика і кількість поінтів через дорівнює (Ось так: 1 = 3)\n" +
+                                  $"Або введіть {Command.StopAddingCommand}, щоб зупинитися");
+            cmdLine = Console.ReadLine();
+
+            Skill skill = AuthorizedUserService.CreateSkill(cmdLine);
             if (skill == null)
             {
-                throw new ArgumentNullException(nameof(skill));
+                return;
             }
 
-            var skillExist = skills.ToList().Find(c => c.Name == skill.Name);
-            if (skillExist != null)
+            var skills = _currentCourse.CourseSkills;
+            var existingSkill = skills.ToList().Find(c => c.Name == skill.Name);
+
+            if (existingSkill != null)
             {
-                var index = skills.ToList().IndexOf(skillExist);
-                skills.ElementAt(index).Points += value;
+                var index = skills.ToList().IndexOf(existingSkill);
+                skills.ElementAt(index).Points += skill.Points;
             }
             else
             {
-                skills.Add(new Skill { Name = skill.Name, Points = value });
+                skills.Add(new Skill { Name = skill.Name, Points = skill.Points });
+            }
+
+            _currentCourse.Status = CourseStatus.InEditing;
+        }
+        /// <inheritdoc/>
+        public void DeleteSkill()
+        {
+            Console.Write("Введіть назву навички, яку хочете видалити з курсу: ");
+            string skillName = UserInput.NotEmptyString(() => Console.ReadLine());
+            if (Enum.TryParse(skillName, out SkillKind name))
+            {
+                var skill = _currentCourse.CourseSkills.ToList().Find(s => s.Name == name);
+                _currentCourse.CourseSkills.Remove(skill);
+                _currentCourse.Status = CourseStatus.InEditing;
             }
         }
         /// <inheritdoc/>

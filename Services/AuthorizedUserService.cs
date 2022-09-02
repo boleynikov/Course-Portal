@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Domain;
 using Domain.CourseMaterials;
 using Domain.Enum;
@@ -51,6 +49,20 @@ namespace Services
             _userService.Update(Account);
         }
 
+        public void EditCourseProgress(int courseId, float percentage)
+        {
+            var key = Account.UserCourses.FirstOrDefault(c => c.Key == courseId).Key;
+            if (Account.UserCourses[key].State == State.Completed)
+            {
+                return;
+            }
+
+            Account.UserCourses[key].Percentage += percentage;
+            if (Account.UserCourses[key].Percentage >= 100f)
+            {
+                Account.UserCourses[key].State = State.PreCompleted;
+            }
+        }
         public IEnumerable<Material> AddExistingMaterials()
         {
             List<Material> newMaterials = new();
@@ -73,16 +85,18 @@ namespace Services
 
         public void AddSkill(Skill skill)
         {
-            var skills = Account.UserSkills.ToList();
             if (skill == null)
             {
                 throw new ArgumentNullException(nameof(skill));
             }
 
-            if (skills.Find(c => c.Name == skill.Name) != null)
+            var skills = Account.UserSkills;
+            var existingSkill = skills.ToList().Find(c => c.Name == skill.Name);
+            
+            if (existingSkill != null)
             {
-                var index = skills.IndexOf(skills.Find(c => c.Name == skill.Name));
-                skills[index].Points += skill.Points;
+                var index = skills.ToList().IndexOf(existingSkill);
+                skills.ElementAt(index).Points += skill.Points;
             }
             else
             {
@@ -243,11 +257,12 @@ namespace Services
             return courseMaterials;
         }
 
-        public Skill CreateSkill(string cmdLine)
+        public static Skill CreateSkill(string cmdLine)
         {
             Skill newSkill;
             string[] skillStr = cmdLine?.Split(" = ");
-            if (Enum.TryParse(skillStr[0], out SkillKind skillKind) && int.TryParse(skillStr[1], out int points))
+
+            if (skillStr.Length > 1 && Enum.TryParse(skillStr[0], out SkillKind skillKind) && int.TryParse(skillStr[1], out int points))
             {
                 if ((int)skillKind > 7 || (int)skillKind < 0)
                 {
@@ -330,5 +345,6 @@ namespace Services
 
             return new VideoMaterial(id, title, duration, quality);
         }
+
     }
 }

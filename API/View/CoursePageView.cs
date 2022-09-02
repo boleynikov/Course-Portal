@@ -47,9 +47,18 @@ namespace API.View
                 Console.WriteLine("\t{0,20} | {1,5}", skill.Name, skill.Points);
             }
 
-            Console.WriteLine($"Щоб додати до свого списку курс - введіть {Command.AddCourseCommand}\n" +
+            if (currentUser.UserCourses.FirstOrDefault(c => c.Key == currentCourse.Id).Key != 0)
+            {
+                Console.WriteLine($"Щоб продовжити курс - введіть {Command.OpenCourseCommand}\n" +
                                   $"Щоб змінити назву опис чи додати матеріали до курсу - введіть {Command.EditCommand}\n" +
                                   $"Щоб повернутися назад - введіть {Command.BackCommand}\n");
+            }
+            else
+            {
+                Console.WriteLine($"Щоб додати до свого списку курс - введіть {Command.AddCourseCommand}\n" +
+                                  $"Щоб змінити назву опис чи додати матеріали до курсу - введіть {Command.EditCommand}\n" +
+                                  $"Щоб повернутися назад - введіть {Command.BackCommand}\n");
+            }
         }
 
         /// <summary>
@@ -62,7 +71,9 @@ namespace API.View
                               $"{Command.EditCourseName} - змінити назву\n" +
                               $"{Command.EditCourseDescription} - змінити опис\n" +
                               $"{Command.AddCourseMaterials} - додати матеріали із вже завантажених користувачем\n" +
-                              $"{Command.DeleteCourseMaterial} - видалити матеріал із курсу");
+                              $"{Command.DeleteCourseMaterial} - видалити матеріал із курсу\n" +
+                              $"{Command.AddNewOrEditSkill} - додати нову навичку до курсу або відредагувати навичку\n" +
+                              $"{Command.DeleteSkill} - видалити якусь навичку з курсу\n");
         }
     }
 }

@@ -31,16 +31,16 @@ namespace Services.Interface
         void RemoveCourse(int id);
 
         /// <summary>
+        /// Change Course progress in one of user courses
+        /// </summary>
+        /// <param name="courseId"></param>
+        /// <param name="percentage"></param>
+        void EditCourseProgress(int courseId, float percentage);
+        /// <summary>
         /// Add new skill to user
         /// </summary>
         /// <param name="skill"></param>
         void AddSkill(Skill skill);
-        /// <summary>
-        /// Create skill from command line
-        /// </summary>
-        /// <param name="cmdLine"></param>
-        /// <returns></returns>
-        Skill CreateSkill(string cmdLine);
         /// <summary>
         /// Create Material in command line
         /// </summary>

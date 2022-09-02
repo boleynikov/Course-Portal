@@ -4,6 +4,7 @@
 
 using System.Linq;
 using Domain.CourseMaterials;
+using Domain.Enum;
 
 namespace API.Controllers
 {
@@ -61,25 +62,61 @@ namespace API.Controllers
                 var currentCourse = _openedCourse.Get();
                 CoursePageView.Show(currentUser, currentCourse);
                 string cmdLine = Console.ReadLine();
-                switch (cmdLine)
+                if (currentUser.UserCourses.FirstOrDefault(c => c.Key == currentCourse.Id).Key != 0)
                 {
-                    case Command.AddCourseCommand:
-                        _authorizedUser.AddCourse(currentCourse);
-                        _userService.Save();
-                        break;
-                    case Command.EditCommand:
-                        EditCourse();
-                        _courseService.Update(currentCourse);
-                        _userService.Update(currentUser);
-                        break;
-                    case Command.BackCommand:
-                        page = _redirectPage;
-                        break;
-                    default:
-                        Console.WriteLine("Команду не розпізнано\n" +
-                                  "Натисніть Enter");
-                        Console.ReadLine();
-                        break;
+                    switch (cmdLine)
+                    {
+                        case Command.OpenCourseCommand:
+                            page = new MaterialController(_authorizedUser, currentCourse).Launch();
+                            if (currentUser.UserCourses[_openedCourse.Get().Id].State == State.PreCompleted)
+                            {
+                                foreach (var courseSkill in _openedCourse.Get().CourseSkills)
+                                {
+                                    _authorizedUser.AddSkill(courseSkill);
+                                }
+
+                                currentUser.UserCourses[_openedCourse.Get().Id].State = State.Completed;
+                            }
+
+                            _userService.Update(currentUser);
+                            break;
+                        case Command.EditCommand:
+                            EditCourse();
+                            _courseService.Update(currentCourse);
+                            _userService.Update(currentUser);
+                            break;
+                        case Command.BackCommand:
+                            page = _redirectPage;
+                            break;
+                        default:
+                            Console.WriteLine("Команду не розпізнано\n" +
+                                              "Натисніть Enter");
+                            Console.ReadLine();
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (cmdLine)
+                    {
+                        case Command.AddCourseCommand:
+                            _authorizedUser.AddCourse(currentCourse);
+                            _userService.Save();
+                            break;
+                        case Command.EditCommand:
+                            EditCourse();
+                            _courseService.Update(currentCourse);
+                            _userService.Update(currentUser);
+                            break;
+                        case Command.BackCommand:
+                            page = _redirectPage;
+                            break;
+                        default:
+                            Console.WriteLine("Команду не розпізнано\n" +
+                                              "Натисніть Enter");
+                            Console.ReadLine();
+                            break;
+                    }
                 }
             }
 
@@ -121,6 +158,12 @@ namespace API.Controllers
                         break;
                     case Command.AddCourseMaterials:
                         _openedCourse.AddCourseMaterial(_authorizedUser.Account.UserMaterials.ToList());
+                        break;
+                    case Command.AddNewOrEditSkill:
+                        _openedCourse.AddOrEditSkill();
+                        break;
+                    case Command.DeleteSkill:
+                        _openedCourse.DeleteSkill();
                         break;
                 }
             }
