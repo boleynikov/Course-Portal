@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using Domain.Enum;
+
 namespace Data.Repository
 {
     using System.Collections.Generic;
@@ -40,8 +42,12 @@ namespace Data.Repository
         {
             var context = _contextFactory.Get();
             var course = context.Courses.FirstOrDefault(u => u.Id == id);
-            context.Courses.Remove(course);
-            context.SaveChanges();
+            if (course != null)
+            {
+                course.CourseMaterials.Clear();
+                course.Status = CourseStatus.Deleted;
+                context.SaveChanges();
+            }
         }
 
         /// <inheritdoc/>

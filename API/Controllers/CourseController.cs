@@ -51,6 +51,18 @@ namespace API.Controllers
             _redirectPage = redirectPage;
         }
 
+        public static bool IsCourseNotDeleted(Course course)
+        {
+            if (course?.Status == CourseStatus.Deleted)
+            {
+                Console.WriteLine("Нажаль цей курс видалено");
+                Console.ReadLine();
+                return false;
+            }
+
+            return true;
+        }
+
         /// <inheritdoc/>
         public string Launch()
         {
@@ -67,6 +79,11 @@ namespace API.Controllers
                     switch (cmdLine)
                     {
                         case Command.OpenCourseCommand:
+                            if (!IsCourseNotDeleted(currentCourse))
+                            {
+                                break;
+                            }
+
                             page = new MaterialController(_authorizedUser, currentCourse).Launch();
                             if (currentUser.UserCourses[_openedCourse.Get().Id].State == State.PreCompleted)
                             {
@@ -81,6 +98,11 @@ namespace API.Controllers
                             _userService.Update(currentUser);
                             break;
                         case Command.EditCommand:
+                            if (!IsCourseNotDeleted(currentCourse))
+                            {
+                                break;
+                            }
+
                             EditCourse();
                             _courseService.Update(currentCourse);
                             _userService.Update(currentUser);
@@ -100,10 +122,20 @@ namespace API.Controllers
                     switch (cmdLine)
                     {
                         case Command.AddCourseCommand:
+                            if (!IsCourseNotDeleted(currentCourse))
+                            {
+                                break;
+                            }
+
                             _authorizedUser.AddCourse(currentCourse);
                             _userService.Save();
                             break;
                         case Command.EditCommand:
+                            if (!IsCourseNotDeleted(currentCourse))
+                            {
+                                break;
+                            }
+
                             EditCourse();
                             _courseService.Update(currentCourse);
                             _userService.Update(currentUser);

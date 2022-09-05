@@ -3,6 +3,7 @@
 // </copyright>
 
 using Domain.CourseMaterials;
+using Domain.Enum;
 
 namespace API.Controllers
 {
@@ -118,6 +119,11 @@ namespace API.Controllers
                     Console.Write("Введіть номер курсу: ");
                     if (_validatorService.Course.Validate(courses, Console.ReadLine(), out Course course))
                     {
+                        if (!CourseController.IsCourseNotDeleted(course))
+                        {
+                            break;
+                        }
+
                         _authorizedUser.AddCourse(course);
                         _userService.Save();
                     }
