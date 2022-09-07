@@ -10,6 +10,7 @@ namespace Domain.Enum
     public enum CourseStatus
     {
         InEditing = 0,
-        CompletelyDone = 1
+        CompletelyDone = 1,
+        Deleted = 2
     }
 }

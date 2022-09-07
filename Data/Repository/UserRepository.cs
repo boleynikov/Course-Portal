@@ -48,14 +48,14 @@ namespace Data.Repository
         public IEnumerable<User> GetAll()
         {
             var context = _contextFactory.Get();
-            return context.Users;
+            return context.Users.Include(u => u.UserMaterials);
         }
 
         /// <inheritdoc/>
         public User GetByID(int id)
         {
             var context = _contextFactory.Get();
-            return context.Users.FirstOrDefault(u => u.Id == id);
+            return context.Users.Include(u => u.UserMaterials).FirstOrDefault(u => u.Id == id);
         }
 
         /// <inheritdoc/>
