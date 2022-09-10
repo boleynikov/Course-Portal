@@ -1,0 +1,28 @@
+﻿@model Domain.Course
+@{
+
+<!-- Modal -->
+<div class="card mb-3" style="max-width: 540px;">
+    <div class="row g-0">
+        <div class="col-md-8">
+            <div class="card-body">
+                <h5 class="card-title">@Model.Name</h5>
+                <p class="card-text">@Model.Description</p>
+                <h3>Course skills</h3>
+                @foreach (var skill in Model.CourseSkills)
+                {
+                    <p class="card-text"><small class="text-muted"> @skill.Name @skill.Points</small></p>
+                }
+                <h3>Course materials:</h3>
+                @foreach (var material in Model.CourseMaterials)
+                {
+                    <p class="card-text"><small class="text-muted"> @material.Type @material.Title</small></p>
+                }
+            </div>
+        </div>
+        <div class="col-md-4">
+            <img src="https://picsum.photos/300/200" class="img-fluid rounded-start" alt="...">
+        </div>
+    </div>
+</div>
+}

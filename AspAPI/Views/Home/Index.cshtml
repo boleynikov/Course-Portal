@@ -1,0 +1,23 @@
+﻿@model IEnumerable<Domain.Course>
+@{
+    ViewData["Title"] = "Домашня сторінка";
+}
+
+@foreach (var course in Model)
+{
+    <div class="card mb-3" style="max-width: 650px;" onclick="">
+        <div class="row g-0">
+            <div class="col-md-4" onclick="location.href = '@Url.Action("Index", "Course", new { id = course.Id })';">
+                <img src="https://picsum.photos/300/200" class="img-fluid rounded-start" alt="...">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">@course.Name</h5>
+                    <p class="card-text">@course.Description</p>
+                    <p class="card-text"><small class="text-muted">@course.Status</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

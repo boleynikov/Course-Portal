@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspAPI", "AspAPI\AspAPI.csproj", "{EFB1435A-6AF3-4ADD-BE4F-840BCAC4DA00}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{5E2386AD-7149-432A-B8A7-1C4CA3BB885A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E2386AD-7149-432A-B8A7-1C4CA3BB885A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E2386AD-7149-432A-B8A7-1C4CA3BB885A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFB1435A-6AF3-4ADD-BE4F-840BCAC4DA00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFB1435A-6AF3-4ADD-BE4F-840BCAC4DA00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFB1435A-6AF3-4ADD-BE4F-840BCAC4DA00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFB1435A-6AF3-4ADD-BE4F-840BCAC4DA00}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

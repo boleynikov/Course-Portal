@@ -16,61 +16,55 @@ namespace Data.Repository
     /// </summary>
     public class MaterialRepository : IRepository<Material>
     {
-        private readonly DbContextFactory _contextFactory;
+        private readonly AppDbContext _context;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MaterialRepository"/> class.
         /// </summary>
         /// <param name="contextFactory">DBContextFactory.</param>
-        public MaterialRepository(DbContextFactory contextFactory)
+        public MaterialRepository(AppDbContext context)
         {
-            _contextFactory = contextFactory;
+            _context = context;
         }
 
         /// <inheritdoc/>
         public void Add(Material material)
         {
-            var context = _contextFactory.Get();
-            context.Materials.Add(material);
-            context.SaveChanges();
+            _context.Materials.Add(material);
+            _context.SaveChanges();
         }
 
         /// <inheritdoc/>
         public void DeleteByIndex(int id)
         {
-            var context = _contextFactory.Get();
-            var material = context.Materials.FirstOrDefault(u => u.Id == id);
-            context.Materials.Remove(material);
-            context.SaveChanges();
+            var material = _context.Materials.FirstOrDefault(u => u.Id == id);
+            _context.Materials.Remove(material);
+            _context.SaveChanges();
         }
 
         /// <inheritdoc/>
         public IEnumerable<Material> GetAll()
         {
-            var context = _contextFactory.Get();
-            return context.Materials;
+            return _context.Materials;
         }
 
         /// <inheritdoc/>
         public Material GetByID(int id)
         {
-            var context = _contextFactory.Get();
-            return context.Materials.FirstOrDefault(u => u.Id == id);
+            return _context.Materials.FirstOrDefault(u => u.Id == id);
         }
 
         /// <inheritdoc/>
         public void Save()
         {
-            var context = _contextFactory.Get();
-            context.SaveChanges();
+            _context.SaveChanges();
         }
 
         /// <inheritdoc/>
         public void Update(Material editedMaterial)
         {
-            var context = _contextFactory.Get();
-            context.Entry(editedMaterial).State = EntityState.Modified;
-            context.SaveChanges();
+            _context.Entry(editedMaterial).State = EntityState.Modified;
+            _context.SaveChanges();
         }
     }
 }

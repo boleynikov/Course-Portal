@@ -18,65 +18,59 @@ namespace Data.Repository
     /// </summary>
     public class CourseRepository : IRepository<Course>
     {
-        private readonly DbContextFactory _contextFactory;
+        private readonly AppDbContext _context;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CourseRepository"/> class.
         /// </summary>
         /// <param name="contextFactory">DBContextFactory.</param>
-        public CourseRepository(DbContextFactory contextFactory)
+        public CourseRepository(AppDbContext context)
         {
-            _contextFactory = contextFactory;
+            _context = context;
         }
 
         /// <inheritdoc/>
         public void Add(Course course)
         {
-            var context = _contextFactory.Get();
-            context.Courses.Add(course);
-            context.SaveChanges();
+            _context.Courses.Add(course);
+            _context.SaveChanges();
         }
 
         /// <inheritdoc/>
         public void DeleteByIndex(int id)
         {
-            var context = _contextFactory.Get();
-            var course = context.Courses.FirstOrDefault(u => u.Id == id);
+            var course = _context.Courses.FirstOrDefault(u => u.Id == id);
             if (course != null)
             {
                 course.CourseMaterials.Clear();
                 course.Status = CourseStatus.Deleted;
-                context.SaveChanges();
+                _context.SaveChanges();
             }
         }
 
         /// <inheritdoc/>
         public Course GetByID(int id)
         {
-            var context = _contextFactory.Get();
-            return context.Courses.Include(c => c.CourseMaterials).FirstOrDefault(u => u.Id == id);
+            return _context.Courses.Include(c => c.CourseMaterials).FirstOrDefault(u => u.Id == id);
         }
 
         /// <inheritdoc/>
         public void Update(Course editedCourse)
         {
-            var context = _contextFactory.Get();
-            context.Entry(editedCourse).State = EntityState.Modified;
-            context.SaveChanges();
+            _context.Entry(editedCourse).State = EntityState.Modified;
+            _context.SaveChanges();
         }
 
         /// <inheritdoc/>
         public void Save()
         {
-            var context = _contextFactory.Get();
-            context.SaveChanges();
+            _context.SaveChanges();
         }
 
         /// <inheritdoc/>
         public IEnumerable<Course> GetAll()
         {
-            var context = _contextFactory.Get();
-            return context.Courses.Include(c => c.CourseMaterials);
+            return _context.Courses.Include(c => c.CourseMaterials);
         }
     }
 }

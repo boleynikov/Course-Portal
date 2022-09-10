@@ -1,0 +1,16 @@
+﻿@model Domain.User
+@{
+    <h1>Here is registration</h1>
+    @using (Html.BeginForm("RegistrationConfirm", "Identity", FormMethod.Post))
+    {
+        <div class="embed-responsive">
+            <div class="register-form">
+                @Html.TextBoxFor(x => x.Name) <br/>
+                @Html.TextBoxFor(x => x.Email) <br/>
+                @Html.TextBoxFor(x => x.Password) <br/>
+                <input type="submit" class="btn-danger"  value="Register"/>
+            </div>
+
+        </div>
+    }
+}

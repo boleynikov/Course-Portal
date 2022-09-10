@@ -33,17 +33,17 @@ namespace Services
         public void Login(string email, string password)
         {
             var loginResult = TryLogin(email, password);
-            if (loginResult)
-            {
-                Console.WriteLine($"З поверненням {_authorizedUserService.Account.Name}\n" +
-                                   "Натисніть Enter");
-                Console.ReadLine();
-            }
-            else
-            {
-                Console.WriteLine("Невірний email чи пароль");
-                Console.ReadLine();
-            }
+            //if (loginResult)
+            //{
+            //    Console.WriteLine($"З поверненням {_authorizedUserService.Account.Name}\n" +
+            //                       "Натисніть Enter");
+            //    Console.ReadLine();
+            //}
+            //else
+            //{
+            //    Console.WriteLine("Невірний email чи пароль");
+            //    Console.ReadLine();
+            //}
         }
 
         /// <inheritdoc/>
