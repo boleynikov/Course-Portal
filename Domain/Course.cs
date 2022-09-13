@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.ComponentModel.DataAnnotations;
+
 namespace Domain
 {
     using System;
@@ -48,11 +50,13 @@ namespace Domain
         /// <summary>
         /// Gets materials in course.
         /// </summary>
+        [Display(Name = "Course materials")]
         public ICollection<Material> CourseMaterials { get; private set; }
 
         /// <summary>
         /// Gets skills, that user can get after complete.
         /// </summary>
+        [Display(Name = "Course skills")]
         public ICollection<Skill> CourseSkills { get; private set; }
     }
 }

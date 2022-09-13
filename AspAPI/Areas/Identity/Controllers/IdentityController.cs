@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AspAPI.Models;
 using Domain;
 using Services.Interface;
 
@@ -16,6 +17,11 @@ namespace AspAPI.Areas.Identity.Controllers
         {
             _authorizationService = authorizationService;
             _authorizedUser = authorizedUser;
+        }
+
+        public IActionResult UserProfile()
+        {
+            return View(_authorizedUser.Account);
         }
 
         public IActionResult LoginForm()
@@ -35,16 +41,26 @@ namespace AspAPI.Areas.Identity.Controllers
         }
 
         [HttpPost]
-        public IActionResult RegistrationConfirm(string Name, string Email, string Password)
+        public IActionResult RegistrationConfirm(Models.User user)
         {
-            _authorizationService.Register(Name, Email, Password);
-            return View(_authorizedUser.Account);
+            if (ModelState.IsValid)
+            {
+                _authorizationService.Register(user?.Name, user.Email, user.Password);
+                return View(_authorizedUser.Account);
+            }
+
+            return View("RegisterForm");
         }
         [HttpPost]
-        public IActionResult LoginUser(string Email, string Password)
+        public IActionResult LoginUser(LoginModel user)
         {
-            _authorizationService.Login(Email, Password);
-            return RedirectToAction("Index", "Home");
+            if (ModelState.IsValid)
+            {
+                _authorizationService.Login(user?.Email, user.Password);
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View("LoginForm");
         }
     }
 }

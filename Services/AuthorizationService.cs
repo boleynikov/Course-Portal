@@ -58,7 +58,7 @@ namespace Services
             TryRegister(name, email, password);
         }
 
-        private bool IsValidEmail(string email)
+        private static bool IsValidEmail(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
             {

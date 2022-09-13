@@ -6,22 +6,38 @@
     <div class="row g-0">
         <div class="col-md-8">
             <div class="card-body">
-                <h5 class="card-title">@Model.Name</h5>
-                <p class="card-text">@Model.Description</p>
-                <h3>Course skills</h3>
-                @foreach (var skill in Model.CourseSkills)
+                <h3>@Html.DisplayFor(model => model.Name)</h3>
+                <p class="card-text">@Html.DisplayFor(model => model.Description)</p>
+                <h3>@Html.DisplayNameFor(model => model.CourseSkills)</h3>
+                @if (Model.CourseSkills.Count == 0)
                 {
-                    <p class="card-text"><small class="text-muted"> @skill.Name @skill.Points</small></p>
+                    <p>No skills</p>
                 }
-                <h3>Course materials:</h3>
-                @foreach (var material in Model.CourseMaterials)
+                else
                 {
-                    <p class="card-text"><small class="text-muted"> @material.Type @material.Title</small></p>
+                    @foreach (var skill in Model.CourseSkills)
+                    {
+                        <p class="card-text"><small class="text-muted"> @skill.Name @skill.Points</small></p>
+                    }
+                }
+                <h3>@Html.DisplayNameFor(model => model.CourseMaterials)</h3>
+                @if (Model.CourseMaterials.Count == 0)
+                {
+                    <p>No materials in course</p>
+                }
+                else
+                {
+                    @foreach (var material in Model.CourseMaterials)
+                    {
+                        <p class="card-text"><small class="text-muted"> @material.Type: "@material.Title"</small></p>
+                    }
                 }
             </div>
         </div>
         <div class="col-md-4">
             <img src="https://picsum.photos/300/200" class="img-fluid rounded-start" alt="...">
+            <input type="submit" class="btn btn-primary" value="Register on course" />
+            <input type="submit" class="btn btn-outline-primary" value="Edit course" />
         </div>
     </div>
 </div>

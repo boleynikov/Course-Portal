@@ -5,9 +5,9 @@
 
 @foreach (var course in Model)
 {
-    <div class="card mb-3" style="max-width: 650px;" onclick="">
+    <div class="card mb-3" style="max-width: 650px;" onclick="location.href = '@Url.Action("Index", "Course", new { id = course.Id })';">
         <div class="row g-0">
-            <div class="col-md-4" onclick="location.href = '@Url.Action("Index", "Course", new { id = course.Id })';">
+            <div class="col-md-4">
                 <img src="https://picsum.photos/300/200" class="img-fluid rounded-start" alt="...">
             </div>
             <div class="col-md-8">
