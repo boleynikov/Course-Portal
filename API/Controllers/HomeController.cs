@@ -2,6 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Threading.Tasks;
 using Domain.CourseMaterials;
 using Domain.Enum;
 
@@ -52,7 +53,7 @@ namespace API.Controllers
         }
 
         /// <inheritdoc/>
-        public string Launch()
+        public async Task<string> Launch()
         {
             string page = Command.HomePage;
 
@@ -61,21 +62,21 @@ namespace API.Controllers
                 var currentUser = _authorizedUser.Account;
                 if (currentUser == null)
                 {
-                    page = NotAuthorized();
+                    page = await NotAuthorized();
                 }
                 else
                 {
-                    page = Authorized();
+                    page = await Authorized();
                 }
             }
 
             return page;
         }
 
-        private string NotAuthorized()
+        private async Task<string> NotAuthorized()
         {
-            var courses = _courseService.GetAll().ToList();
-            HomepageView.Show(courses, false);
+            var courses = await _courseService.GetAll();
+            HomepageView.Show(courses.ToList(), false);
             string page = Command.HomePage;
             string cmdLine = Console.ReadLine();
             switch (cmdLine)
@@ -104,10 +105,10 @@ namespace API.Controllers
             return page;
         }
 
-        private string Authorized()
+        private async Task<string> Authorized()
         {
-            var courses = _courseService.GetAll().ToList();
-            HomepageView.Show(courses, true, _authorizedUser.Account.Name);
+            var courses = await _courseService.GetAll();
+            HomepageView.Show(courses.ToList(), true, _authorizedUser.Account.Name);
             string page = Command.HomePage;
             string cmdLine = Console.ReadLine();
             switch (cmdLine)
@@ -117,23 +118,23 @@ namespace API.Controllers
                     break;
                 case Command.AddCourseCommand:
                     Console.Write("Введіть номер курсу: ");
-                    if (_validatorService.Course.Validate(courses, Console.ReadLine(), out Course course))
+                    if (_validatorService.Course.Validate(courses.ToList(), Console.ReadLine(), out Course course))
                     {
                         if (!CourseController.IsCourseNotDeleted(course))
                         {
                             break;
                         }
 
-                        _authorizedUser.AddCourse(course);
+                        _authorizedUser.AddCourseToUser(course);
                         _userService.Save();
                     }
 
                     break;
                 case Command.OpenCourseCommand:
                     Console.Write("Введіть номер курсу: ");
-                    if (_validatorService.Course.Validate(courses, Console.ReadLine(), out course))
+                    if (_validatorService.Course.Validate(courses.ToList(), Console.ReadLine(), out course))
                     {
-                        page = new CourseController(_userService, _courseService, _materialService, _authorizedUser, new OpenedCourseService(course, new Validator())).Launch();
+                        page = await new CourseController(_userService, _courseService, _materialService, _authorizedUser, new OpenedCourseService(course, new Validator())).Launch();
                     }
 
                     break;

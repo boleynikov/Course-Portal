@@ -98,21 +98,29 @@ namespace Services
             _currentCourse.Status = CourseStatus.InEditing;
         }
         /// <inheritdoc/>
-        public int DeleteCourseMaterial()
+        public int DeleteCourseMaterial(int id)
         {
-            Console.Write("Введіть ідентифікатор матеріалу: ");
-            var strMaterialId = UserInput.NotEmptyString(() => Console.ReadLine());
-            if (_validateService.Material.Validate(_currentCourse.CourseMaterials.ToList(), strMaterialId, out Material material) && _currentCourse.CourseMaterials.Contains(material))
+            var material = _currentCourse.CourseMaterials.FirstOrDefault(m => m.Id == id);
+            if (material == null)
             {
-                _currentCourse.CourseMaterials.Remove(material);
-                _currentCourse.Status = CourseStatus.InEditing;
-                Console.WriteLine($"Матеріал {strMaterialId} успішно видалено\n" +
-                                   "Натисніть Enter");
-                Console.ReadLine();
-                return material.Id;
+                throw new ArgumentOutOfRangeException();
             }
+            _currentCourse.CourseMaterials.Remove(material);
+            _currentCourse.Status = CourseStatus.InEditing;
+            return material.Id;
+            //Console.Write("Введіть ідентифікатор матеріалу: ");
+            //var strMaterialId = UserInput.NotEmptyString(() => Console.ReadLine());
+            //if (_validateService.Material.Validate(_currentCourse.CourseMaterials.ToList(), strMaterialId, out Material material) && _currentCourse.CourseMaterials.Contains(material))
+            //{
+            //    _currentCourse.CourseMaterials.Remove(material);
+            //    _currentCourse.Status = CourseStatus.InEditing;
+            //Console.WriteLine($"Матеріал {strMaterialId} успішно видалено\n" +
+            //                   "Натисніть Enter");
+            //Console.ReadLine();
+            //    return material.Id;
+            //}
 
-            throw new ArgumentOutOfRangeException();
+            //throw new ArgumentOutOfRangeException();
         }
 
         /// <inheritdoc/>

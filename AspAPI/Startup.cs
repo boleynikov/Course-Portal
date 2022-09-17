@@ -2,6 +2,7 @@ using Data;
 using Data.Repository;
 using Data.Repository.Interface;
 using Domain;
+using Domain.CourseMaterials;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -41,10 +42,12 @@ namespace AspAPI
 
             services.AddDefaultIdentity<AspAPI.Models.User>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<AppDbContext>();
-            services.AddSingleton<IRepository<User>, UserRepository>();
-            services.AddSingleton<IService<User>, UserService>();
+            services.AddSingleton<IRepository<Material>, MaterialRepository>();
+            services.AddSingleton<IService<Material>, MaterialService>();
             services.AddSingleton<IRepository<Course>, CourseRepository>();
             services.AddSingleton<IService<Course>, CourseService>();
+            services.AddSingleton<IRepository<User>, UserRepository>();
+            services.AddSingleton<IService<User>, UserService>();
             services.AddSingleton<Validator>();
             services.AddSingleton<IAuthorizedUserService, AuthorizedUserService>();
             services.AddSingleton<IAuthorizationService, AuthorizationService>();

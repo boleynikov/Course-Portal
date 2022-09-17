@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Threading.Tasks;
+
 namespace Services
 {
     using System;
@@ -30,9 +32,9 @@ namespace Services
         }
 
         /// <inheritdoc/>
-        public void Login(string email, string password)
+        public async Task Login(string email, string password)
         {
-            var loginResult = TryLogin(email, password);
+            var loginResult = await TryLogin(email, password);
             //if (loginResult)
             //{
             //    Console.WriteLine($"З поверненням {_authorizedUserService.Account.Name}\n" +
@@ -53,9 +55,9 @@ namespace Services
         }
 
         /// <inheritdoc/>
-        public void Register(string name, string email, string password)
+        public async Task Register(string name, string email, string password)
         {
-            TryRegister(name, email, password);
+            await TryRegister(name, email, password);
         }
 
         private static bool IsValidEmail(string email)
@@ -95,9 +97,9 @@ namespace Services
             }
         }
 
-        private bool TryLogin(string email, string password)
+        private async Task<bool> TryLogin(string email, string password)
         {
-            var allUsers = _userService.GetAll();
+            var allUsers = await  _userService.GetAll();
             var pulledUser = allUsers.SingleOrDefault(user => user.Email == email);
             if (pulledUser != null)
             {
@@ -111,13 +113,14 @@ namespace Services
             return false;
         }
 
-        private void TryRegister(string name, string email, string password)
+        private async Task TryRegister(string name, string email, string password)
         {
             if (IsValidEmail(email))
             {
-                var id = _userService.GetAll().ToList().Count + 1;
+                var users = await _userService.GetAll();
+                var id = users.ToList().Count + 1;
                 var newUser = new User(id, name, email, password);
-                _userService.Add(newUser);
+                await _userService.Add(newUser);
                 _authorizedUserService.Account = newUser;
             }
             else

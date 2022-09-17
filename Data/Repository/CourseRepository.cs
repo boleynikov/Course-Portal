@@ -2,6 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Threading.Tasks;
 using Domain.Enum;
 
 namespace Data.Repository
@@ -30,47 +31,47 @@ namespace Data.Repository
         }
 
         /// <inheritdoc/>
-        public void Add(Course course)
+        public async Task Add(Course course)
         {
-            _context.Courses.Add(course);
-            _context.SaveChanges();
+             _context.Courses.Add(course);
+             await _context.SaveChangesAsync();
         }
 
         /// <inheritdoc/>
-        public void DeleteByIndex(int id)
+        public async Task DeleteByIndex(int id)
         {
-            var course = _context.Courses.FirstOrDefault(u => u.Id == id);
+            var course = await _context.Courses.FirstOrDefaultAsync(u => u.Id == id);
             if (course != null)
             {
                 course.CourseMaterials.Clear();
                 course.Status = CourseStatus.Deleted;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
         /// <inheritdoc/>
-        public Course GetByID(int id)
+        public async Task<Course> GetByID(int id)
         {
-            return _context.Courses.Include(c => c.CourseMaterials).FirstOrDefault(u => u.Id == id);
+            return await _context.Courses.Include(c => c.CourseMaterials).FirstOrDefaultAsync(u => u.Id == id);
         }
 
         /// <inheritdoc/>
-        public void Update(Course editedCourse)
+        public async Task Update(Course editedCourse)
         {
             _context.Entry(editedCourse).State = EntityState.Modified;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         /// <inheritdoc/>
-        public void Save()
+        public async Task Save()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         /// <inheritdoc/>
-        public IEnumerable<Course> GetAll()
+        public async Task<IEnumerable<Course>> GetAll()
         {
-            return _context.Courses.Include(c => c.CourseMaterials);
+            return await _context.Courses.Include(c => c.CourseMaterials).ToArrayAsync();
         }
     }
 }

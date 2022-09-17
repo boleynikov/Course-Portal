@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using API.Controllers.Abstract;
 using API.View;
 using Domain;
@@ -19,7 +20,7 @@ namespace API.Controllers
             _currentCourse = currentCourse;
         }
 
-        public string Launch()
+        public async Task<string> Launch()
         {
             for (int i = 0; i < _currentCourse.CourseMaterials.Count; i++)
             {

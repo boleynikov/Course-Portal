@@ -3,6 +3,7 @@
 // </copyright>
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Services.Interface
 {
@@ -16,36 +17,36 @@ namespace Services.Interface
         /// Add new entity.
         /// </summary>
         /// <param name="entity">Entity, which derives DBseEntity.</param>
-        void Add(T entity);
+        Task Add(T entity);
 
         /// <summary>
         /// Get T Entity by id.
         /// </summary>
         /// <param name="index">Entity id.</param>
         /// <returns>Entity.</returns>
-        T GetById(int index);
+        Task<T> GetById(int index);
 
         /// <summary>
         /// Update existing entity in repo.
         /// </summary>
         /// <param name="entity">Updated Entiy.</param>
-        void Update(T entity);
+        Task Update(T entity);
 
         /// <summary>
         /// Delete Entity from repo by id.
         /// </summary>
         /// <param name="index">Entity id.</param>
-        void DeleteByIndex(int index);
+        Task DeleteByIndex(int index);
 
         /// <summary>
         /// Save current state of repo.
         /// </summary>
-        void Save();
+        Task Save();
 
         /// <summary>
         /// Get all T entities from repo.
         /// </summary>
         /// <returns>Entities array.</returns>
-        IEnumerable<T> GetAll();
+        Task<IEnumerable<T>> GetAll();
     }
 }

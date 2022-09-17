@@ -9,7 +9,7 @@
 @if (AuthorizedUser.Account != null)
 {
     <li class="nav-item">
-        <a  class="nav-link text-dark" asp-area="Identity" asp-controller="Identity" asp-action="UserProfile" title="Manage">@AuthorizedUser.Account.Name</a>
+        <a class="nav-link text-dark" asp-area="Identity" asp-controller="Identity" asp-action="UserProfile" title="Manage">@AuthorizedUser.Account.Name</a>
     </li>
     <li class="nav-item">
         <form  class="form-inline" asp-area="Identity" asp-controller="Identity" asp-action="Logout">

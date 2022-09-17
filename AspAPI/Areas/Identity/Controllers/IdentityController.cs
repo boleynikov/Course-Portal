@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using AspAPI.Models;
 using Domain;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Services.Interface;
+using Course = AspAPI.Models.Course;
 
 namespace AspAPI.Areas.Identity.Controllers
 {
@@ -33,7 +35,14 @@ namespace AspAPI.Areas.Identity.Controllers
         {
             return View();
         }
-
+        public IActionResult CreateCourseForm()
+        {
+            return View();
+        }
+        public IActionResult GoToCourseForm(Models.Course course)
+        {
+            return View("CreateCourseForm", course);
+        }
         public IActionResult Logout()
         {
             _authorizationService.Logout();
@@ -41,26 +50,27 @@ namespace AspAPI.Areas.Identity.Controllers
         }
 
         [HttpPost]
-        public IActionResult RegistrationConfirm(Models.User user)
+        public async Task<IActionResult> RegistrationConfirm(Models.User user)
         {
             if (ModelState.IsValid)
             {
-                _authorizationService.Register(user?.Name, user.Email, user.Password);
+                await _authorizationService.Register(user?.Name, user.Email, user.Password);
                 return View(_authorizedUser.Account);
             }
 
             return View("RegisterForm");
         }
         [HttpPost]
-        public IActionResult LoginUser(LoginModel user)
+        public async Task<IActionResult> LoginUser(LoginModel user)
         {
             if (ModelState.IsValid)
             {
-                _authorizationService.Login(user?.Email, user.Password);
+                await _authorizationService.Login(user?.Email, user.Password);
                 return RedirectToAction("Index", "Home");
             }
 
             return View("LoginForm");
         }
+
     }
 }

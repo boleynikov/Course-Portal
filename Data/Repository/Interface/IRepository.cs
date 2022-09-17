@@ -3,6 +3,7 @@
 // </copyright>
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Data.Repository.Interface
 {
@@ -16,36 +17,36 @@ namespace Data.Repository.Interface
         /// Adding new T object.
         /// </summary>
         /// <param name="entity">T Object.</param>
-        void Add(T entity);
+        Task Add(T entity);
 
         /// <summary>
         /// Get all T objects.
         /// </summary>
         /// <returns>T array.</returns>
-        IEnumerable<T> GetAll();
+        Task<IEnumerable<T>> GetAll();
 
         /// <summary>
         /// Get T object by id.
         /// </summary>
         /// <param name="id">Object id.</param>
         /// <returns>T entity.</returns>
-        T GetByID(int id);
+        Task<T> GetByID(int id);
 
         /// <summary>
         /// Update T object in repository.
         /// </summary>
         /// <param name="entity">Updated object.</param>
-        void Update(T entity);
+        Task Update(T entity);
 
         /// <summary>
         /// Deleting T object from repo.
         /// </summary>
         /// <param name="id">Object id.</param>
-        void DeleteByIndex(int id);
+        Task DeleteByIndex(int id);
 
         /// <summary>
         /// Save repository state.
         /// </summary>
-        void Save();
+        Task Save();
     }
 }

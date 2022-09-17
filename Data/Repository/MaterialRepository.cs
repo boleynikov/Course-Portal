@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Threading.Tasks;
+
 namespace Data.Repository
 {
     using System.Collections.Generic;
@@ -28,43 +30,43 @@ namespace Data.Repository
         }
 
         /// <inheritdoc/>
-        public void Add(Material material)
+        public async Task Add(Material material)
         {
             _context.Materials.Add(material);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         /// <inheritdoc/>
-        public void DeleteByIndex(int id)
+        public async Task DeleteByIndex(int id)
         {
-            var material = _context.Materials.FirstOrDefault(u => u.Id == id);
+            var material = await _context.Materials.FirstOrDefaultAsync(u => u.Id == id);
             _context.Materials.Remove(material);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         /// <inheritdoc/>
-        public IEnumerable<Material> GetAll()
+        public async Task<IEnumerable<Material>> GetAll()
         {
-            return _context.Materials;
+            return await _context.Materials.ToArrayAsync();
         }
 
         /// <inheritdoc/>
-        public Material GetByID(int id)
+        public async Task<Material> GetByID(int id)
         {
-            return _context.Materials.FirstOrDefault(u => u.Id == id);
+            return await _context.Materials.FirstOrDefaultAsync(u => u.Id == id);
         }
 
         /// <inheritdoc/>
-        public void Save()
+        public async Task Save()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         /// <inheritdoc/>
-        public void Update(Material editedMaterial)
+        public async Task Update(Material editedMaterial)
         {
             _context.Entry(editedMaterial).State = EntityState.Modified;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

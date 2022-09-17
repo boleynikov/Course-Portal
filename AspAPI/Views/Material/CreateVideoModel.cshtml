@@ -1,0 +1,46 @@
+﻿@model AspAPI.Models.Materials.VideoModel
+
+@{
+    ViewData["Title"] = "CreateVideoModel";
+}
+
+<h1>Add Video</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AddVideoToCourse" asp-controller="Course" asp-route-courseId="@ViewData["courseId"]">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Duration" class="control-label"></label>
+                <input asp-for="Duration" class="form-control" />
+                <span asp-validation-for="Duration" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Quality" class="control-label"></label>
+                <input asp-for="Quality" class="form-control" />
+                <span asp-validation-for="Quality" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@*<div>
+    @using (Html.BeginForm("GoToCourseForm", "Identity"))
+    {
+        <input type="hidden" name="Name" value="testTestTest" />
+        <input type="hidden" name="Description" value="testTestTest" />
+        <input class="btn btn-outline-primary" type="submit" value="Go back" />
+    }
+</div>*@
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

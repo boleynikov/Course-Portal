@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Domain;
 using Domain.CourseMaterials;
 using Domain.Enum;
@@ -29,24 +30,20 @@ namespace Services
 
         public User Account { get; set; }
 
-        public void AddCourse(Course newCourse)
+        public async Task AddCourseToUser(int courseId)
         {
-            if (newCourse == null)
-            {
-                throw new ArgumentNullException(nameof(newCourse));
-            }
 
-            if (Account.UserCourses.FirstOrDefault(c => c.Key == newCourse.Id).Key != 0)
-            {
-                Console.WriteLine("Даний курс у вас уже є\n" +
-                                  "Натисніть Enter");
-                Console.ReadLine();
-                return;
-            }
+            //if (Account.UserCourses.FirstOrDefault(c => c.Key == newCourse.Id).Key != 0)
+            //{
+            //    Console.WriteLine("Даний курс у вас уже є\n" +
+            //                      "Натисніть Enter");
+            //    Console.ReadLine();
+            //    return;
+            //}
 
-            var item = new KeyValuePair<int, CourseProgress>(newCourse.Id, new CourseProgress() { State = State.NotCompleted, Percentage = 0f });
+            var item = new KeyValuePair<int, CourseProgress>(courseId, new CourseProgress() { State = State.NotCompleted, Percentage = 0f });
             Account.UserCourses.Add(item.Key, item.Value);
-            _userService.Update(Account);
+            await _userService.Update(Account);
         }
 
         public void EditCourseProgress(int courseId, float percentage)
@@ -104,18 +101,17 @@ namespace Services
             }
         }
 
-        public Course CreateCourse(IService<Course> courseService, IService<Material> materialService)
+        public async Task<Course> CreateCourse(string name, string description, IService<Course> courseService, IService<Material> materialService)
         {
             if (courseService == null)
             {
                 throw new ArgumentNullException(nameof(courseService));
             }
 
-            Console.Write("Введіть назву курсу: ");
-            string name = UserInput.NotEmptyString(() => Console.ReadLine());
-            Console.Write("Введіть опис курсу: ");
-            string description = UserInput.NotEmptyString(() => Console.ReadLine());
-            int coursesCount = courseService.GetAll().Count();
+            var allCourses = await courseService.GetAll();
+
+
+            int coursesCount = allCourses.Count();
             int id;
             if (coursesCount == 0)
             {
@@ -123,138 +119,147 @@ namespace Services
             }
             else
             {
-                id = courseService.GetAll().ToList()[coursesCount - 1].Id + 1;
+                id = allCourses.ToList()[coursesCount - 1].Id + 1;
             }
             var course = new Course(id, name, description);
-            List<Material> materials = new();
-            if (Account.UserMaterials.ToList().Count > 0)
-            {
-                Console.WriteLine("Чи бажаете ви додати вже створені матеріали?\n" +
-                                  "1 - так\n" +
-                                  "2 - ні");
-                string cmd = UserInput.NotEmptyString(() => Console.ReadLine());
-                if (cmd == "1")
-                {
-                    materials = AddExistingMaterials().ToList();
-                }
-                else
-                {
-                    Console.Clear();
-                    Console.WriteLine($"Введіть тип матеріалу, який хочете додати до курсу\n" +
-                                   "Доступні матеріали:\n" +
-                                   $"{Command.ArticleInputCase} - Article,\n" +
-                                   $"{Command.PublicationInputCase} - Publication,\n" +
-                                   $"{Command.VideoInputCase} - Video\n" +
-                                  $"Або введіть {Command.StopAddingCommand}, щоб зупинитися");
-                    materials = CreateMaterials(materialService).ToList();
-                }
-            }
-            else
-            {
-                Console.Clear();
-                Console.WriteLine($"Введіть тип матеріалу, який хочете додати до курсу\n" +
-                               "Доступні матеріали:\n" +
-                               $"{Command.ArticleInputCase} - Article,\n" +
-                               $"{Command.PublicationInputCase} - Publication,\n" +
-                               $"{Command.VideoInputCase} - Video\n" +
-                              $"Або введіть {Command.StopAddingCommand}, щоб зупинитися");
-                materials = CreateMaterials(materialService).ToList();
-            }
 
-            string cmdLine = string.Empty;
-            while (cmdLine != Command.StopAddingCommand)
-            {
-                Console.Clear();
-                Console.WriteLine("Оберіть навички, які можна отримати пройшовши курс:");
-                Console.WriteLine($"Доступні навички:\n" +
-                                   "0 - Programming,\n" +
-                                   "1 - Music,\n" +
-                                   "2 - Physics,\n" +
-                                   "3 - HealthCare,\n" +
-                                   "4 - TimeManagment,\n" +
-                                   "5 - Communication,\n" +
-                                   "6 - Illustration,\n" +
-                                   "7 - Photo\n" +
-                 "Введіть номер навика і кількість поінтів через дорівнює (Ось так: 1 = 3)\n" +
-                 $"Або введіть {Command.StopAddingCommand}, щоб зупинитися");
-                cmdLine = Console.ReadLine();
-                if (cmdLine == Command.StopAddingCommand)
-                {
-                    break;
-                }
+            //List<Material> materials = new();
 
-                Skill skill = CreateSkill(cmdLine);
-                if (skill != null)
-                {
-                    course.CourseSkills.Add(skill);
-                }
-            }
+            //materials = CreateMaterials(materialService).ToList();
+            //if (Account.UserMaterials.ToList().Count > 0)
+            //{
+            //    Console.WriteLine("Чи бажаете ви додати вже створені матеріали?\n" +
+            //                      "1 - так\n" +
+            //                      "2 - ні");
+            //    string cmd = UserInput.NotEmptyString(() => Console.ReadLine());
+            //    if (cmd == "1")
+            //    {
+            //        materials = AddExistingMaterials().ToList();
+            //    }
+            //    else
+            //    {
+            //        Console.Clear();
+            //        Console.WriteLine($"Введіть тип матеріалу, який хочете додати до курсу\n" +
+            //                       "Доступні матеріали:\n" +
+            //                       $"{Command.ArticleInputCase} - Article,\n" +
+            //                       $"{Command.PublicationInputCase} - Publication,\n" +
+            //                       $"{Command.VideoInputCase} - Video\n" +
+            //                      $"Або введіть {Command.StopAddingCommand}, щоб зупинитися");
+            //        materials = CreateMaterials(materialService).ToList();
+            //    }
+            //}
+            //else
+            //{
+            //    Console.Clear();
+            //    Console.WriteLine($"Введіть тип матеріалу, який хочете додати до курсу\n" +
+            //                   "Доступні матеріали:\n" +
+            //                   $"{Command.ArticleInputCase} - Article,\n" +
+            //                   $"{Command.PublicationInputCase} - Publication,\n" +
+            //                   $"{Command.VideoInputCase} - Video\n" +
+            //                  $"Або введіть {Command.StopAddingCommand}, щоб зупинитися");
+            //    materials = CreateMaterials(materialService).ToList();
+            //}
 
-            foreach (var material in materials)
-            {
-                course.CourseMaterials.Add(material);
-            }
+            //string cmdLine = string.Empty;
+            //while (cmdLine != Command.StopAddingCommand)
+            //{
+            //    Console.Clear();
+            //    Console.WriteLine("Оберіть навички, які можна отримати пройшовши курс:");
+            //    Console.WriteLine($"Доступні навички:\n" +
+            //                       "0 - Programming,\n" +
+            //                       "1 - Music,\n" +
+            //                       "2 - Physics,\n" +
+            //                       "3 - HealthCare,\n" +
+            //                       "4 - TimeManagment,\n" +
+            //                       "5 - Communication,\n" +
+            //                       "6 - Illustration,\n" +
+            //                       "7 - Photo\n" +
+            //     "Введіть номер навика і кількість поінтів через дорівнює (Ось так: 1 = 3)\n" +
+            //     $"Або введіть {Command.StopAddingCommand}, щоб зупинитися");
+            //    cmdLine = Console.ReadLine();
+            //    if (cmdLine == Command.StopAddingCommand)
+            //    {
+            //        break;
+            //    }
+
+            //    Skill skill = CreateSkill(cmdLine);
+            //    if (skill != null)
+            //    {
+            //        course.CourseSkills.Add(skill);
+            //    }
+            //}
+
+            //foreach (var material in materials)
+            //{
+            //    course.CourseMaterials.Add(material);
+            //}
 
             return course;
         }
 
-        public IEnumerable<Material> CreateMaterials(IService<Material> materialService)
+        public async Task<Material> AddMaterial(IService<Material> materialService, Material material)
         {
             if (materialService == null)
             {
                 throw new ArgumentNullException(nameof(materialService));
             }
-
-            List<Material> courseMaterials = new();
-            string cmdLine = string.Empty;
-            while (cmdLine != Command.StopAddingCommand)
+            if (material == null)
             {
-                Console.Write("Обраний матеріал: ");
-                cmdLine = UserInput.NotEmptyString(() => Console.ReadLine());
-                int materialsCount = materialService.GetAll().Count();
-                int id;
+                throw new ArgumentNullException(nameof(material));
+            }
+
+            var allMaterials = await materialService.GetAll();
+            //List<Material> courseMaterials = new();
+            //string cmdLine = string.Empty;
+            //while (cmdLine != Command.StopAddingCommand)
+            //{
+            //Console.Write("Обраний матеріал: ");
+            //cmdLine = UserInput.NotEmptyString(() => Console.ReadLine());
+            int materialsCount = allMaterials.Count();
                 if (materialsCount == 0)
                 {
-                    id = 1;
+                    material.Id = 1;
                 }
                 else
                 {
-                    id = materialService.GetAll().ToList()[materialsCount - 1].Id + 1;
+                    material.Id = allMaterials.ToList()[materialsCount - 1].Id + 1;
                 }
+            Account.UserMaterials.Add(material);
+            await materialService.Add(material);
+            //courseMaterials.Add(material);
+            //switch (cmdLine)
+            //{
+            //case Command.ArticleInputCase:
+            //var article = ArticleUserInput(id);
+            //Account.UserMaterials.Add(article);
+            //            materialService.Add(article);
+            //            courseMaterials.Add(article);
+                       //break;
+                    //case Command.PublicationInputCase:
+                        //var publication = PublicationUserInput(id);
+                        //Account.UserMaterials.Add(publication);
+                        //materialService.Add(publication);
+                        //courseMaterials.Add(publication);
+                        //break;
+                    //case Command.VideoInputCase:
+                        //var video = VideoUserInput(id);
+                        //Account.UserMaterials.Add(video);
+                        //materialService.Add(video);
+                        //courseMaterials.Add(video);
+                        //break;
+                    //case Command.StopAddingCommand:
+                        //Console.WriteLine("Матеріали додано");
+                        //break;
+                    //default:
+                        //Console.WriteLine("На жаль це не тип матеріалу\n" +
+                        //                  "Натисніть Enter");
+                        //Console.ReadLine();
+                        //break;
+                //}
+            //}
 
-                switch (cmdLine)
-                {
-                    case Command.ArticleInputCase:
-                        var article = ArticleUserInput(id);
-                        Account.UserMaterials.Add(article);
-                        materialService.Add(article);
-                        courseMaterials.Add(article);
-                        break;
-                    case Command.PublicationInputCase:
-                        var publication = PublicationUserInput(id);
-                        Account.UserMaterials.Add(publication);
-                        materialService.Add(publication);
-                        courseMaterials.Add(publication);
-                        break;
-                    case Command.VideoInputCase:
-                        var video = VideoUserInput(id);
-                        Account.UserMaterials.Add(video);
-                        materialService.Add(video);
-                        courseMaterials.Add(video);
-                        break;
-                    case Command.StopAddingCommand:
-                        Console.WriteLine("Матеріали додано");
-                        break;
-                    default:
-                        Console.WriteLine("На жаль це не тип матеріалу\n" +
-                                          "Натисніть Enter");
-                        Console.ReadLine();
-                        break;
-                }
-            }
-
-            _userService.Save();
-            return courseMaterials;
+            await _userService.Save();
+            return material;
         }
 
         public static Skill CreateSkill(string cmdLine)
@@ -297,14 +302,13 @@ namespace Services
 
         public void RemoveCourse(int id)
         {
-            var courses = Account.UserCourses;
-            var pulledCourse = courses.FirstOrDefault(course => course.Key == id);
+            var pulledCourse = Account.UserCourses.FirstOrDefault(course => course.Key == id);
             if (pulledCourse.Value == null)
             {
                 return;
             }
 
-            courses.Remove(pulledCourse.Key);
+            Account.UserCourses.Remove(pulledCourse.Key);
         }
 
         private ArticleMaterial ArticleUserInput(int id)

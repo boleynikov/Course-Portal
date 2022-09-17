@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Threading.Tasks;
+
 namespace API.Controllers.Abstract
 {
     /// <summary>
@@ -13,6 +15,6 @@ namespace API.Controllers.Abstract
         /// Launch controller.
         /// </summary>
         /// <returns>String of page to redirect.</returns>
-        string Launch();
+        Task<string> Launch();
     }
 }

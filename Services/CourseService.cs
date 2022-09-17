@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Threading.Tasks;
+
 namespace Services
 {
     using Data.Repository.Interface;
@@ -26,39 +28,39 @@ namespace Services
         }
 
         /// <inheritdoc/>
-        public void Add(Course course)
+        public async Task Add(Course course)
         {
-            _repository.Add(course);
+            await _repository.Add(course);
         }
 
         /// <inheritdoc/>
-        public void DeleteByIndex(int index)
+        public async Task DeleteByIndex(int index)
         {
-            _repository.DeleteByIndex(index);
+            await _repository.DeleteByIndex(index);
         }
 
         /// <inheritdoc/>
-        public IEnumerable<Course> GetAll()
+        public async Task<IEnumerable<Course>> GetAll()
         {
-            return _repository.GetAll();
+            return await _repository.GetAll();
         }
 
         /// <inheritdoc/>
-        public Course GetById(int index)
+        public async Task<Course> GetById(int index)
         {
-            return _repository.GetByID(index);
+            return await _repository.GetByID(index);
         }
 
         /// <inheritdoc/>
-        public void Save()
+        public async Task Save()
         {
-            _repository.Save();
+            await _repository.Save();
         }
 
         /// <inheritdoc/>
-        public void Update(Course course)
+        public async Task Update(Course course)
         {
-            _repository.Update(course);
+            await _repository.Update(course);
         }
     }
 }

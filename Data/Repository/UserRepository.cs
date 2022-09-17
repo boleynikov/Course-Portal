@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Threading.Tasks;
+
 namespace Data.Repository
 {
     using System.Collections.Generic;
@@ -28,43 +30,43 @@ namespace Data.Repository
         }
 
         /// <inheritdoc/>
-        public void Add(User user)
+        public async Task Add(User user)
         {
             _context.Users.Add(user);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         /// <inheritdoc/>
-        public void DeleteByIndex(int id)
+        public async Task DeleteByIndex(int id)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
             _context.Users.Remove(user);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         /// <inheritdoc/>
-        public IEnumerable<User> GetAll()
+        public async Task<IEnumerable<User>> GetAll()
         {
-            return _context.Users.Include(u => u.UserMaterials);
+            return await _context.Users.Include(u => u.UserMaterials).ToArrayAsync();
         }
 
         /// <inheritdoc/>
-        public User GetByID(int id)
+        public async Task<User> GetByID(int id)
         {
-            return _context.Users.Include(u => u.UserMaterials).FirstOrDefault(u => u.Id == id);
+            return await _context.Users.Include(u => u.UserMaterials).FirstOrDefaultAsync(u => u.Id == id);
         }
 
         /// <inheritdoc/>
-        public void Save()
+        public async Task Save()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         /// <inheritdoc/>
-        public void Update(User editedUser)
+        public async Task Update(User editedUser)
         {
             _context.Entry(editedUser).State = EntityState.Modified;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -15,16 +15,16 @@ namespace AspAPI.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IService<Course> _courseService;
-        public HomeController(ILogger<HomeController> logger, IService<Course> courseService)
+        private readonly IService<Domain.Course> _courseService;
+        public HomeController(ILogger<HomeController> logger, IService<Domain.Course> courseService)
         {
             _logger = logger;
             _courseService = courseService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var courses = _courseService.GetAll();
+            var courses = await _courseService.GetAll();
             return View(courses);
         }
 

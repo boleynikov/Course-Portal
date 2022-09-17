@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Threading.Tasks;
+
 namespace Services.Interface
 {
 
@@ -17,7 +19,7 @@ namespace Services.Interface
         /// <param name="email">User email.</param>
         /// <param name="password">User password.</param>
         /// <returns>Result of authorisation.</returns>
-        void Login(string email, string password);
+        Task Login(string email, string password);
 
         /// <summary>
         /// Logout from user account.
@@ -30,6 +32,6 @@ namespace Services.Interface
         /// <param name="name">User name.</param>
         /// <param name="email">User email.</param>
         /// <param name="password">User password.</param>
-        void Register(string name, string email, string password);
+        Task Register(string name, string email, string password);
     }
 }

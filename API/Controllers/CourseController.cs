@@ -3,6 +3,7 @@
 // </copyright>
 
 using System.Linq;
+using System.Threading.Tasks;
 using Domain.CourseMaterials;
 using Domain.Enum;
 
@@ -64,7 +65,7 @@ namespace API.Controllers
         }
 
         /// <inheritdoc/>
-        public string Launch()
+        public async Task<string> Launch()
         {
             string page = Command.CoursePage;
             while (page == Command.CoursePage)
@@ -84,7 +85,7 @@ namespace API.Controllers
                                 break;
                             }
 
-                            page = new MaterialController(_authorizedUser, currentCourse).Launch();
+                            page = await new MaterialController(_authorizedUser, currentCourse).Launch();
                             if (currentUser.UserCourses[_openedCourse.Get().Id].State == State.PreCompleted)
                             {
                                 foreach (var courseSkill in _openedCourse.Get().CourseSkills)
@@ -95,7 +96,7 @@ namespace API.Controllers
                                 currentUser.UserCourses[_openedCourse.Get().Id].State = State.Completed;
                             }
 
-                            _userService.Update(currentUser);
+                            await _userService.Update(currentUser);
                             break;
                         case Command.EditCommand:
                             if (!IsCourseNotDeleted(currentCourse))
@@ -104,8 +105,8 @@ namespace API.Controllers
                             }
 
                             EditCourse();
-                            _courseService.Update(currentCourse);
-                            _userService.Update(currentUser);
+                            await _courseService.Update(currentCourse);
+                            await _userService.Update(currentUser);
                             break;
                         case Command.BackCommand:
                             page = _redirectPage;
@@ -127,8 +128,8 @@ namespace API.Controllers
                                 break;
                             }
 
-                            _authorizedUser.AddCourse(currentCourse);
-                            _userService.Save();
+                            _authorizedUser.AddCourseToUser(currentCourse);
+                            await _userService.Save();
                             break;
                         case Command.EditCommand:
                             if (!IsCourseNotDeleted(currentCourse))
@@ -137,8 +138,8 @@ namespace API.Controllers
                             }
 
                             EditCourse();
-                            _courseService.Update(currentCourse);
-                            _userService.Update(currentUser);
+                            await _courseService.Update(currentCourse);
+                            await _userService.Update(currentUser);
                             break;
                         case Command.BackCommand:
                             page = _redirectPage;
@@ -174,18 +175,18 @@ namespace API.Controllers
                         _openedCourse.EditCourseDescription();
                         break;
                     case Command.DeleteCourseMaterial:
-                        try
-                        {
-                            int matId = _openedCourse.DeleteCourseMaterial();
-                            if (_materialService.GetById(matId).User.Id == _authorizedUser.Account.Id)
-                            {
-                                _materialService.DeleteByIndex(matId);
-                            }
-                        }
-                        catch
-                        {
-                            Console.WriteLine("Такого ідентифікатору немає");
-                        }
+                        //try
+                        //{
+                        //    int matId = _openedCourse.DeleteCourseMaterial();
+                        //    if (_materialService.GetById(matId).User.Id == _authorizedUser.Account.Id)
+                        //    {
+                        //        _materialService.DeleteByIndex(matId);
+                        //    }
+                        //}
+                        //catch
+                        //{
+                        //    Console.WriteLine("Такого ідентифікатору немає");
+                        //}
 
                         break;
                     case Command.AddCourseMaterials:

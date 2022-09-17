@@ -1,0 +1,47 @@
+﻿@model AspAPI.Models.Materials.ArticleModel
+
+@{
+    ViewData["Title"] = "CreateForm";
+}
+
+<h1>Add Article</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AddArticleToCourse" asp-controller="Course" asp-route-courseId="@ViewData["courseId"]">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Link" class="control-label"></label>
+                <input asp-for="Link" class="form-control" />
+                <span asp-validation-for="Link" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateOfPublication" class="control-label"></label>
+                <input asp-for="DateOfPublication" class="form-control" />
+                <span asp-validation-for="DateOfPublication" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@*<div>
+    @using(Html.BeginForm("GoToCourseForm", "Identity", new {model = ViewBag.Course}))
+    {
+        <input type="hidden" name="model" value=@ViewBag.Course />
+        <input type="hidden" name="materials" value=@Model/>
+        <input class="btn btn-outline-primary" type="submit" value="Go back" />
+    }
+</div>*@
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

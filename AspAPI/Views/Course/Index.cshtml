@@ -1,7 +1,9 @@
-﻿@model Domain.Course
+﻿@inject IAuthorizedUserService authorizedUserService
+@using Services.Interface
+@using Domain.Enum
+@model Domain.Course
 @{
 
-<!-- Modal -->
 <div class="card mb-3" style="max-width: 540px;">
     <div class="row g-0">
         <div class="col-md-8">
@@ -36,8 +38,35 @@
         </div>
         <div class="col-md-4">
             <img src="https://picsum.photos/300/200" class="img-fluid rounded-start" alt="...">
-            <input type="submit" class="btn btn-primary" value="Register on course" />
-            <input type="submit" class="btn btn-outline-primary" value="Edit course" />
+
+            @if (authorizedUserService.Account != null && @Model.Status != CourseStatus.Deleted)
+            {
+                if (authorizedUserService.Account.UserCourses.FirstOrDefault(c => c.Key == Model.Id).Value != null)
+                {
+                    <form>
+                        <input type="submit" class="btn btn-primary" value="Continue" />
+                    </form>
+                    <form asp-controller="Course" asp-action="EditForm" asp-route-id="@Model.Id">
+                        <input type="submit" class="btn btn-outline-primary" value="Edit course" />
+                    </form>
+                }
+                else
+                {
+                    <form asp-controller="Course" asp-action="AddCourseToUser" asp-route-courseId="@Model.Id">
+                        <input type="submit" class="btn btn-primary" value="Register on course" />
+                    </form>
+                }
+            }
+            else if (@Model.Status == CourseStatus.Deleted)
+            {
+                <strong>Sorry, course is deleted</strong>
+            }
+            else
+            {
+               <form asp-area="Identity" asp-controller="Identity" asp-action="LoginForm">
+                   <button type="submit" class="btn btn-outline-primary">Please login</button>
+               </form>
+            }
         </div>
     </div>
 </div>
