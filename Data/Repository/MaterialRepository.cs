@@ -45,8 +45,10 @@ namespace Data.Repository
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<Material>> GetAll()
+        public async Task<IEnumerable<Material>> GetAll(int pageNumber)
         {
+            //var sql = "EXEC dbo.Material_GetAll";
+            //return await _context.Materials.FromSqlRaw<Material>(sql).ToArrayAsync();
             return await _context.Materials.ToArrayAsync();
         }
 

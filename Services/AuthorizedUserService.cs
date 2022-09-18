@@ -107,7 +107,7 @@ namespace Services
                 throw new ArgumentNullException(nameof(courseService));
             }
 
-            var allCourses = await courseService.GetAll();
+            var allCourses = await courseService.GetAll(0);
 
 
             int coursesCount = allCourses.Count();
@@ -207,7 +207,7 @@ namespace Services
                 throw new ArgumentNullException(nameof(material));
             }
 
-            var allMaterials = await materialService.GetAll();
+            var allMaterials = await materialService.GetAll(0);
             //List<Material> courseMaterials = new();
             //string cmdLine = string.Empty;
             //while (cmdLine != Command.StopAddingCommand)

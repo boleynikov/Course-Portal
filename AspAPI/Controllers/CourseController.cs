@@ -93,7 +93,7 @@ namespace AspAPI.Controllers
             return View(course.ToModel());
         }
 
-        public IActionResult SaveNameDescription(int id, Models.Course model)
+        public async Task<IActionResult> SaveNameDescription(int id, Models.Course model)
         {
             if (model == null)
             {
@@ -102,10 +102,10 @@ namespace AspAPI.Controllers
 
             if (ModelState.IsValid)
             {
-                var course = _courseService.GetById(id).Result;
+                var course = await _courseService.GetById(id);
                 course.Name = model.Name;
                 course.Description = model.Description;
-                _courseService.Update(course);
+                await _courseService.Update(course);
                 return View("Index", course);
             }
 

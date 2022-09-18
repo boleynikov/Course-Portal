@@ -59,7 +59,7 @@ namespace API.Controllers
             {
                 Console.Clear();
                 var userCourses = currentUser.UserCourses.Select(c => c.Key).ToList();
-                var courses = _courseService.GetAll().Result.Where(c => userCourses.Contains(c.Id));
+                var courses = _courseService.GetAll(0).Result.Where(c => userCourses.Contains(c.Id));
                 UserPageView.Show(currentUser, courses.ToList());
 
                 string cmdLine = Console.ReadLine();
@@ -71,7 +71,7 @@ namespace API.Controllers
                         Console.Write("Введіть опис курсу: ");
                         string description = UserInput.NotEmptyString(() => Console.ReadLine());
                         var course = await _authorizedUser.CreateCourse(name, description, _courseService, _materialService);
-                        _authorizedUser.AddCourseToUser(course);
+                        _authorizedUser.AddCourseToUser(course.Id);
                         await _userService.Save();
                         await _courseService.Add(course);
                         Console.Write("Курс успішно додано. Натисніть Enter");

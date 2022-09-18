@@ -45,8 +45,10 @@ namespace Data.Repository
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<User>> GetAll()
+        public async Task<IEnumerable<User>> GetAll(int pageNumber)
         {
+            //var sql = "EXEC dbo.User_GetAll";
+            //return await _context.Users.FromSqlRaw<User>(sql).ToArrayAsync();
             return await _context.Users.Include(u => u.UserMaterials).ToArrayAsync();
         }
 

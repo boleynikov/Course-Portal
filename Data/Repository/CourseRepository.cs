@@ -4,6 +4,7 @@
 
 using System.Threading.Tasks;
 using Domain.Enum;
+using Microsoft.Data.SqlClient;
 
 namespace Data.Repository
 {
@@ -52,6 +53,9 @@ namespace Data.Repository
         /// <inheritdoc/>
         public async Task<Course> GetByID(int id)
         {
+            //var sql = $"EXEC dbo.Course_GetById {id}";
+            //var tmp = await _context.Courses.FromSqlRaw<Course>(sql).ToArrayAsync();
+            //return tmp.FirstOrDefault();
             return await _context.Courses.Include(c => c.CourseMaterials).FirstOrDefaultAsync(u => u.Id == id);
         }
 
@@ -69,9 +73,20 @@ namespace Data.Repository
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<Course>> GetAll()
+        public async Task<IEnumerable<Course>> GetAll(int pageNumber = 0)
         {
-            return await _context.Courses.Include(c => c.CourseMaterials).ToArrayAsync();
+            if (pageNumber == 0)
+            {
+                return await _context.Courses.Include(u => u.CourseMaterials).ToArrayAsync();
+            }
+
+            return await _context.Courses.Include(u => u.CourseMaterials)
+                                         .Skip((pageNumber - 1) * 6)
+                                         .Take(6)
+                                         .ToArrayAsync();
+                
+            //var sql = "EXEC dbo.Course_GetAll";
+            //return await _context.Courses.FromSqlRaw<Course>(sql).ToArrayAsync();
         }
     }
 }

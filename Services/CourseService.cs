@@ -40,9 +40,9 @@ namespace Services
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<Course>> GetAll()
+        public async Task<IEnumerable<Course>> GetAll(int pageNumber = 0)
         {
-            return await _repository.GetAll();
+            return await _repository.GetAll(pageNumber);
         }
 
         /// <inheritdoc/>

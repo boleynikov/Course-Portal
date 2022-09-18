@@ -101,7 +101,7 @@ namespace Services
 
         private async Task<bool> TryLogin(string email, string password)
         {
-            var allUsers = await  _userService.GetAll();
+            var allUsers = await  _userService.GetAll(0);
             var pulledUser = allUsers.SingleOrDefault(user => user.Email == email);
             if (pulledUser != null)
             {
@@ -119,7 +119,7 @@ namespace Services
         {
             if (IsValidEmail(email))
             {
-                var users = await _userService.GetAll();
+                var users = await _userService.GetAll(0);
                 var id = users.ToList().Count + 1;
                 var newUser = new User(id, name, email, password);
                 await _userService.Add(newUser);

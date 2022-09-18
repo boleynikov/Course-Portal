@@ -23,7 +23,7 @@ namespace Data.Repository.Interface
         /// Get all T objects.
         /// </summary>
         /// <returns>T array.</returns>
-        Task<IEnumerable<T>> GetAll();
+        Task<IEnumerable<T>> GetAll(int pageNumber);
 
         /// <summary>
         /// Get T object by id.

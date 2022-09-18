@@ -75,7 +75,7 @@ namespace API.Controllers
 
         private async Task<string> NotAuthorized()
         {
-            var courses = await _courseService.GetAll();
+            var courses = await _courseService.GetAll(0);
             HomepageView.Show(courses.ToList(), false);
             string page = Command.HomePage;
             string cmdLine = Console.ReadLine();
@@ -107,7 +107,7 @@ namespace API.Controllers
 
         private async Task<string> Authorized()
         {
-            var courses = await _courseService.GetAll();
+            var courses = await _courseService.GetAll(0);
             HomepageView.Show(courses.ToList(), true, _authorizedUser.Account.Name);
             string page = Command.HomePage;
             string cmdLine = Console.ReadLine();

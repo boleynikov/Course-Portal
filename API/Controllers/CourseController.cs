@@ -128,7 +128,7 @@ namespace API.Controllers
                                 break;
                             }
 
-                            _authorizedUser.AddCourseToUser(currentCourse);
+                            _authorizedUser.AddCourseToUser(currentCourse.Id);
                             await _userService.Save();
                             break;
                         case Command.EditCommand:

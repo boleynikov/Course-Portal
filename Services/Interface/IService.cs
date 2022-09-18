@@ -47,6 +47,6 @@ namespace Services.Interface
         /// Get all T entities from repo.
         /// </summary>
         /// <returns>Entities array.</returns>
-        Task<IEnumerable<T>> GetAll();
+        Task<IEnumerable<T>> GetAll(int pageNumber);
     }
 }

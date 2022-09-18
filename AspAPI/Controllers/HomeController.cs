@@ -22,9 +22,10 @@ namespace AspAPI.Controllers
             _courseService = courseService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            var courses = await _courseService.GetAll();
+            var courses = await _courseService.GetAll(page);
+
             return View(courses);
         }
 
