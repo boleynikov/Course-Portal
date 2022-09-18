@@ -21,7 +21,6 @@ namespace Services
         /// </summary>
         /// <param name="service">User service for decorating.</param>
         /// <param name="validateService">Validation service for input new courses & materials</param>
-        /// <param name="account">Current authorized user.</param>
         public AuthorizedUserService(IService<User> service, Validator validateService)
         {
             _userService = service;

@@ -125,8 +125,8 @@ namespace API.Controllers
                             break;
                         }
 
-                        _authorizedUser.AddCourseToUser(course);
-                        _userService.Save();
+                        await _authorizedUser.AddCourseToUser(course.Id);
+                        await _userService.Save();
                     }
 
                     break;

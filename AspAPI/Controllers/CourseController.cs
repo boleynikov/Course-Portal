@@ -56,6 +56,31 @@ namespace AspAPI.Controllers
             return RedirectToAction("Index", new { id = courseId });
         }
 
+        public async Task<IActionResult> AddUserProgress(int courseId, int materialIndex)
+        {
+            var course = await _courseService.GetById(courseId);
+            var userProgressInCourse = _authorizedUser.Account.UserCourses
+                .FirstOrDefault(c => c.Key == course.Id).Value.Percentage;
+            var progressUnit = 100f / course.CourseMaterials.Count;
+            var completedMaterials = Convert.ToInt32(userProgressInCourse / progressUnit);
+            if (materialIndex >= completedMaterials)
+            {
+                _authorizedUser.EditCourseProgress(course.Id, progressUnit);
+            }
+
+            if (_authorizedUser.Account.UserCourses[course.Id].State == State.PreCompleted)
+            {
+                foreach (var courseSkill in course.CourseSkills)
+                {
+                    _authorizedUser.AddSkill(courseSkill);
+                }
+
+                _authorizedUser.Account.UserCourses[course.Id].State = State.Completed;
+            }
+
+            await _userService.Update(_authorizedUser.Account);
+            return RedirectToAction("Index", "Material", new {courseId = courseId, materialIndex = materialIndex});
+        }
         public async Task<IActionResult> RemoveCourseFromUser(int courseId)
         {
             _authorizedUser.RemoveCourse(courseId);

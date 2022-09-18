@@ -72,7 +72,9 @@
             </div>
         </form>
         <br />
-        @*<form asp-controller="Material" asp-action="CreateForm" asp-route-id="@Model.Id">
+    </div>
+    <div class="col-md-4 offset-md-4">
+        <form asp-controller="Material" asp-action="CreateForm" asp-route-id="@Model.Id">
             <label for="option">Material</label>
             <select class="form-control" name="option" id="option">
                 <option class="dropdown-item" value="Article">Article</option>
@@ -82,8 +84,7 @@
             <br />
             <input type="submit" class="btn btn-outline-primary" value="Add material" />
         </form>
-        <br />*@
-        @*<form asp-controller="Course" asp-action="AddSkillToCourse" asp-route-courseId="@Model.Id">
+        <form asp-controller="Course" asp-action="AddSkillToCourse" asp-route-courseId="@Model.Id">
             <div>
                 <label for="skillName">Skill</label>
                 <select class="dropdown rounded" name="skillName" id="skillName">
@@ -110,53 +111,13 @@
             </div>
             <br />
             <input type="submit" class="btn btn-outline-primary" value="Add skill" />
-        </form>*@
-        <form asp-action="Index" asp-controller="Course" asp-route-id="@Model.Id">
-            <div>
-                <a class="btn btn-outline-primary m-4">Back</a>
-            </div>
-        </form>
-    </div>
-    <div class="col-md-4 offset-md-4">
-        <form asp-controller="Material" asp-action="CreateForm" asp-route-id="@Model.Id">
-            <label for="option">Material</label>
-            <select class="form-control" name="option" id="option">
-                <option class="dropdown-item" value="Article">Article</option>
-                <option class="dropdown-item" value="Publication">Publication</option>
-                <option class="dropdown-item" value="Video">Video</option>
-            </select>
-            <br />
-            <input type="submit" class="btn btn-outline-primary" value="Add material" />
-            <form asp-controller="Course" asp-action="AddSkillToCourse" asp-route-courseId="@Model.Id">
-                <div>
-                    <label for="skillName">Skill</label>
-                    <select class="dropdown rounded" name="skillName" id="skillName">
-                        <option class="dropdown-item" value="Programming">Programming</option>
-                        <option class="dropdown-item" value="Music">Music</option>
-                        <option class="dropdown-item" value="Physics">Physics</option>
-                        <option class="dropdown-item" value="HealthCare">HealthCare</option>
-                        <option class="dropdown-item" value="TimeManagment">TimeManagment</option>
-                        <option class="dropdown-item" value="Communication">Communication</option>
-                        <option class="dropdown-item" value="Illustration">Illustration</option>
-                        <option class="dropdown-item" value="Photo">Photo</option>
-                    </select>
-                    <label for="skillPoint">Points</label>
-                    <select class="dropdown rounded" name="skillPoint" id="skillPoint">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                        <option>6</option>
-                        <option>7</option>
-                        <option>8</option>
-                    </select>
-                </div>
-                <br />
-                <input type="submit" class="btn btn-outline-primary" value="Add skill" />
-            </form>
         </form>
         <br />
+        <form asp-action="Index" asp-controller="Course" asp-route-id="@Model.Id">
+            <div>
+                <input type="submit" class="btn btn-outline-primary m-4" value="Back">
+            </div>
+        </form>
     </div>
 </div>
 

@@ -25,6 +25,7 @@ namespace Services
         /// Initializes a new instance of the <see cref="AuthorizationService"/> class.
         /// </summary>
         /// <param name="service">User service for decorating.</param>
+        /// <param name="authorizedUserService">Service which store signed user</param>
         public AuthorizationService(IService<User> service, IAuthorizedUserService authorizedUserService)
         {
             _userService = service;
@@ -34,7 +35,8 @@ namespace Services
         /// <inheritdoc/>
         public async Task Login(string email, string password)
         {
-            var loginResult = await TryLogin(email, password);
+            await TryLogin(email, password);
+            //var loginResult = await TryLogin(email, password);
             //if (loginResult)
             //{
             //    Console.WriteLine($"З поверненням {_authorizedUserService.Account.Name}\n" +
