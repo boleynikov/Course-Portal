@@ -70,5 +70,10 @@ namespace Data.Repository
             _context.Entry(editedUser).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
+
+        public async Task<int> GetCount()
+        {
+            return await _context.Users.CountAsync();
+        }
     }
 }

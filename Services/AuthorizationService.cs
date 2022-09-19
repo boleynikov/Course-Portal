@@ -33,9 +33,9 @@ namespace Services
         }
 
         /// <inheritdoc/>
-        public async Task Login(string email, string password)
+        public async Task<bool> Login(string email, string password)
         {
-            await TryLogin(email, password);
+            return await TryLogin(email, password);
             //var loginResult = await TryLogin(email, password);
             //if (loginResult)
             //{

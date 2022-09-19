@@ -1,14 +1,13 @@
 ﻿using AspAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Services;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Domain;
 using Services.Interface;
+using Course = Domain.Course;
 
 namespace AspAPI.Controllers
 {
@@ -22,10 +21,21 @@ namespace AspAPI.Controllers
             _courseService = courseService;
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(string searchString, int page = 1)
         {
-            var courses = await _courseService.GetAll(page);
+            IEnumerable<Course> courses;
+            if (searchString != null)
+            {
+                var result = await _courseService.GetAll(0);
+                courses = result.Where(c => c.Name.StartsWith(searchString, true, CultureInfo.InvariantCulture))
+                    .ToList();
+            }
+            else
+            {
+                courses = await _courseService.GetAll(page);
+            }
 
+            ViewData["courseCount"] = await _courseService.GetCount(); 
             return View(courses);
         }
 

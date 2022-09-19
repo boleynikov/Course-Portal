@@ -51,6 +51,11 @@ namespace Services
             return await _repository.GetByID(index);
         }
 
+        public async Task<int> GetCount()
+        {
+            return await _repository.GetCount();
+        }
+
         /// <inheritdoc/>
         public async Task Save()
         {

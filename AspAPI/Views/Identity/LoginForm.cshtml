@@ -11,6 +11,7 @@
                 @Html.LabelFor(x => x.Password)
                 @Html.TextBoxFor(x => x.Password, new { @class = "form-control", placeholder = "Enter password" })
                 <span class="text-danger">@Html.ValidationMessageFor(x => x.Password)</span><br />
+                <div class="text-danger" asp-validation-summary="ModelOnly"></div>
                 <input type="submit" class="btn btn-outline-primary" value="Login" />
             </div>
         </form>

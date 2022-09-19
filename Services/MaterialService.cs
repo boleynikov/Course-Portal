@@ -32,6 +32,10 @@ namespace Services
         {
             await _repository.Add(material);
         }
+        public async Task<int> GetCount()
+        {
+            return await _repository.GetCount();
+        }
 
         /// <inheritdoc/>
         public async Task DeleteByIndex(int index)

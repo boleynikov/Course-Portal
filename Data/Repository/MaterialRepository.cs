@@ -70,5 +70,10 @@ namespace Data.Repository
             _context.Entry(editedMaterial).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
+
+        public async Task<int> GetCount()
+        {
+            return await _context.Materials.CountAsync();
+        }
     }
 }

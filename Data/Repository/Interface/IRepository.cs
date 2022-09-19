@@ -14,6 +14,11 @@ namespace Data.Repository.Interface
     public interface IRepository<T>
     {
         /// <summary>
+        /// Get count of objects
+        /// </summary>
+        /// <returns></returns>
+        Task<int> GetCount();
+        /// <summary>
         /// Adding new T object.
         /// </summary>
         /// <param name="entity">T Object.</param>

@@ -35,7 +35,6 @@ namespace AspAPI
 
             services.AddDefaultIdentity<Models.User>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<AppDbContext>();
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
             services.AddSingleton<IRepository<Material>, MaterialRepository>();
             services.AddSingleton<IService<Material>, MaterialService>();
             services.AddSingleton<IRepository<Course>, CourseRepository>();

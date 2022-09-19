@@ -39,6 +39,10 @@ namespace Services
             await _repository.DeleteByIndex(index);
         }
 
+        public async Task<int> GetCount()
+        {
+            return await _repository.GetCount();
+        }
         /// <inheritdoc/>
         public async Task<IEnumerable<User>> GetAll(int pageCount = 0)
         {

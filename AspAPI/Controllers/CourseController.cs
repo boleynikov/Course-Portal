@@ -92,7 +92,7 @@ namespace AspAPI.Controllers
             return View(course.ToModel());
         }
 
-        public async Task<IActionResult> SaveNameDescription(int id, Models.Course model)
+        public async Task<IActionResult> SaveNameDescription(int courseId, Models.Course model)
         {
             if (model == null)
             {
@@ -101,14 +101,14 @@ namespace AspAPI.Controllers
 
             if (ModelState.IsValid)
             {
-                var course = await _courseService.GetById(id);
+                var course = await _courseService.GetById(courseId);
                 course.Name = model.Name;
                 course.Description = model.Description;
                 await _courseService.Update(course);
                 return View("Index", course);
             }
 
-            return RedirectToAction("EditForm", id);
+            return RedirectToAction("EditForm", courseId);
         }
         public async Task<IActionResult> RemoveMaterialFromCourse(int courseId, int materialId)
         {

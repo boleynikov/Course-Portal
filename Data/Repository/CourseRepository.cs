@@ -88,5 +88,10 @@ namespace Data.Repository
             //var sql = "EXEC dbo.Course_GetAll";
             //return await _context.Courses.FromSqlRaw<Course>(sql).ToArrayAsync();
         }
+
+        public async Task<int> GetCount()
+        {
+            return await _context.Courses.CountAsync();
+        }
     }
 }

@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
 using AspAPI.Models;
-using AspAPI.Models.Materials;
 using Domain.CourseMaterials;
 using Services.Interface;
 
@@ -57,19 +53,19 @@ namespace AspAPI.Controllers
             return BadRequest(404);
         }
 
-        public ActionResult CreateArticleModel(int id)
+        public IActionResult CreateArticleModel(int id)
         {
             ViewData["courseId"] = id;
             return View();
         }
 
-        public ActionResult CreatePublicationModel(int id)
+        public IActionResult CreatePublicationModel(int id)
         {
             ViewData["courseId"] = id;
             return View();
         }
 
-        public ActionResult CreateVideoModel(int id)
+        public IActionResult CreateVideoModel(int id)
         {
             ViewData["courseId"] = id;
             return View();

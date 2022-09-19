@@ -1,15 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AspAPI.Models;
-using Domain;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Services.Interface;
-using Course = AspAPI.Models.Course;
-using User = AspAPI.Models.User;
 
 namespace AspAPI.Areas.Identity.Controllers
 {
@@ -28,7 +20,6 @@ namespace AspAPI.Areas.Identity.Controllers
             return View(_authorizedUser.Account);
         }
 
-        [HttpGet]
         public IActionResult LoginForm()
         {
             return View();
@@ -74,8 +65,13 @@ namespace AspAPI.Areas.Identity.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _authorizationService.Login(user?.Email, user.Password);
-                return RedirectToAction("Index", "Home");
+                var loginResult = await _authorizationService.Login(user?.Email, user.Password);
+                if (loginResult)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+
+                ModelState.AddModelError("", "Incorrect username or password");
             }
 
             return View("LoginForm");

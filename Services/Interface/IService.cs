@@ -48,5 +48,10 @@ namespace Services.Interface
         /// </summary>
         /// <returns>Entities array.</returns>
         Task<IEnumerable<T>> GetAll(int pageNumber);
+        /// <summary>
+        /// Get objects count
+        /// </summary>
+        /// <returns></returns>
+        Task<int> GetCount();
     }
 }
