@@ -3,6 +3,7 @@ using Data.Repository;
 using Data.Repository.Interface;
 using Domain;
 using Domain.CourseMaterials;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -28,20 +29,13 @@ namespace AspAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddDbContext<ApplicationDbContext>(options =>
-            //    options.UseSqlServer(
-            //        Configuration.GetConnectionString("DefaultConnection")));
-            //services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-            //    .AddEntityFrameworkStores<ApplicationDbContext>();
-            //services.AddControllersWithViews();
-            //services.AddRazorPages();
-
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Singleton);
 
-            services.AddDefaultIdentity<AspAPI.Models.User>(options => options.SignIn.RequireConfirmedAccount = false)
+            services.AddDefaultIdentity<Models.User>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<AppDbContext>();
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
             services.AddSingleton<IRepository<Material>, MaterialRepository>();
             services.AddSingleton<IService<Material>, MaterialService>();
             services.AddSingleton<IRepository<Course>, CourseRepository>();

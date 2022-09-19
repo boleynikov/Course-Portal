@@ -22,12 +22,10 @@ namespace AspAPI.Controllers
             _courseService = courseService;
         }
 
-        // GET: MaterialController
         public async Task<IActionResult> Index(int courseId, int materialIndex)
         {
             var course = await _courseService.GetById(courseId);
             var material = course.CourseMaterials.ElementAt(materialIndex);
-            //var material = await _materialService.GetById(materialId);
             switch (material.Type)
             {
                 case "Article":
@@ -44,10 +42,8 @@ namespace AspAPI.Controllers
             return View("Error", new ErrorViewModel());
         }
 
-        // GET: MaterialController/CreateForm
         public IActionResult CreateForm(string option, int id)
         {
-
             switch (option)
             {
                 case "Article":

@@ -57,9 +57,10 @@ namespace Services
         }
 
         /// <inheritdoc/>
-        public async Task Register(string name, string email, string password)
+        public async Task<User> Register(string name, string email, string password)
         {
-            await TryRegister(name, email, password);
+            var user = await TryRegister(name, email, password);
+            return user;
         }
 
         private static bool IsValidEmail(string email)
@@ -115,7 +116,7 @@ namespace Services
             return false;
         }
 
-        private async Task TryRegister(string name, string email, string password)
+        private async Task<User> TryRegister(string name, string email, string password)
         {
             if (IsValidEmail(email))
             {
@@ -124,12 +125,14 @@ namespace Services
                 var newUser = new User(id, name, email, password);
                 await _userService.Add(newUser);
                 _authorizedUserService.Account = newUser;
+                return newUser;
             }
             else
             {
                 Console.WriteLine("E-mail у неправильному форматі\n" +
                                   "Натисніть Enter");
                 Console.ReadLine();
+                return null;
             }
         }
     }

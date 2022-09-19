@@ -33,15 +33,6 @@
     </div>
 </div>
 
-@*<div>
-    @using(Html.BeginForm("GoToCourseForm", "Identity", new {model = ViewBag.Course}))
-    {
-        <input type="hidden" name="model" value=@ViewBag.Course />
-        <input type="hidden" name="materials" value=@Model/>
-        <input class="btn btn-outline-primary" type="submit" value="Go back" />
-    }
-</div>*@
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

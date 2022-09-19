@@ -3,6 +3,7 @@
 // </copyright>
 
 using System.Threading.Tasks;
+using Domain;
 
 namespace Services.Interface
 {
@@ -32,6 +33,6 @@ namespace Services.Interface
         /// <param name="name">User name.</param>
         /// <param name="email">User email.</param>
         /// <param name="password">User password.</param>
-        Task Register(string name, string email, string password);
+        Task<User> Register(string name, string email, string password);
     }
 }

@@ -34,7 +34,6 @@ namespace AspAPI.Controllers
             return View(course);
         }
 
-        [HttpPost]
         public async Task<IActionResult> CreateCourse(Models.Course createdCourse)
         {
             if (ModelState.IsValid)

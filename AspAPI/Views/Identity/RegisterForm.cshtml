@@ -1,9 +1,9 @@
 ﻿@model User
-<h1>Here is registration</h1>
+<h1>Registration</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-area="Identity" asp-controller="Identity" asp-action="RegistrationConfirm">
+        <form asp-area="Identity" asp-controller="Identity" asp-action="Register">
         <div class="form-group">
             @Html.LabelFor(x => x.Name)
             @Html.TextBoxFor(x => x.Name, new { @class = "form-control", placeholder = "Enter name" })
