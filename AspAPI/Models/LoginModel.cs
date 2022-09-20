@@ -7,14 +7,14 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AspAPI.Models
 {
-    public class LoginModel : IdentityUser
+    public class LoginModel
     {
         /// <summary>
         /// Gets user email.
         /// </summary>
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Enter a valid email")]
-        public new string Email { get; set; }
+        public string Email { get; set; }
 
         /// <summary>
         /// Gets user password.

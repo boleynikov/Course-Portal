@@ -38,7 +38,7 @@
         </div>
         <div class="col-md-4">
             <img src="https://picsum.photos/300/200" class="img-fluid rounded-start" alt="...">
-
+            
             @if (AuthorizedUserService.Account != null && @Model.Status != CourseStatus.Deleted)
             {
                 if (AuthorizedUserService.Account.UserCourses.FirstOrDefault(c => c.Key == Model.Id).Value != null)
@@ -46,23 +46,23 @@
                     if (Model.CourseMaterials.Count != 0)
                     {
                         <form asp-controller="Material" asp-action="Index" asp-route-courseId="@Model.Id" asp-route-materialIndex="0">
-                            <input type="submit" class="btn btn-primary" value="Continue" />
+                            <input type="submit" class="btn btn-outline-primary m-2" value="Continue" />
                         </form>
                     }
                     <form asp-controller="Course" asp-action="EditForm" asp-route-id="@Model.Id">
-                        <input type="submit" class="btn btn-outline-primary" value="Edit course" />
+                        <input type="submit" class="btn btn-outline-primary m-2" value="Edit course" />
                     </form>
                 }
                 else
                 {
                     <form asp-controller="Course" asp-action="AddCourseToUser" asp-route-courseId="@Model.Id">
-                        <input type="submit" class="btn btn-primary" value="Register on course" />
+                        <input type="submit" class="btn btn-primary m-1" value="Register on course" />
                     </form>
                 }
             }
             else if (@Model.Status == CourseStatus.Deleted)
             {
-                <strong>Sorry, course is deleted</strong>
+                <strong class="m-2">Sorry, course is deleted</strong>
             }
             else
             {

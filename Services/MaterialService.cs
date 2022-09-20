@@ -32,6 +32,8 @@ namespace Services
         {
             await _repository.Add(material);
         }
+
+        /// <inheritdoc/>
         public async Task<int> GetCount()
         {
             return await _repository.GetCount();

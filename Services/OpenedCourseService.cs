@@ -67,7 +67,7 @@ namespace Services
                 skills.Add(new Skill { Name = skill.Name, Points = skill.Points });
             }
 
-            _currentCourse.Status = CourseStatus.InEditing;
+            _currentCourse.Status = CourseStatus.Edited;
         }
         /// <inheritdoc/>
         public void DeleteSkill()
@@ -78,7 +78,7 @@ namespace Services
             {
                 var skill = _currentCourse.CourseSkills.ToList().Find(s => s.Name == name);
                 _currentCourse.CourseSkills.Remove(skill);
-                _currentCourse.Status = CourseStatus.InEditing;
+                _currentCourse.Status = CourseStatus.Edited;
             }
         }
         /// <inheritdoc/>
@@ -87,7 +87,7 @@ namespace Services
             Console.Write("Введіть нову назву курсу: ");
             string name = UserInput.NotEmptyString(() => Console.ReadLine());
             _currentCourse.Name = name;
-            _currentCourse.Status = CourseStatus.InEditing;
+            _currentCourse.Status = CourseStatus.Edited;
         }
         /// <inheritdoc/>
         public void EditCourseDescription()
@@ -95,7 +95,7 @@ namespace Services
             Console.Write("Введіть новий опис курсу: ");
             string description = UserInput.NotEmptyString(() => Console.ReadLine());
             _currentCourse.Description = description;
-            _currentCourse.Status = CourseStatus.InEditing;
+            _currentCourse.Status = CourseStatus.Edited;
         }
         /// <inheritdoc/>
         public int DeleteCourseMaterial(int id)
@@ -106,7 +106,7 @@ namespace Services
                 throw new ArgumentOutOfRangeException();
             }
             _currentCourse.CourseMaterials.Remove(material);
-            _currentCourse.Status = CourseStatus.InEditing;
+            _currentCourse.Status = CourseStatus.Edited;
             return material.Id;
             //Console.Write("Введіть ідентифікатор матеріалу: ");
             //var strMaterialId = UserInput.NotEmptyString(() => Console.ReadLine());
@@ -141,7 +141,7 @@ namespace Services
                 if (_validateService.Material.Validate(userMaterials, stringMatId, out Material material) && !_currentCourse.CourseMaterials.Contains(material))
                 {
                     _currentCourse.CourseMaterials.Add(material);
-                    _currentCourse.Status = CourseStatus.InEditing;
+                    _currentCourse.Status = CourseStatus.Edited;
                 }
                 else
                 {

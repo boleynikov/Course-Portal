@@ -9,7 +9,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Course Portal</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -25,18 +25,6 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        @using (Html.BeginForm("Index", "Home", new { @searchString = "#searchString"}, FormMethod.Get))
-                        {
-                            <li class="row">
-                                <div class="col">
-                                    <input type="text" class="form-control" name="searchString" id="searchString" />
-                                </div>
-                                <div class="col">
-                                    <input type="submit" class="btn btn-outline-primary" value="Search" />
-                                </div>
-                            </li>
-                        }
-
                     </ul>
                 </div>
             </div>

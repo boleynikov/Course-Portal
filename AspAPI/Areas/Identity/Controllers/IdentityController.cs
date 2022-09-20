@@ -43,6 +43,7 @@ namespace AspAPI.Areas.Identity.Controllers
             return View("CreateCourseForm", course);
         }
 
+        [HttpPost]
         public IActionResult Logout()
         {
             _authorizationService.Logout();
@@ -50,22 +51,32 @@ namespace AspAPI.Areas.Identity.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(Models.User user)
+        public async Task<IActionResult> Register(RegisterModel user)
         {
+            if (user == null)
+            {
+                return View("LoginForm");
+            }
+
             if (ModelState.IsValid)
             {
-                var newUser = await _authorizationService.Register(user?.Name, user.Email, user.Password);
+                var newUser = await _authorizationService.Register(user.Name, user.Email, user.Password);
                 return View("RegistrationConfirm", newUser);
             }
 
             return View("RegisterForm");
         }
+
         [HttpPost]
         public async Task<IActionResult> LoginUser(LoginModel user)
         {
+            if (user == null)
+            {
+                return View("LoginForm");
+            }
             if (ModelState.IsValid)
             {
-                var loginResult = await _authorizationService.Login(user?.Email, user.Password);
+                var loginResult = await _authorizationService.Login(user.Email, user.Password);
                 if (loginResult)
                 {
                     return RedirectToAction("Index", "Home");

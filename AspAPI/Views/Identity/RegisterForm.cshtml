@@ -1,4 +1,4 @@
-﻿@model User
+﻿@model RegisterModel
 <h1>Registration</h1>
 <hr />
 <div class="row">
@@ -14,6 +14,9 @@
             @Html.LabelFor(x => x.Password)
             @Html.TextBoxFor(x => x.Password, new { @class = "form-control", placeholder = "Enter password" })
             <span class="text-danger">@Html.ValidationMessageFor(x => x.Password)</span><br />
+            @Html.LabelFor(x => x.ConfirmPassword)
+            @Html.TextBoxFor(x => x.ConfirmPassword, new { @class = "form-control", placeholder = "Repeat password" })
+            <span class="text-danger">@Html.ValidationMessageFor(x => x.ConfirmPassword)</span><br />
             <input type="submit" class="btn btn-outline-primary" value="Register" />
         </div>
         </form>

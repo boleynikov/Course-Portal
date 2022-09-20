@@ -25,7 +25,7 @@ namespace Domain
         /// <param name="name">Course name.</param>
         /// <param name="description">Course description.</param>
         /// <param name ="status">Editing course status</param>
-        public Course(int id, string name, string description, CourseStatus status = CourseStatus.CompletelyDone)
+        public Course(int id, string name, string description, CourseStatus status = CourseStatus.Unultered)
             : base(id)
         {
             Name = name;

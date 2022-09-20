@@ -80,12 +80,14 @@ namespace AspAPI.Controllers
             await _userService.Update(_authorizedUser.Account);
             return RedirectToAction("Index", "Material", new {courseId = courseId, materialIndex = materialIndex});
         }
+
         public async Task<IActionResult> RemoveCourseFromUser(int courseId)
         {
             _authorizedUser.RemoveCourse(courseId);
             await _userService.Update(_authorizedUser.Account);
             return RedirectToAction("UserProfile","Identity");
         }
+
         public async Task<IActionResult> EditForm(int id)
         {
             var course = await _courseService.GetById(id);
@@ -104,15 +106,16 @@ namespace AspAPI.Controllers
                 var course = await _courseService.GetById(courseId);
                 course.Name = model.Name;
                 course.Description = model.Description;
+                course.Status = model.Status;
                 await _courseService.Update(course);
                 return View("Index", course);
             }
 
             return RedirectToAction("EditForm", courseId);
         }
+
         public async Task<IActionResult> RemoveMaterialFromCourse(int courseId, int materialId)
         {
-            //_materialService.DeleteByIndex(materialId);
             var course = await _courseService.GetById(courseId);
             var material = course.CourseMaterials.FirstOrDefault(m => m.Id == materialId);
             if (material == null)
@@ -141,6 +144,7 @@ namespace AspAPI.Controllers
                 course.CourseSkills.Add(new Skill { Name = skill.Name, Points = skill.Points });
             }
 
+            course.Status = CourseStatus.Edited;
             await _courseService.Update(course);
             return RedirectToAction("EditForm", new { id = courseId });
         }
@@ -150,6 +154,7 @@ namespace AspAPI.Controllers
             var course = await _courseService.GetById(courseId);
             var skill = course.CourseSkills.ToList().Find(s => s.Name == Enum.Parse<SkillKind>(skillName));
             course.CourseSkills.Remove(skill);
+            course.Status = CourseStatus.Edited;
             await _courseService.Update(course);
             return RedirectToAction("EditForm", new { id = courseId });
         }
@@ -159,14 +164,17 @@ namespace AspAPI.Controllers
             var material = await _authorizedUser.AddMaterial(_materialService, article.ToDomain());
             var course = await _courseService.GetById(courseId);
             course.CourseMaterials.Add(material);
+            course.Status = CourseStatus.Edited;
             await _courseService.Save();
             return RedirectToAction("EditForm", new { id = courseId });
         }
+
         public async Task<IActionResult> AddPublicationToCourse(PublicationModel publication, int courseId)
         {
             var material = await _authorizedUser.AddMaterial(_materialService, publication.ToDomain());
             var course = await _courseService.GetById(courseId);
             course.CourseMaterials.Add(material);
+            course.Status = CourseStatus.Edited;
             await _courseService.Save();
             return RedirectToAction("EditForm", new { id = courseId });
         }
@@ -176,6 +184,7 @@ namespace AspAPI.Controllers
             var material = await _authorizedUser.AddMaterial(_materialService, video.ToDomain());
             var course = await _courseService.GetById(courseId);
             course.CourseMaterials.Add(material);
+            course.Status = CourseStatus.Edited;
             await _courseService.Save();
             return RedirectToAction("EditForm", new { id = courseId });
         }

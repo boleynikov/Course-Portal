@@ -14,8 +14,8 @@ namespace AspAPI.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IService<Domain.Course> _courseService;
-        public HomeController(ILogger<HomeController> logger, IService<Domain.Course> courseService)
+        private readonly IService<Course> _courseService;
+        public HomeController(ILogger<HomeController> logger, IService<Course> courseService)
         {
             _logger = logger;
             _courseService = courseService;
@@ -27,7 +27,7 @@ namespace AspAPI.Controllers
             if (searchString != null)
             {
                 var result = await _courseService.GetAll(0);
-                courses = result.Where(c => c.Name.StartsWith(searchString, true, CultureInfo.InvariantCulture))
+                courses = result.Where(course => course.Name.StartsWith(searchString, true, CultureInfo.InvariantCulture))
                     .ToList();
             }
             else
@@ -36,7 +36,7 @@ namespace AspAPI.Controllers
             }
 
             ViewData["courseCount"] = await _courseService.GetCount(); 
-            return View(courses);
+            return View((courses, page));
         }
 
         public IActionResult Privacy()
