@@ -35,7 +35,9 @@ namespace AspAPI.Controllers
                 courses = await _courseService.GetAll(page);
             }
 
-            ViewData["courseCount"] = await _courseService.GetCount(); 
+            var pageCount = await _courseService.GetCount();
+            pageCount = pageCount % 6 == 0 ? pageCount / 6 : (pageCount / 6) + 1;
+            ViewData["pageCount"] = pageCount;
             return View((courses, page));
         }
 

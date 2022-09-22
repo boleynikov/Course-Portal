@@ -18,7 +18,7 @@ namespace Services.Interface
         /// <summary>
         /// Create new course
         /// </summary>
-        Task<Course> CreateCourse(string name, string description, IService<Course> courseService, IService<Material> materialService);
+        Task<Course> CreateCourse(string name, string description, string owner, IService<Course> courseService, IService<Material> materialService);
         /// <summary>
         /// Add new course to user list
         /// </summary>
@@ -47,10 +47,5 @@ namespace Services.Interface
         /// </summary>
         /// <returns></returns>
         Task<Material> AddMaterial(IService<Material> materialService, Material material);
-        /// <summary>
-        /// Add exist user material to course
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<Material> AddExistingMaterials();
     }
 }

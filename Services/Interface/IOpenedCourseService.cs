@@ -14,10 +14,11 @@ namespace Services.Interface
         /// </summary>
         /// <returns></returns>
         Course Get();
+
         /// <summary>
         /// Add skill to course
         /// </summary>
-        void AddOrEditSkill();
+        void AddOrEditSkill(Course course, string skillName, int skillPoint);
         /// <summary>
         /// Delete skill from course
         /// </summary>

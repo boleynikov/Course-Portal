@@ -11,20 +11,20 @@ namespace AspAPI.Models
 {
     public class User : IdentityUser
     {
-        //[Key]
-        //public new int Id { get; set; }
+        [Key]
+        public new int Id { get; set; }
         /// <summary>
         /// Gets user Name.
         /// </summary>
         [Required(ErrorMessage = "Name is required")] 
         public string Name { get; set; }
 
-        ///// <summary>
-        ///// Gets user email.
-        ///// </summary>
-        //[Required(ErrorMessage = "Email is required")] 
-        //[EmailAddress(ErrorMessage = "Enter a valid email")]
-        //public string Email { get; set; }
+        /// <summary>
+        /// Gets user email.
+        /// </summary>
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Enter a valid email")]
+        public string Email { get; set; }
 
         /// <summary>
         /// Gets user password.

@@ -70,7 +70,7 @@ namespace API.Controllers
                         string name = UserInput.NotEmptyString(() => Console.ReadLine());
                         Console.Write("Введіть опис курсу: ");
                         string description = UserInput.NotEmptyString(() => Console.ReadLine());
-                        var course = await _authorizedUser.CreateCourse(name, description, _courseService, _materialService);
+                        var course = await _authorizedUser.CreateCourse(name, description, _authorizedUser.Account.Name, _courseService, _materialService);
                         _authorizedUser.AddCourseToUser(course.Id);
                         await _userService.Save();
                         await _courseService.Add(course);
@@ -81,7 +81,7 @@ namespace API.Controllers
                         Console.Write("Введіть номер курсу: ");
                         if (_validateService.Course.Validate(courses.ToList(), Console.ReadLine(), out course))
                         {
-                            page = await new CourseController(_userService, _courseService, _materialService, _authorizedUser, new OpenedCourseService(course, _validateService), Command.UserPage).Launch();
+                            page = await new CourseController(_userService, _courseService, _authorizedUser, new OpenedCourseService(course, _validateService), Command.UserPage).Launch();
                         }
 
                         break;

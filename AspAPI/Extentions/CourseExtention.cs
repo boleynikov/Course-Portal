@@ -19,6 +19,7 @@ namespace AspAPI.Extentions
             {
                 Id = course.Id,
                 Name = course.Name,
+                Owner = course.Owner,
                 Description = course.Description,
                 CourseMaterials = course.CourseMaterials,
                 CourseSkills = course.CourseSkills,

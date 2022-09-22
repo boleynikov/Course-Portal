@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using AspAPI.Models;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
+using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Services.Interface;
 
 namespace AspAPI.Areas.Identity.Controllers
@@ -55,13 +59,18 @@ namespace AspAPI.Areas.Identity.Controllers
         {
             if (user == null)
             {
-                return View("LoginForm");
+                return View("RegisterForm");
             }
 
             if (ModelState.IsValid)
             {
-                var newUser = await _authorizationService.Register(user.Name, user.Email, user.Password);
-                return View("RegistrationConfirm", newUser);
+                var registrationResult = await _authorizationService.Register(user.Name, user.Email, user.Password);
+                if (registrationResult)
+                {
+                    return View("RegistrationConfirm", user);
+                }
+
+                ModelState.AddModelError("", "There is already a user with this email");
             }
 
             return View("RegisterForm");

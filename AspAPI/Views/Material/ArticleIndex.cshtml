@@ -1,18 +1,14 @@
 ﻿@inject IService<Domain.Course> CourseService
 @inject IAuthorizedUserService AuthorizedUser
 @using Services.Interface
-@model (Domain.CourseMaterials.ArticleMaterial material, int materialIndex)
+@model (Domain.CourseMaterials.ArticleMaterial material, int materialIndex, int completedMaterials)
 
 <div class="row">
     <div class=" col col-lg-2 ">
         @{
             var course = await CourseService.GetById(Convert.ToInt32(ViewData["courseId"]));
-            var userProgressInCourse = AuthorizedUser.Account.UserCourses
-                .FirstOrDefault(c => c.Key == course.Id).Value.Percentage;
-            var progressUnit = 100f / course.CourseMaterials.Count;
-            var completedMaterials = Convert.ToInt32(userProgressInCourse / progressUnit);
         }
-        @await Html.PartialAsync("_MaterialsListSideBarPartial", (course.CourseMaterials, course.Id, Model.material.Id, completedMaterials))
+        @await Html.PartialAsync("_MaterialsListSideBarPartial", (course.CourseMaterials, course.Id, Model.material.Id, Model.completedMaterials))
     </div>
     <div class="col">
         <h4>Article</h4>
@@ -28,19 +24,13 @@
                 @Html.DisplayNameFor(model => Model.material.Link)
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => Model.material.Link)
+                <a href="@Model.material.Link">@Html.DisplayFor(model => Model.material.Link)</a>
             </dd>
             <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => Model.material.DateOfPublication)
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => Model.material.DateOfPublication)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => Model.material.Id)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => Model.material.Id)
             </dd>
         </dl>
         <div class="row">

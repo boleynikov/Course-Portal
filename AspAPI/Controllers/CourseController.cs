@@ -31,14 +31,15 @@ namespace AspAPI.Controllers
         public async Task<IActionResult> Index(int id)
         {
             var course = await _courseService.GetById(id);
-            return View(course);
+
+            return View("Index", course);
         }
 
         public async Task<IActionResult> CreateCourse(Models.Course createdCourse)
         {
             if (ModelState.IsValid)
             {
-                var course = await _authorizedUser.CreateCourse(createdCourse?.Name, createdCourse.Description, _courseService, _materialService);
+                var course = await _authorizedUser.CreateCourse(createdCourse?.Name, createdCourse.Description, _authorizedUser.Account.Email, _courseService, _materialService);
                 await _courseService.Add(course);
                 await _authorizedUser.AddCourseToUser(course.Id);
                 await _userService.Save();
@@ -78,7 +79,7 @@ namespace AspAPI.Controllers
             }
 
             await _userService.Update(_authorizedUser.Account);
-            return RedirectToAction("Index", "Material", new {courseId = courseId, materialIndex = materialIndex});
+            return RedirectToAction("Index", "Material", new { courseId, materialIndex});
         }
 
         public async Task<IActionResult> RemoveCourseFromUser(int courseId)
@@ -101,7 +102,7 @@ namespace AspAPI.Controllers
                 throw new ArgumentNullException(nameof(model));
             }
 
-            if (ModelState.IsValid)
+            if (model.Name != null && model.Description != null) 
             {
                 var course = await _courseService.GetById(courseId);
                 course.Name = model.Name;
@@ -111,7 +112,7 @@ namespace AspAPI.Controllers
                 return View("Index", course);
             }
 
-            return RedirectToAction("EditForm", courseId);
+            return RedirectToAction("EditForm", new { id = courseId });
         }
 
         public async Task<IActionResult> RemoveMaterialFromCourse(int courseId, int materialId)
@@ -120,7 +121,7 @@ namespace AspAPI.Controllers
             var material = course.CourseMaterials.FirstOrDefault(m => m.Id == materialId);
             if (material == null)
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(material));
             }
 
             course.CourseMaterials.Remove(material);

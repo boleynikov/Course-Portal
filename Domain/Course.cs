@@ -23,12 +23,14 @@ namespace Domain
         /// </summary>
         /// <param name="id">Course id.</param>
         /// <param name="name">Course name.</param>
+        /// <param name="owner">Course author</param>
         /// <param name="description">Course description.</param>
         /// <param name ="status">Editing course status</param>
-        public Course(int id, string name, string description, CourseStatus status = CourseStatus.Unultered)
+        public Course(int id, string name, string owner, string description, CourseStatus status = CourseStatus.Unultered)
             : base(id)
         {
             Name = name;
+            Owner = owner;
             Description = description;
             Status = status;
             CourseMaterials = new List<Material>();
@@ -41,10 +43,18 @@ namespace Domain
         public string Name { get; set; }
 
         /// <summary>
+        /// Gets or sets course owner
+        /// </summary>
+        public string Owner { get; set; }
+
+        /// <summary>
         /// Gets course description.
         /// </summary>
         public string Description { get; set; }
 
+        /// <summary>
+        /// Course status
+        /// </summary>
         public CourseStatus Status { get; set; }
 
         /// <summary>

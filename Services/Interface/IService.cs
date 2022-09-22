@@ -46,6 +46,7 @@ namespace Services.Interface
         /// <summary>
         /// Get all T entities from repo.
         /// </summary>
+        /// <param name="pageNumber">Number of user pages. Type 0 - to get all users</param>
         /// <returns>Entities array.</returns>
         Task<IEnumerable<T>> GetAll(int pageNumber);
         /// <summary>

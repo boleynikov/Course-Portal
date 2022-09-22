@@ -33,6 +33,6 @@ namespace Services.Interface
         /// <param name="name">User name.</param>
         /// <param name="email">User email.</param>
         /// <param name="password">User password.</param>
-        Task<User> Register(string name, string email, string password);
+        Task<bool> Register(string name, string email, string password);
     }
 }

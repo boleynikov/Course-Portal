@@ -64,16 +64,6 @@ namespace Data
             : base(options)
         {
         }
-        ///// <summary>
-        ///// Called while configuring application
-        ///// </summary>
-        ///// <param name="optionsBuilder"></param>
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb; Database=CoursePortal; Trusted_Connection=true;");
-        //}
-
-
         private void BuildUsers(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>()

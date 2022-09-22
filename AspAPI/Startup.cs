@@ -32,9 +32,6 @@ namespace AspAPI
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Singleton);
-
-            services.AddDefaultIdentity<Models.User>(options => options.SignIn.RequireConfirmedAccount = false)
-                .AddEntityFrameworkStores<AppDbContext>();
             services.AddSingleton<IRepository<Material>, MaterialRepository>();
             services.AddSingleton<IService<Material>, MaterialService>();
             services.AddSingleton<IRepository<Course>, CourseRepository>();

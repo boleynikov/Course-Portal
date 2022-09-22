@@ -36,18 +36,6 @@ namespace Services
         public async Task<bool> Login(string email, string password)
         {
             return await TryLogin(email, password);
-            //var loginResult = await TryLogin(email, password);
-            //if (loginResult)
-            //{
-            //    Console.WriteLine($"З поверненням {_authorizedUserService.Account.Name}\n" +
-            //                       "Натисніть Enter");
-            //    Console.ReadLine();
-            //}
-            //else
-            //{
-            //    Console.WriteLine("Невірний email чи пароль");
-            //    Console.ReadLine();
-            //}
         }
 
         /// <inheritdoc/>
@@ -57,10 +45,10 @@ namespace Services
         }
 
         /// <inheritdoc/>
-        public async Task<User> Register(string name, string email, string password)
+        public async Task<bool> Register(string name, string email, string password)
         {
-            var user = await TryRegister(name, email, password);
-            return user;
+            var result = await TryRegister(name, email, password);
+            return result;
         }
 
         private static bool IsValidEmail(string email)
@@ -116,24 +104,20 @@ namespace Services
             return false;
         }
 
-        private async Task<User> TryRegister(string name, string email, string password)
+        private async Task<bool> TryRegister(string name, string email, string password)
         {
-            if (IsValidEmail(email))
+            var allUsers = await _userService.GetAll(0);
+            if (IsValidEmail(email) && allUsers.FirstOrDefault(user => user.Email == email) == null)
             {
                 var users = await _userService.GetAll(0);
                 var id = users.ToList().Count + 1;
                 var newUser = new User(id, name, email, password);
                 await _userService.Add(newUser);
                 _authorizedUserService.Account = newUser;
-                return newUser;
+                return true;
             }
-            else
-            {
-                Console.WriteLine("E-mail у неправильному форматі\n" +
-                                  "Натисніть Enter");
-                Console.ReadLine();
-                return null;
-            }
+
+            return false;
         }
     }
 }

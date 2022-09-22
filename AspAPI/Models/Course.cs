@@ -13,6 +13,12 @@ namespace AspAPI.Models
     {
         public int Id { get; set; }
         public CourseStatus Status { get; set; }
+
+        /// <summary>
+        /// Gets or set course owner
+        /// </summary>
+        public string Owner { get; set; }
+
         /// <summary>
         /// Gets course name.
         /// </summary>

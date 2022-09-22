@@ -80,7 +80,7 @@
         <br />
     </div>
     <div class="col-md-4 offset-md-4">
-        <form>
+        <form asp-controller="Material" asp-action="CreateForm" asp-route-id="@Model.Id">
             <label for="option" class="font-weight-bold">Material</label>
             <select class="form-control" name="option" id="option">
                 <option class="dropdown-item" value="Article">Article</option>
@@ -89,7 +89,6 @@
             </select>
             <br />
             <input type="submit" class="btn btn-primary" value="Add material" />
-            @*<button class=" btn-primary" id='open' data-toggle="modal" data-target="#showmodal">Add material</button>*@
         </form>
         <br />
         <form asp-controller="Course" asp-action="AddSkillToCourse" asp-route-courseId="@Model.Id">
