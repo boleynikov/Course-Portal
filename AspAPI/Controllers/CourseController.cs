@@ -32,7 +32,7 @@ namespace AspAPI.Controllers
         {
             var course = await _courseService.GetById(id);
 
-            return View("Index", course);
+            return PartialView("_CourseDetailPage", course);
         }
 
         public async Task<IActionResult> CreateCourse(Models.Course createdCourse)
@@ -53,7 +53,7 @@ namespace AspAPI.Controllers
         {
             await _authorizedUser.AddCourseToUser(courseId);
             await _userService.Save();
-            return RedirectToAction("Index", new { id = courseId });
+            return RedirectToAction("Index", "Material", new { courseId = courseId, materialId = 0 });
         }
 
         public async Task<IActionResult> AddUserProgress(int courseId, int materialIndex)

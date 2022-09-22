@@ -1,0 +1,84 @@
+﻿@inject IAuthorizedUserService AuthorizedUserService
+@using Services.Interface
+@using Domain.Enum
+@model Domain.Course
+@{
+
+    <div class="@*card*@ mb-3" style="max-width: 640px;">
+        <div @*class="card-body"*@>
+            <div class="row g-0">
+                <div class="col-md-8">
+                    <h2>@Html.DisplayFor(model => model.Name)</h2>
+                    <p class="card-text ml-3">@Html.DisplayFor(model => model.Description)</p>
+                    <h3>@Html.DisplayNameFor(model => model.CourseSkills)</h3>
+                    @if (Model.CourseSkills.Count == 0)
+                    {
+                        <p class="ml-4">No skills</p>
+                    }
+                    else
+                    {
+                        @foreach (var skill in Model.CourseSkills)
+                        {
+                            <p class="card-text ml-4"><small class="text-muted"> @skill.Name @skill.Points</small></p>
+                        }
+                    }
+                    <h3>@Html.DisplayNameFor(model => model.CourseMaterials)</h3>
+                    @if (Model.CourseMaterials.Count == 0)
+                    {
+                        <p class="ml-4">No materials in course</p>
+                    }
+                    else
+                    {
+                        @foreach (var material in Model.CourseMaterials)
+                        {
+                            <p class="card-text ml-4"><small class="text-muted"> @material.Type: "@material.Title"</small></p>
+                        }
+                    }
+                </div>
+                <div class="col-md-4">
+                    <img src="https://picsum.photos/400/250" class="img-fluid rounded" alt="...">
+
+                    @if (AuthorizedUserService.Account != null && @Model.Status != CourseStatus.Deleted)
+                    {
+                        if (AuthorizedUserService.Account.UserCourses.FirstOrDefault(c => c.Key == Model.Id).Value != null)
+                        {
+                    <div class="row">
+                        <div class="col-md-4">
+                            <form asp-controller="Course" asp-action="EditForm" asp-route-id="@Model.Id">
+                                <input type="submit" class="btn btn-outline-primary m-2" value="Edit course" />
+                            </form>
+                        </div>
+                        <div class="col-md-4 offset-md-2">
+                            @{
+                                if (Model.CourseMaterials.Count != 0)
+                                {
+                                    <form asp-controller="Material" asp-action="Index" asp-route-courseId="@Model.Id" asp-route-materialIndex="0">
+                                        <input type="submit" class="btn btn-outline-primary m-2" value="Continue"/>
+                                    </form>
+                                }
+                            }
+                        </div>
+                    </div>
+                        }
+                        else
+                        {
+                            <form asp-controller="Course" asp-action="AddCourseToUser" asp-route-courseId="@Model.Id">
+                                <input type="submit" class="btn btn-outline-primary m-1 ml-3" value="Register on course" />
+                            </form>
+                        }
+                    }
+                    else if (@Model.Status == CourseStatus.Deleted)
+                    {
+                        <strong class="m-2">Sorry, course is deleted</strong>
+                    }
+                    else
+                    {
+                        <form asp-area="Identity" asp-controller="Identity" asp-action="LoginForm">
+                            <button type="submit" class="btn btn-outline-primary mt-2">Please login</button>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}

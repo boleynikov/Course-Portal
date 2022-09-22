@@ -28,9 +28,24 @@
         }
     </ul>
 </nav>
+<div class="modal fade" id="modal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Course details
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+        </div>
+    </div>
+</div>
 @foreach (var course in Model.Item1)
 {
-    <div class="card mb-3" onclick="location.href = '@Url.Action("Index", "Course", new { id = course.Id })';">
+    <div class="card mb-3 pointer-event" onclick="openModal({url: '/Course/Index', data: '@course.Id'})">
         <div class="row g-0">
             <div class="col-md-4">
                 <img src="https://picsum.photos/300/200" class="img-fluid rounded-start" alt="...">
@@ -70,3 +85,4 @@
         }
     </ul>
 </nav>
+<script src="~/js/courseModal.js"></script>
