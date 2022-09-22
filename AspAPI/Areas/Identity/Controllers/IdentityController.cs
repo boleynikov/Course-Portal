@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using AspAPI.Models;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
-using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Services.Interface;
 
 namespace AspAPI.Areas.Identity.Controllers
@@ -18,11 +14,15 @@ namespace AspAPI.Areas.Identity.Controllers
             _authorizationService = authorizationService;
             _authorizedUser = authorizedUser;
         }
+
         [HttpGet]
-        public IActionResult UserProfile()
+        public IActionResult UserProfile(int page = 1)
         {
-            return View(_authorizedUser.Account);
-        }
+            var pageCount = _authorizedUser.Account.UserCourses.Count;
+            pageCount = pageCount % 4 == 0 ? pageCount / 4 : (pageCount / 4) + 1;
+            ViewData["pageCount"] = pageCount;
+            return View("UserProfile", (_authorizedUser.Account, page));
+    }
 
         public IActionResult LoginForm()
         {

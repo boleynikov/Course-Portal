@@ -1,4 +1,4 @@
-﻿@model (IEnumerable<Domain.Course>, int)
+﻿@model (IEnumerable<Domain.Course> courseInPage, int currentPage)
 @{
     ViewData["Title"] = "Домашня сторінка";
 }
@@ -7,7 +7,7 @@
     <ul class="pagination">
         @for (int i = 1; i <= Convert.ToInt32(ViewData["pageCount"]); i++)
         {
-            if (i == Model.Item2)
+            if (i == Model.currentPage)
             {
                 <li class="page-item"><a class="page-link active" href="@Url.Action("Index","Home", new {page = i})">@i</a></li>
             }
@@ -29,7 +29,7 @@
         }
     </ul>
 </nav>
-@foreach (var course in Model.Item1)
+@foreach (var course in Model.courseInPage)
 {
     <div class="card mb-3 pointer-event" onclick="openCourseModal({url: '/Course/Index', data: '@course.Id', txt:'Course details'})">
         <div class="row g-0">
@@ -62,7 +62,7 @@
         <ul class="pagination">
             @for (int i = 1; i <= Convert.ToInt32(ViewData["pageCount"]); i++)
             {
-                if (i == Model.Item2)
+                if (i == Model.currentPage)
                 {
                     <li class="page-item"><a class="page-link active" href="@Url.Action("Index","Home", new {page = i})">@i</a></li>
                 }
