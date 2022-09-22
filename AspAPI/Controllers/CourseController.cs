@@ -109,7 +109,7 @@ namespace AspAPI.Controllers
                 course.Description = model.Description;
                 course.Status = model.Status;
                 await _courseService.Update(course);
-                return View("Index", course);
+                return View("EditForm", course.ToModel());
             }
 
             return RedirectToAction("EditForm", new { id = courseId });

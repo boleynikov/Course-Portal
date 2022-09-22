@@ -95,8 +95,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="progress">
-                            <div class="progress-bar bg-info" role="progressbar" style="width: @Math.Round(coursePair.Value.Percentage)%;" aria-valuenow="@coursePair.Value.Percentage" aria-valuemin="0" aria-valuemax="100">@Math.Round(coursePair.Value.Percentage)%</div>
+                        <div class="px-3 pb-2">
+                            <div class="progress">
+                                <div class="progress-bar bg-info" role="progressbar" style="width: @Math.Round(coursePair.Value.Percentage)%;" aria-valuenow="@coursePair.Value.Percentage" aria-valuemin="0" aria-valuemax="100">@Math.Round(coursePair.Value.Percentage)%</div>
+                            </div>
                         </div>
                         <a type="submit" class="btn-outline-primary rounded bg-light border-white text-secondary text-center" asp-action="RemoveCourseFromUser" asp-controller="Course" asp-route-courseId="@course.Id">Delete</a>
                     </div>
