@@ -59,7 +59,7 @@
                 {
                     var course = await CourseService.GetById(coursePair.Key);
                     <div class="card mb-3" style="max-width: 650px;">
-                        <div class="row g-0" onclick="openModal({ url: '/Course/Index', data: '@course.Id' })">
+                        <div class="row g-0" onclick="openCourseModal({ url: '/Course/Index', data: '@course.Id', txt:'Course details' })">
                             <div class="col-md-4">
                                 <img src="https://picsum.photos/300/200" class="img-fluid rounded-start" alt="...">
                             </div>
@@ -98,4 +98,4 @@
     <a asp-controller="Home" asp-action="Index">Back</a>
 </div>
 
-<script src="~/js/courseModal.js"></script>
+<script src="~/js/site.js"></script>

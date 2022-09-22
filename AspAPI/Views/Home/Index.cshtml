@@ -31,7 +31,7 @@
 </nav>
 @foreach (var course in Model.Item1)
 {
-    <div class="card mb-3 pointer-event" onclick="openModal({url: '/Course/Index', data: '@course.Id'})">
+    <div class="card mb-3 pointer-event" onclick="openCourseModal({url: '/Course/Index', data: '@course.Id', txt:'Course details'})">
         <div class="row g-0">
             <div class="col-md-4">
                 <img src="https://picsum.photos/300/200" class="img-fluid rounded" alt="...">
@@ -74,4 +74,4 @@
         </ul>
     </nav>
 }
-<script src="~/js/courseModal.js"></script>
+<script src="~/js/site.js"></script>
