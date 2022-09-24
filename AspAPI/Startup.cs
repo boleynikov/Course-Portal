@@ -32,10 +32,10 @@ namespace AspAPI
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Singleton);
-            services.AddSingleton<IRepository<Material>, MaterialRepository>();
-            services.AddSingleton<IService<Material>, MaterialService>();
-            services.AddSingleton<IRepository<Course>, CourseRepository>();
-            services.AddSingleton<IService<Course>, CourseService>();
+            services.AddScoped<IRepository<Material>, MaterialRepository>();
+            services.AddScoped<IService<Material>, MaterialService>();
+            services.AddScoped<IRepository<Course>, CourseRepository>();
+            services.AddScoped<IService<Course>, CourseService>();
             services.AddSingleton<IRepository<User>, UserRepository>();
             services.AddSingleton<IService<User>, UserService>();
             services.AddSingleton<Validator>();

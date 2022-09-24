@@ -26,13 +26,13 @@ namespace AspAPI.Areas.Identity.Controllers
 
         public IActionResult LoginForm()
         {
-            return PartialView("LoginForm");
+            return View("LoginForm");
         }
 
         [HttpGet]
         public IActionResult RegisterForm()
         {
-            return PartialView("RegisterForm");
+            return View("RegisterForm");
         }
 
         [HttpGet]

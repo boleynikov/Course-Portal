@@ -20,12 +20,10 @@
     else
     {
         <li class="nav-item">
-            @*<a class="nav-link text-dark" asp-area="Identity" asp-controller="Identity" asp-action="RegisterForm">Register</a>*@
-            <a class="nav-link text-dark" href="#" onclick="openLoginModal({url:'/Identity/RegisterForm?area=Identity', txt:'Authentication'})">Register</a>
-            </li>
+            <a class="nav-link text-dark" asp-area="Identity" asp-controller="Identity" asp-action="RegisterForm">Register</a>
+        </li>
         <li class="nav-item">
-            @*<a class="nav-link text-dark" asp-area="Identity" asp-controller="Identity" asp-action="LoginForm">Login</a>*@
-            <a class="nav-link text-dark" href="#" onclick="openLoginModal({url:'/Identity/LoginForm?area=Identity', txt:'Authentication'})">Login</a>
+            <a class="nav-link text-dark" asp-area="Identity" asp-controller="Identity" asp-action="LoginForm">Login</a>
         </li>
     }
 </ul>
