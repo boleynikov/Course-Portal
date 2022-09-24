@@ -1,4 +1,6 @@
-﻿@model (IEnumerable<Domain.Course> courseInPage, int currentPage)
+﻿@using Domain.Enum
+@using Microsoft.CodeAnalysis.CSharp.Syntax
+@model (IEnumerable<Domain.Course> courseInPage, int currentPage)
 @{
     ViewData["Title"] = "Домашня сторінка";
 }
@@ -40,15 +42,27 @@
                 <div class="card-body" id="courseInfo">
                     <div class="row">
                         <div class="col">
-                            <h5 class="card-title">@course.Name</h5>
-                            <strong>Description</strong>
+                            <h5 class="card-title text-center">@course.Name</h5>
                             <p class="card-text">@course.Description</p>
+                            <p class="card-text text-right"><small class="text-muted">@course.Owner</small></p>
                         </div>
                         <div class="col-sm-3">
-                            <strong>Status</strong>
-                            <p class="card-text"><small class="text-muted">@course.Status</small></p>
-                            <strong>Author</strong>
-                            <p class="card-text"><small class="text-muted">@course.Owner</small></p>
+                            @{
+                                var color = String.Empty;
+                                switch (course.Status)
+                                {
+                                    case CourseStatus.Deleted:
+                                        color = "bg-danger";
+                                        break;
+                                    case CourseStatus.Edited:
+                                        color = "bg-warning";
+                                        break;
+                                    case CourseStatus.Unultered:
+                                        color = "bg-success";
+                                        break;
+                                }
+                            }
+                            <p class="card-text text-center rounded @color"><small class="text-white">@course.Status</small></p>
                         </div>
                     </div>
                 </div>
