@@ -14,7 +14,7 @@
         data: { "id": id },
         success: function (response) {
             $('.modal-dialog');
-            modal.find(".modal-header").find('.modal-title').html(headerTxt);
+            modal.find(".modal-header").find('.text-center').html(headerTxt);
             modal.find(".modal-body").html(response);
             modal.modal('show')
         },
