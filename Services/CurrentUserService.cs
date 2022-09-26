@@ -1,30 +1,25 @@
-﻿using System;
+﻿using Domain;
+using Domain.CourseMaterials;
+using Domain.Enum;
+using Services.Interface;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Domain;
-using Domain.CourseMaterials;
-using Domain.Enum;
-using Services.Helper;
-using Services.Interface;
-using Services.Validators;
 
 namespace Services
 {
-    public class AuthorizedUserService : IAuthorizedUserService
+    public class CurrentUserService : IAuthorizedUserService
     {
         private readonly IService<User> _userService;
-        private readonly Validator _validateService;
-
+         
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthorizedUserService"/> class.
         /// </summary>
         /// <param name="service">User service for decorating.</param>
-        /// <param name="validateService">Validation service for input new courses & materials</param>
-        public AuthorizedUserService(IService<User> service, Validator validateService)
+        public CurrentUserService(IService<User> service)
         {
             _userService = service;
-            _validateService = validateService;
         }
 
         public User Account { get; set; }

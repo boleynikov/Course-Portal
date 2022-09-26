@@ -38,8 +38,7 @@ namespace AspAPI
             services.AddScoped<IService<Course>, CourseService>();
             services.AddSingleton<IRepository<User>, UserRepository>();
             services.AddSingleton<IService<User>, UserService>();
-            services.AddSingleton<Validator>();
-            services.AddSingleton<IAuthorizedUserService, AuthorizedUserService>();
+            services.AddSingleton<IAuthorizedUserService, CurrentUserService>();
             services.AddSingleton<IAuthorizationService, AuthorizationService>();
 
             services.AddControllersWithViews();
