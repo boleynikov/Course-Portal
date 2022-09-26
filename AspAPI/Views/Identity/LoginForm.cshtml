@@ -9,7 +9,7 @@
                 @Html.TextBoxFor(x => x.Email, new { @class = "form-control", placeholder = "Enter email" })
                 <span class="text-danger">@Html.ValidationMessageFor(x => x.Email)</span><br />
                 @Html.LabelFor(x => x.Password)
-                @Html.TextBoxFor(x => x.Password, new { @class = "form-control", placeholder = "Enter password" })
+                @Html.TextBoxFor(x => x.Password, new { @class = "form-control", @type="password", placeholder = "Enter password" })
                 <span class="text-danger">@Html.ValidationMessageFor(x => x.Password)</span><br />
                 <div class="text-danger" asp-validation-summary="ModelOnly"></div>
                 <input type="submit" class="btn btn-outline-primary" value="Login" />

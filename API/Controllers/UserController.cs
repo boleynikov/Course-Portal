@@ -14,7 +14,7 @@ namespace API.Controllers
     using Services;
     using Services.Helper;
     using Services.Interface;
-    using Services.Validators;
+    using Services.Validator;
     using View;
 
     /// <summary>
