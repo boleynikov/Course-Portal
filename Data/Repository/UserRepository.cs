@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace Data.Repository
 {
-    using System.Collections.Generic;
-    using System.Linq;
     using Context;
-    using Interface;
     using Domain;
+    using Interface;
     using Microsoft.EntityFrameworkCore;
+    using System.Collections.Generic;
 
     /// <summary>
     /// User repository.

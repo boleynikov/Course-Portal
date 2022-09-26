@@ -1,6 +1,5 @@
 ﻿using Domain;
 using Domain.CourseMaterials;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Services.Interface

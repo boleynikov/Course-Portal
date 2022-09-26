@@ -1,9 +1,8 @@
-using Data;
+using Data.Context;
 using Data.Repository;
 using Data.Repository.Interface;
 using Domain;
 using Domain.CourseMaterials;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Services;
 using Services.Interface;
-using Services.Validators;
 using User = Domain.User;
 
 namespace AspAPI

@@ -2,18 +2,17 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using System.Threading.Tasks;
 using Domain.Enum;
-using Microsoft.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace Data.Repository
 {
+    using Context;
+    using Domain;
+    using Interface;
+    using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.Linq;
-    using Context;
-    using Interface;
-    using Domain;
-    using Microsoft.EntityFrameworkCore;
 
     /// <summary>
     /// Course repository.

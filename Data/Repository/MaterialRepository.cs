@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace Data.Repository
 {
-    using System.Collections.Generic;
-    using System.Linq;
     using Context;
-    using Interface;
     using Domain.CourseMaterials;
+    using Interface;
     using Microsoft.EntityFrameworkCore;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Material Repository.

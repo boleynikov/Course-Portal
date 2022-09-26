@@ -1,5 +1,3 @@
-using System;
-
 namespace AspAPI.Models
 {
     public class ErrorViewModel

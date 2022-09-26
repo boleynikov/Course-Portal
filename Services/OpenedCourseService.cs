@@ -2,7 +2,7 @@
 using Domain.CourseMaterials;
 using Services.Helper;
 using Services.Interface;
-using Services.Validators;
+using Services.Validator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,12 +16,12 @@ namespace Services
     public class OpenedCourseService : IOpenedCourseService
     {
         private readonly Course _currentCourse;
-        private readonly Validator _validateService;
+        private readonly Validator.Validator _validateService;
         /// <summary>
         /// Initializes a new instance of the <see cref="OpenedCourseService"/> class.
         /// </summary>
         /// <param name="currentCourse">Course, which will be opened</param>
-        public OpenedCourseService(Course currentCourse, Validator validateService)
+        public OpenedCourseService(Course currentCourse, Validator.Validator validateService)
         {
             _currentCourse = currentCourse;
             _validateService = validateService;

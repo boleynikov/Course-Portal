@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace Data
+namespace Data.Context
 {
     /// <summary>
     /// App Db Context

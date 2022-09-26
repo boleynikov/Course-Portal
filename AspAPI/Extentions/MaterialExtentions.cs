@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AspAPI.Models.Materials;
+﻿using AspAPI.Models.Materials;
 using Domain.CourseMaterials;
+using System;
 
 namespace AspAPI.Extentions
 {

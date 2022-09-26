@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using Domain;
+﻿using Domain;
 using Domain.CourseMaterials;
 using Domain.Enum;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace AspAPI.Models
 {
