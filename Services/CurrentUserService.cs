@@ -12,9 +12,9 @@ namespace Services
     public class CurrentUserService : IAuthorizedUserService
     {
         private readonly IService<User> _userService;
-         
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="AuthorizedUserService"/> class.
+        /// Initializes a new instance of the <see cref="CurrentUserService"/> class.
         /// </summary>
         /// <param name="service">User service for decorating.</param>
         public CurrentUserService(IService<User> service)

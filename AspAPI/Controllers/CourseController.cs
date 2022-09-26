@@ -107,7 +107,6 @@ namespace AspAPI.Controllers
                 var course = await _courseService.GetById(courseId);
                 course.Name = model.Name;
                 course.Description = model.Description;
-                course.Owner = model.Owner;
                 course.Status = model.Status;
                 await _courseService.Update(course);
                 return View("EditForm", course.ToModel());

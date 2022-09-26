@@ -43,23 +43,20 @@
                     {
                         if (AuthorizedUserService.Account.UserCourses.FirstOrDefault(c => c.Key == Model.Id).Value != null)
                         {
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <form asp-controller="Course" asp-action="EditForm" asp-route-id="@Model.Id">
-                                        <input type="submit" class="btn btn-outline-primary m-2 ml-5" style="width: 320px" value="Edit course" />
-                                    </form>
-                                </div>
-                                <div class="col-md-4 offset-md-2">
-                                    @{
-                                        if (Model.CourseMaterials.Count != 0)
-                                        {
-                                            <form asp-controller="Material" asp-action="Index" asp-route-courseId="@Model.Id" asp-route-materialIndex="0">
-                                                <input type="submit" class="btn btn-outline-primary m-2 ml-5" style="width: 320px" value="Continue" />
-                                            </form>
-                                        }
-                                    }
-                                </div>
-                            </div>
+                            
+                            if (AuthorizedUserService.Account.Email == Model.Owner)
+                            {
+                                   
+                                <form asp-controller="Course" asp-action="EditForm" asp-route-id="@Model.Id">
+                                    <input type="submit" class="btn btn-outline-primary m-1 ml-5" style="width: 700px" value="Edit course"/>
+                                </form>
+                            }
+                            else if (AuthorizedUserService.Account.Email != Model.Owner && Model.CourseMaterials.Count != 0)
+                            {
+                                <form asp-controller="Material" asp-action="Index" asp-route-courseId="@Model.Id" asp-route-materialIndex="0">
+                                    <input type="submit" class="btn btn-outline-primary m-1 ml-5" style="width: 700px" value="Continue"/>
+                                </form>
+                            }
                         }
                         else
                         {

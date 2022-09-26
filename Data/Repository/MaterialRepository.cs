@@ -23,7 +23,7 @@ namespace Data.Repository
         /// <summary>
         /// Initializes a new instance of the <see cref="MaterialRepository"/> class.
         /// </summary>
-        /// <param name="contextFactory">DBContextFactory.</param>
+        /// <param name="context">Database context.</param>
         public MaterialRepository(AppDbContext context)
         {
             _context = context;

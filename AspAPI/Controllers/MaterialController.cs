@@ -10,13 +10,11 @@ namespace AspAPI.Controllers
 {
     public class MaterialController : Controller
     {
-        private readonly IService<Material> _materialService;
         private readonly IService<Domain.Course> _courseService;
         private readonly IAuthorizedUserService _authorizedUser;
 
-        public MaterialController(IService<Material> materialService, IService<Domain.Course> courseService, IAuthorizedUserService authorizedUser)
+        public MaterialController(IService<Domain.Course> courseService, IAuthorizedUserService authorizedUser)
         {
-            _materialService = materialService;
             _courseService = courseService;
             _authorizedUser = authorizedUser;
         }

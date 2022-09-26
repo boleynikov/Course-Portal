@@ -25,7 +25,7 @@ namespace Data.Repository
         /// <summary>
         /// Initializes a new instance of the <see cref="CourseRepository"/> class.
         /// </summary>
-        /// <param name="contextFactory">DBContextFactory.</param>
+        /// <param name="context">Database context.</param>
         public CourseRepository(AppDbContext context)
         {
             _context = context;
