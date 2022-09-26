@@ -69,7 +69,6 @@ namespace Data.Context
             modelBuilder.Entity<User>()
             .Property(a => a.Id).ValueGeneratedNever();
 
-            JsonConverter[] converters = { new MaterialConverter() };
             modelBuilder?.Entity<User>(action =>
             {
 

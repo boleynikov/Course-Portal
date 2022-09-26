@@ -18,7 +18,7 @@ namespace Services.Interface
         /// </summary>
         /// <param name="email">User email.</param>
         /// <param name="password">User password.</param>
-        /// <returns>Result of authorisation.</returns>
+        /// <returns>Result of authorization.</returns>
         Task<bool> Login(string email, string password);
 
         /// <summary>

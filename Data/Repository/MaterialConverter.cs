@@ -2,6 +2,9 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Data.Repository
 {
     using System;
@@ -29,24 +32,31 @@ namespace Data.Repository
         /// <inheritdoc/>
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            JObject jo = JObject.Load(reader);
-            switch (jo["Type"].Value<string>())
+            var jo = JObject.Load(reader);
+            return jo["Type"].Value<string>() switch
             {
-                case "Article":
-                    return jo.ToObject<ArticleMaterial>(serializer);
-                case "Publication":
-                    return jo.ToObject<PublicationMaterial>(serializer);
-                case "Video":
-                    return jo.ToObject<VideoMaterial>(serializer);
-                default:
-                    return null;
-            }
+                "Article" => jo.ToObject<ArticleMaterial>(serializer),
+                "Publication" => jo.ToObject<PublicationMaterial>(serializer),
+                "Video" => jo.ToObject<VideoMaterial>(serializer),
+                _ => null,
+            };
         }
 
         /// <inheritdoc/>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
+            var token = JToken.FromObject(value);
+            if (token.Type != JTokenType.Object)
+            {
+                token.WriteTo(writer);
+            }
+            else
+            {
+                var jo = (JObject)token;
+                IList<string> propertyNames = jo.Properties().Select(p => p.Name).ToList();
+                jo.AddFirst(new JProperty("Properties", new JArray(propertyNames)));
+                jo.WriteTo(writer);
+            }
         }
     }
 }

@@ -8,7 +8,7 @@ namespace API.View
     /// <summary>
     /// Home Page console view
     /// </summary>
-    public class HomepageView
+    public static class HomepageView
     {
         /// <summary>
         /// Show home page to console

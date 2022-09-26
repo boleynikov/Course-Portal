@@ -1,9 +1,9 @@
 ﻿using AspAPI.Models;
 using System;
 
-namespace AspAPI.Extentions
+namespace AspAPI.ModelExtension
 {
-    public static class CourseExtention
+    public static class CourseExtend
     {
         public static Course ToModel(this Domain.Course course)
         {

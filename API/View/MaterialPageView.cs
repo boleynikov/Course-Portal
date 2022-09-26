@@ -4,7 +4,7 @@ using Services.Helper;
 
 namespace API.View
 {
-    public class MaterialPageView
+    public static class MaterialPageView
     {
         public static void Show(Material material, string courseName, string stageStatus, string pageCount)
         {

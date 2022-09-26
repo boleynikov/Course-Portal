@@ -13,7 +13,7 @@ namespace Domain.Enum
         Music = 1,
         Physics = 2,
         HealthCare = 3,
-        TimeManagment = 4,
+        Management = 4,
         Communication = 5,
         Illustration = 6,
         Photo = 7

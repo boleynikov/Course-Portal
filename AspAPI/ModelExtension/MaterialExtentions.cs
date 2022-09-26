@@ -2,9 +2,9 @@
 using Domain.CourseMaterials;
 using System;
 
-namespace AspAPI.Extentions
+namespace AspAPI.ModelExtension
 {
-    public static class MaterialExtentions
+    public static class MaterialExtend
     {
         public static ArticleMaterial ToDomain(this ArticleModel model)
         {

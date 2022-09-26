@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using AspAPI.Extentions;
+using AspAPI.ModelExtension;
 using AspAPI.Models.Materials;
 using Domain;
 using Domain.CourseMaterials;
