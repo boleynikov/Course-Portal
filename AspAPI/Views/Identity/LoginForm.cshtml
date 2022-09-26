@@ -12,7 +12,7 @@
                 @Html.TextBoxFor(x => x.Password, new { @class = "form-control", @type="password", placeholder = "Enter password" })
                 <span class="text-danger">@Html.ValidationMessageFor(x => x.Password)</span><br />
                 <div class="text-danger" asp-validation-summary="ModelOnly"></div>
-                <input type="submit" class="btn btn-outline-primary" value="Login" />
+                <input type="submit" class="btn btn-outline-primary" style="width: 350px" value="Login" />
             </div>
         </form>
     </div>
