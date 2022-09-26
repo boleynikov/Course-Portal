@@ -2,6 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain.CourseMaterials;
 using Domain.Enum;
@@ -28,34 +29,37 @@ namespace API.Controllers
         private readonly IService<Material> _materialService;
         private readonly IAuthorizationService _authorization;
         private readonly IAuthorizedUserService _authorizedUser;
-        private readonly Validator _validatorService;
+        private readonly Validator _validateService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HomeController"/> class.
         /// </summary>
-        /// <param name="courseService">Course service instance.</param>
-        /// <param name="userService">User service instance.</param>
-        /// <param name="authService">Authorization service instance.</param>
+        /// <param name="courseService">Course service instance</param>
+        /// <param name="userService">User service instance</param>
+        /// <param name="materialService">Material service instance</param>
+        /// <param name="authorizationService">Authorization service</param>
+        /// <param name="authorizedUserService">Current user service</param>
+        /// <param name="validateService">Input validation service</param>
         public HomeController(
             IService<Course> courseService,
             IService<User> userService,
             IService<Material> materialService,
             IAuthorizationService authorizationService,
             IAuthorizedUserService authorizedUserService,
-            Validator validatorService)
+            Validator validateService)
         {
             _courseService = courseService;
             _userService = userService;
             _materialService = materialService;
             _authorization = authorizationService;
             _authorizedUser = authorizedUserService;
-            _validatorService = validatorService;
+            _validateService = validateService;
         }
 
         /// <inheritdoc/>
         public async Task<string> Launch()
         {
-            string page = Command.HomePage;
+            var page = Command.HomePage;
 
             while (page == Command.HomePage)
             {
@@ -75,27 +79,27 @@ namespace API.Controllers
 
         private async Task<string> NotAuthorized()
         {
-            var courses = await _courseService.GetAll(0);
+            IEnumerable<Course> courses = await _courseService.GetAll(0);
             HomepageView.Show(courses.ToList(), false);
-            string page = Command.HomePage;
-            string cmdLine = Console.ReadLine();
+            var page = Command.HomePage;
+            var cmdLine = Console.ReadLine();
             switch (cmdLine)
             {
                 case Command.LoginCommand:
                     Console.Write("Введіть електронну адресу: ");
-                    string email = UserInput.NotEmptyString(() => Console.ReadLine());
+                    var email = UserInput.NotEmptyString(() => Console.ReadLine());
                     Console.Write("Введіть пароль: ");
-                    string password = UserInput.NotEmptyString(() => Console.ReadLine());
-                    _authorization.Login(email, password);
+                    var password = UserInput.NotEmptyString(() => Console.ReadLine());
+                    await _authorization.Login(email, password);
                     break;
                 case Command.RegisterCommand:
                     Console.Write("Введіть своє ім'я: ");
-                    string name = UserInput.NotEmptyString(() => Console.ReadLine());
+                    var name = UserInput.NotEmptyString(() => Console.ReadLine());
                     Console.Write("Введіть електронну адресу: ");
                     email = UserInput.NotEmptyString(() => Console.ReadLine());
                     Console.Write("Введіть пароль: ");
                     password = UserInput.NotEmptyString(() => Console.ReadLine());
-                    _authorization.Register(name, email, password);
+                    await _authorization.Register(name, email, password);
                     break;
                 case Command.ExitCommand:
                     page = Command.ExitCommand;
@@ -107,10 +111,10 @@ namespace API.Controllers
 
         private async Task<string> Authorized()
         {
-            var courses = await _courseService.GetAll(0);
+            IEnumerable<Course> courses = await _courseService.GetAll(0);
             HomepageView.Show(courses.ToList(), true, _authorizedUser.Account.Name);
-            string page = Command.HomePage;
-            string cmdLine = Console.ReadLine();
+            var page = Command.HomePage;
+            var cmdLine = Console.ReadLine();
             switch (cmdLine)
             {
                 case Command.UserPage:
@@ -118,7 +122,7 @@ namespace API.Controllers
                     break;
                 case Command.AddCourseCommand:
                     Console.Write("Введіть номер курсу: ");
-                    if (_validatorService.Course.Validate(courses.ToList(), Console.ReadLine(), out Course course))
+                    if (_validateService.Course.Validate(courses.ToList(), Console.ReadLine(), out Course course))
                     {
                         if (!CourseController.IsCourseNotDeleted(course))
                         {
@@ -132,7 +136,7 @@ namespace API.Controllers
                     break;
                 case Command.OpenCourseCommand:
                     Console.Write("Введіть номер курсу: ");
-                    if (_validatorService.Course.Validate(courses.ToList(), Console.ReadLine(), out course))
+                    if (_validateService.Course.Validate(courses.ToList(), Console.ReadLine(), out course))
                     {
                         page = await new CourseController(_userService, _courseService, _authorizedUser, new OpenedCourseService(course, new Validator())).Launch();
                     }

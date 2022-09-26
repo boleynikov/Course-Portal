@@ -31,7 +31,7 @@ namespace API.Controllers
         /// <summary>
         /// Launch
         /// </summary>
-        /// <returns></returns>
+        /// <returns>next string page</returns>
         public async Task<string> Launch()
         {
             for (int i = 0; i < _currentCourse.CourseMaterials.Count; i++)

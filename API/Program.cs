@@ -28,7 +28,8 @@ namespace API
         {
             Console.OutputEncoding = Encoding.Unicode;
             Console.InputEncoding = Encoding.Unicode;
-            AppDbContext context = new AppDbContext(options: new DbContextOptions<AppDbContext>());
+
+            var context = new ConsoleDbContext();
             IService<Material> materialService = new MaterialService(new MaterialRepository(context));
             IService<Course> courseService = new CourseService(new CourseRepository(context));
             IService<User> userService = new UserService(new UserRepository(context));

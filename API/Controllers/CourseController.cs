@@ -31,10 +31,11 @@ namespace API.Controllers
         /// <summary>
         /// Initializes a new instance of the <see cref="CourseController"/> class.
         /// </summary>
-        /// <param name="userService">User service instance.</param>
-        /// <param name="courseService">Course service instance.</param>
+        /// <param name="userService">User service instance</param>
+        /// <param name="courseService">Course service instance</param>
+        /// <param name="openedCourse">Current opened course service</param>
         /// <param name="authorizedUser">Current authorized user service</param>
-        /// <param name="redirectPage">String of page for redirect back.</param>
+        /// <param name="redirectPage">String of page for redirect back</param>
         public CourseController(
             IService<User> userService,
             IService<Course> courseService,
@@ -69,14 +70,14 @@ namespace API.Controllers
         /// <inheritdoc/>
         public async Task<string> Launch()
         {
-            string page = Command.CoursePage;
+            var page = Command.CoursePage;
             while (page == Command.CoursePage)
             {
                 Console.Clear();
                 var currentUser = _authorizedUser.Account;
                 var currentCourse = _openedCourse.Get();
                 CoursePageView.Show(currentUser, currentCourse);
-                string cmdLine = Console.ReadLine();
+                var cmdLine = Console.ReadLine();
                 if (currentUser.UserCourses.FirstOrDefault(c => c.Key == currentCourse.Id).Key != 0)
                 {
                     switch (cmdLine)
@@ -165,7 +166,7 @@ namespace API.Controllers
             var description = currentCourse.Description;
             CoursePageView.EditNavigationView();
             var str = UserInput.NotEmptyString(() => Console.ReadLine());
-            string[] editCmd = str.Split(", ");
+            var editCmd = str.Split(", ");
             foreach (var cmd in editCmd)
             {
                 switch (cmd)
