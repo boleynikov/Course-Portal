@@ -52,9 +52,6 @@ namespace Data.Repository
         /// <inheritdoc/>
         public async Task<Course> GetByID(int id)
         {
-            //var sql = $"EXEC dbo.Course_GetById {id}";
-            //var tmp = await _context.Courses.FromSqlRaw<Course>(sql).ToArrayAsync();
-            //return tmp.FirstOrDefault();
             return await _context.Courses.Include(c => c.CourseMaterials).FirstOrDefaultAsync(u => u.Id == id);
         }
 
@@ -83,9 +80,6 @@ namespace Data.Repository
                                          .Skip((pageNumber - 1) * 6)
                                          .Take(6)
                                          .ToArrayAsync();
-                
-            //var sql = "EXEC dbo.Course_GetAll";
-            //return await _context.Courses.FromSqlRaw<Course>(sql).ToArrayAsync();
         }
 
         public async Task<int> GetCount()

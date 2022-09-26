@@ -8,13 +8,13 @@ namespace Services.Validator
 {
     public class CourseValidator : IValidateService<Course>
     {
-        public bool Validate(List<Course> Entities, string strEntityId, out Course entity)
+        public bool Validate(IEnumerable<Course> entities, string strEntityId, out Course entity)
         {
             if (int.TryParse(strEntityId, out int courseId))
             {
                 try
                 {
-                    entity = Entities.FirstOrDefault(c => c.Id == courseId)
+                    entity = entities.FirstOrDefault(c => c.Id == courseId)
                         ?? throw new ArgumentOutOfRangeException(nameof(entity));
                     return true;
                 }

@@ -8,7 +8,7 @@ namespace Services.Validator
 {
     public class MaterialsValidator : IValidateService<Material>
     {
-        public bool Validate(List<Material> userOrCourseMaterials, string strEntityId, out Material entity)
+        public bool Validate(IEnumerable<Material> userOrCourseMaterials, string strEntityId, out Material entity)
         {
 
             if (int.TryParse(strEntityId, out int materialId))

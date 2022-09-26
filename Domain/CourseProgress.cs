@@ -19,7 +19,7 @@ namespace Domain
         public State State { get; set; }
 
         /// <summary>
-        /// Gets or sets persetage of course progress.
+        /// Gets or sets percentage of course progress.
         /// </summary>
         public float Percentage { get; set; }
     }
