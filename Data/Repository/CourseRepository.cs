@@ -3,80 +3,94 @@
 // </copyright>
 
 using Domain.Enum;
+using System.Threading.Tasks;
 
 namespace Data.Repository
 {
+    using Context;
+    using Domain;
+    using Interface;
+    using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.Linq;
-    using Context;
-    using Interface;
-    using Domain;
-    using Microsoft.EntityFrameworkCore;
 
     /// <summary>
     /// Course repository.
     /// </summary>
     public class CourseRepository : IRepository<Course>
     {
-        private readonly DbContextFactory _contextFactory;
+        private readonly AppDbContext _context;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CourseRepository"/> class.
         /// </summary>
-        /// <param name="contextFactory">DBContextFactory.</param>
-        public CourseRepository(DbContextFactory contextFactory)
+        /// <param name="context">Database context.</param>
+        public CourseRepository(AppDbContext context)
         {
-            _contextFactory = contextFactory;
+            _context = context;
         }
 
         /// <inheritdoc/>
-        public void Add(Course course)
+        public async Task Add(Course course)
         {
-            var context = _contextFactory.Get();
-            context.Courses.Add(course);
-            context.SaveChanges();
+             _context.Courses.Add(course);
+             await _context.SaveChangesAsync();
         }
 
         /// <inheritdoc/>
-        public void DeleteByIndex(int id)
+        public async Task DeleteByIndex(int id)
         {
-            var context = _contextFactory.Get();
-            var course = context.Courses.FirstOrDefault(u => u.Id == id);
+            var course = await _context.Courses.FirstOrDefaultAsync(u => u.Id == id);
             if (course != null)
             {
                 course.CourseMaterials.Clear();
                 course.Status = CourseStatus.Deleted;
-                context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
         /// <inheritdoc/>
-        public Course GetByID(int id)
+        public async Task<Course> GetByID(int id)
         {
-            var context = _contextFactory.Get();
-            return context.Courses.Include(c => c.CourseMaterials).FirstOrDefault(u => u.Id == id);
+            //var sql = $"EXEC dbo.Course_GetById {id}";
+            //var tmp = await _context.Courses.FromSqlRaw<Course>(sql).ToArrayAsync();
+            //return tmp.FirstOrDefault();
+            return await _context.Courses.Include(c => c.CourseMaterials).FirstOrDefaultAsync(u => u.Id == id);
         }
 
         /// <inheritdoc/>
-        public void Update(Course editedCourse)
+        public async Task Update(Course editedCourse)
         {
-            var context = _contextFactory.Get();
-            context.Entry(editedCourse).State = EntityState.Modified;
-            context.SaveChanges();
+            _context.Entry(editedCourse).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
 
         /// <inheritdoc/>
-        public void Save()
+        public async Task Save()
         {
-            var context = _contextFactory.Get();
-            context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         /// <inheritdoc/>
-        public IEnumerable<Course> GetAll()
+        public async Task<IEnumerable<Course>> GetAll(int pageNumber = 0)
         {
-            var context = _contextFactory.Get();
-            return context.Courses.Include(c => c.CourseMaterials);
+            if (pageNumber == 0)
+            {
+                return await _context.Courses.Include(u => u.CourseMaterials).ToArrayAsync();
+            }
+
+            return await _context.Courses.Include(u => u.CourseMaterials)
+                                         .Skip((pageNumber - 1) * 6)
+                                         .Take(6)
+                                         .ToArrayAsync();
+                
+            //var sql = "EXEC dbo.Course_GetAll";
+            //return await _context.Courses.FromSqlRaw<Course>(sql).ToArrayAsync();
+        }
+
+        public async Task<int> GetCount()
+        {
+            return await _context.Courses.CountAsync();
         }
     }
 }

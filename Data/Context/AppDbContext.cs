@@ -1,22 +1,23 @@
 ﻿using Data.Repository;
 using Domain;
 using Domain.CourseMaterials;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace Data
+namespace Data.Context
 {
     /// <summary>
     /// App Db Context
     /// </summary>
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext
     {
         /// <summary>
         /// Set of users
         /// </summary>
-        public DbSet<User> Users { get; set; }
+        public new DbSet<User> Users { get; set; }
 
         /// <summary>
         /// Set of Courses
@@ -57,18 +58,12 @@ namespace Data
             BuildUsers(modelBuilder);
             BuildCourses(modelBuilder);
             BuildMaterials(modelBuilder);
+            base.OnModelCreating(modelBuilder);
         }
-
-        /// <summary>
-        /// Called while configuring application
-        /// </summary>
-        /// <param name="optionsBuilder"></param>
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+            : base(options)
         {
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb; Database=CoursePortal; Trusted_Connection=true;");
         }
-
-
         private void BuildUsers(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>()

@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.ComponentModel.DataAnnotations;
+
 namespace Domain
 {
     using System;
@@ -21,12 +23,14 @@ namespace Domain
         /// </summary>
         /// <param name="id">Course id.</param>
         /// <param name="name">Course name.</param>
+        /// <param name="owner">Course author</param>
         /// <param name="description">Course description.</param>
         /// <param name ="status">Editing course status</param>
-        public Course(int id, string name, string description, CourseStatus status = CourseStatus.CompletelyDone)
+        public Course(int id, string name, string owner, string description, CourseStatus status = CourseStatus.Created)
             : base(id)
         {
             Name = name;
+            Owner = owner;
             Description = description;
             Status = status;
             CourseMaterials = new List<Material>();
@@ -39,20 +43,30 @@ namespace Domain
         public string Name { get; set; }
 
         /// <summary>
+        /// Gets or sets course owner
+        /// </summary>
+        public string Owner { get; set; }
+
+        /// <summary>
         /// Gets course description.
         /// </summary>
         public string Description { get; set; }
 
+        /// <summary>
+        /// Course status
+        /// </summary>
         public CourseStatus Status { get; set; }
 
         /// <summary>
         /// Gets materials in course.
         /// </summary>
+        [Display(Name = "Course materials")]
         public ICollection<Material> CourseMaterials { get; private set; }
 
         /// <summary>
         /// Gets skills, that user can get after complete.
         /// </summary>
+        [Display(Name = "Course skills")]
         public ICollection<Skill> CourseSkills { get; private set; }
     }
 }

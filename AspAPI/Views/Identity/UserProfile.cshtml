@@ -1,0 +1,114 @@
+﻿@using Services.Interface
+@inject IService<Domain.Course> CourseService
+@model (Domain.User user, int page)
+@{
+    ViewData["Title"] = "UserProfile";
+}
+
+<h1>User Profile</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.user.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.user.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.user.Email)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.user.Email)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.user.UserSkills)
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.user.UserSkills.Count == 0)
+            {
+                <p>You haven't skills yet</p>
+            }
+            else
+            {
+                @foreach (var skill in Model.user.UserSkills)
+                {
+                    <small class="text-muted">@skill.Name @skill.Points</small><br />
+                }
+            }
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.user.UserCourses)
+        </dt>
+        <dd class="col-sm-10 offset-md-10">
+            <form asp-controller="Identity" asp-action="CreateCourseForm" method="get">
+                <input type="submit" class="btn btn-outline-primary" value="Create new course" />
+            </form>
+        </dd>
+        <dd class="col-sm-10">
+            @if (Model.user.UserCourses.Count == 0)
+            {
+                <p>You haven't courses yet</p>
+            }
+            else
+            {
+                @foreach (var coursePair in Model.user.UserCourses.Skip((Model.page - 1) * 4).Take(4))
+                {
+                    var course = await CourseService.GetById(coursePair.Key);
+                    <div class="card mb-3" style="width: 1100px;">
+                        <div class="row g-0" onclick="openCourseModal({ url: '/Course/Index', data: '@course.Id', txt:'Course details' })">
+                            <div class="col-md-4">
+                                <img src="https://picsum.photos/300/200" class="img-fluid rounded-start" alt="...">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h5 class="card-title">
+                                                <u>@course.Name</u>
+                                            </h5>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p class="small">Author: <small class="text-muted">@course.Owner</small></p>
+                                        </div>
+                                    </div>
+                                    <p class="small">@course.Description</p>
+                                    <p class="small">Status: <small class="text-muted">@course.Status</small></p>
+                                </div>
+                                <div class="col-md-11">
+                                    <div class="px-3 py-2">
+                                        <div class="progress">
+                                            <div class="progress-bar bg-info" role="progressbar" style="width: @Math.Round(coursePair.Value.Percentage)%;" aria-valuenow="@coursePair.Value.Percentage" aria-valuemin="0" aria-valuemax="100">@Math.Round(coursePair.Value.Percentage)%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a type="submit" class="btn-outline-primary rounded bg-light border-white text-secondary text-center" asp-action="RemoveCourseFromUser" asp-controller="Course" asp-route-courseId="@course.Id">Delete</a>
+                    </div>
+                }
+            }
+        </dd>
+        <dt class="col-sm-2">
+        </dt>
+    </dl>
+    @if (Model.user.UserCourses.Count > 6)
+    {
+        <ul class="pagination">
+            @for (int i = 1; i <= Convert.ToInt32(ViewData["pageCount"]); i++)
+            {
+                @if (i == Model.page)
+                {
+                    <li class="page-item"><a class="page-link active" href="@Url.Action("UserProfile","Identity", new {page = i})">@i</a></li>
+                }
+                else
+                {
+                    <li class="page-item"><a class="page-link text-black-50" href="@Url.Action("UserProfile","Identity", new {page = i})">@i</a></li>
+                }
+            }
+        </ul>
+    }
+</div>
+
+<script src="~/js/site.js"></script>

@@ -1,0 +1,39 @@
+﻿@model (ICollection<Domain.CourseMaterials.Material> materials, int courseId, int materialId, int completedMaterials)
+
+<h3>Material list</h3>
+<ul class="list-group">
+    @for(var i = 0; i < Model.materials.Count(); i++)
+    {
+        var material = Model.materials.ElementAt(i);
+        var title = material.Title.Length > 7 ? $"{material.Title.Substring(0, 7)}.." : material.Title;
+        if (i <= Model.completedMaterials)
+        {
+            if (material.Id == Model.materialId)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center active" onclick="location.href = '@Url.Action("Index", "Material", new { courseId = Model.courseId, materialIndex = i })';">
+                    <a>@title</a>
+                    @if (i < Model.completedMaterials)
+                    {
+                        <span class="badge badge-pill badge-success">Done</span>
+                    }
+                </li>
+            }
+            else
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center" onclick="location.href = '@Url.Action("Index", "Material", new { courseId = Model.courseId, materialIndex = i })';">
+                    <a>@title</a>
+                    @if (i < Model.completedMaterials)
+                    {
+                        <span class="badge badge-pill badge-success">Done</span>
+                    }
+                </li>
+            }
+        }
+        else
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center disabled">
+                <a>@title</a>
+            </li>
+        }
+    }
+</ul>

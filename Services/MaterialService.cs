@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Threading.Tasks;
+
 namespace Services
 {
     using Data.Repository.Interface;
@@ -26,39 +28,45 @@ namespace Services
         }
 
         /// <inheritdoc/>
-        public void Add(Material material)
+        public async Task Add(Material material)
         {
-            _repository.Add(material);
+            await _repository.Add(material);
         }
 
         /// <inheritdoc/>
-        public void DeleteByIndex(int index)
+        public async Task<int> GetCount()
         {
-            _repository.DeleteByIndex(index);
+            return await _repository.GetCount();
         }
 
         /// <inheritdoc/>
-        public IEnumerable<Material> GetAll()
+        public async Task DeleteByIndex(int index)
         {
-            return _repository.GetAll();
+            await _repository.DeleteByIndex(index);
         }
 
         /// <inheritdoc/>
-        public Material GetById(int index)
+        public async Task<IEnumerable<Material>> GetAll(int pageNumber = 0)
         {
-            return _repository.GetByID(index);
+            return await _repository.GetAll(pageNumber);
         }
 
         /// <inheritdoc/>
-        public void Save()
+        public async Task<Material> GetById(int index)
         {
-            _repository.Save();
+            return await _repository.GetByID(index);
         }
 
         /// <inheritdoc/>
-        public void Update(Material material)
+        public async Task Save()
         {
-            _repository.Update(material);
+            await _repository.Save();
+        }
+
+        /// <inheritdoc/>
+        public async Task Update(Material material)
+        {
+            await _repository.Update(material);
         }
     }
 }

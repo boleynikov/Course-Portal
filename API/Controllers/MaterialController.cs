@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using API.Controllers.Abstract;
 using API.View;
 using Domain;
@@ -8,18 +9,30 @@ using Services.Interface;
 
 namespace API.Controllers
 {
+    /// <summary>
+    /// Material controller
+    /// </summary>
     public class MaterialController : IController
     {
         private readonly IAuthorizedUserService _authorizedUser;
         private readonly Course _currentCourse;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MaterialController"/> class.
+        /// </summary>
+        /// <param name="authorizedUser">Current user service</param>
+        /// <param name="currentCourse">Current Course</param>
         public MaterialController(IAuthorizedUserService authorizedUser, Course currentCourse)
         {
             _authorizedUser = authorizedUser;
             _currentCourse = currentCourse;
         }
 
-        public string Launch()
+        /// <summary>
+        /// Launch
+        /// </summary>
+        /// <returns></returns>
+        public async Task<string> Launch()
         {
             for (int i = 0; i < _currentCourse.CourseMaterials.Count; i++)
             {

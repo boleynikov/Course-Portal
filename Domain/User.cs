@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.ComponentModel.DataAnnotations;
+
 namespace Domain
 {
     using System;
@@ -51,6 +53,7 @@ namespace Domain
         /// <summary>
         /// Gets user skills.
         /// </summary>
+        [Display(Name = "User skills")]
         public ICollection<Skill> UserSkills { get; private set; }
 
         /// <summary>
@@ -61,6 +64,7 @@ namespace Domain
         /// <summary>
         /// User courses
         /// </summary>
+        [Display(Name = "User courses")]
         public Dictionary<int, CourseProgress> UserCourses { get; private set; }
     }
 }

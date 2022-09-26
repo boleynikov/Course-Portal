@@ -2,76 +2,77 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Threading.Tasks;
+
 namespace Data.Repository
 {
-    using System.Collections.Generic;
-    using System.Linq;
     using Context;
-    using Interface;
     using Domain;
+    using Interface;
     using Microsoft.EntityFrameworkCore;
+    using System.Collections.Generic;
 
     /// <summary>
     /// User repository.
     /// </summary>
     public class UserRepository : IRepository<User>
     {
-        private readonly DbContextFactory _contextFactory;
+        private readonly AppDbContext _context;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserRepository"/> class.
         /// </summary>
-        /// <param name="contextFactory">DBContextFactory.</param>
-        public UserRepository(DbContextFactory contextFactory)
+        /// <param name="context">Database context.</param>
+        public UserRepository(AppDbContext context)
         {
-            _contextFactory = contextFactory;
+            _context = context;
         }
 
         /// <inheritdoc/>
-        public void Add(User user)
+        public async Task Add(User user)
         {
-            var context = _contextFactory.Get();
-            context.Users.Add(user);
-            context.SaveChanges();
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
         }
 
         /// <inheritdoc/>
-        public void DeleteByIndex(int id)
+        public async Task DeleteByIndex(int id)
         {
-            var context = _contextFactory.Get();
-            var user = context.Users.FirstOrDefault(u => u.Id == id);
-            context.Users.Remove(user);
-            context.SaveChanges();
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
         }
 
         /// <inheritdoc/>
-        public IEnumerable<User> GetAll()
+        public async Task<IEnumerable<User>> GetAll(int pageNumber)
         {
-            var context = _contextFactory.Get();
-            return context.Users.Include(u => u.UserMaterials);
+            //var sql = "EXEC dbo.User_GetAll";
+            //return await _context.Users.FromSqlRaw<User>(sql).ToArrayAsync();
+            return await _context.Users.Include(u => u.UserMaterials).ToArrayAsync();
         }
 
         /// <inheritdoc/>
-        public User GetByID(int id)
+        public async Task<User> GetByID(int id)
         {
-            var context = _contextFactory.Get();
-            return context.Users.Include(u => u.UserMaterials).FirstOrDefault(u => u.Id == id);
+            return await _context.Users.Include(u => u.UserMaterials).FirstOrDefaultAsync(u => u.Id == id);
         }
 
         /// <inheritdoc/>
-        public void Save()
+        public async Task Save()
         {
-            var context = _contextFactory.Get();
-
-            context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         /// <inheritdoc/>
-        public void Update(User editedUser)
+        public async Task Update(User editedUser)
         {
-            var context = _contextFactory.Get();
-            context.Entry(editedUser).State = EntityState.Modified;
-            context.SaveChanges();
+            _context.Entry(editedUser).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> GetCount()
+        {
+            return await _context.Users.CountAsync();
         }
     }
 }

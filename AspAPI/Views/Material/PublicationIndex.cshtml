@@ -1,0 +1,54 @@
+﻿@inject IService<Domain.Course> CourseService
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Services.Interface
+@model (Domain.CourseMaterials.PublicationMaterial material, int materialIndex, int completedMaterials)
+
+<div class="row">
+    <div class=" col col-lg-2 ">
+        @{
+            var course = await CourseService.GetById(Convert.ToInt32(ViewData["courseId"]));
+        }
+        @await Html.PartialAsync("_MaterialsListSideBarPartial", (course.CourseMaterials, course.Id, Model.material.Id, Model.completedMaterials))
+    </div>
+    <div class="col">
+        <h4>Publication</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => Model.material.Title)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => Model.material.Title)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => Model.material.Author)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => Model.material.Author)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => Model.material.PageCount)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => Model.material.PageCount)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => Model.material.Format)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => Model.material.Format)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => Model.material.YearOfPublication)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => Model.material.YearOfPublication)
+            </dd>
+        </dl>
+        <div class="row">
+            <form class="col-md-4 offset-md-4" asp-controller="Course" asp-action="AddUserProgress" asp-route-courseId="@ViewData["courseId"]" asp-route-materialIndex="@Model.materialIndex">
+                <input type="submit" class="btn btn-success" value="Got it">
+            </form>
+        </div>
+    </div>
+</div>

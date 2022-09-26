@@ -1,0 +1,145 @@
+﻿@using Domain.Enum
+@model AspAPI.Models.Course
+
+<h4>Course</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="SaveNameDescription" asp-route-courseId="@Model.Id">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="font-weight-bold"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="font-weight-bold"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Status" class="font-weight-bold"></label>
+                @Html.DropDownListFor(course => course.Status, new SelectList(Enum.GetValues(typeof(CourseStatus))), "Select Status", new { @class = "form-control" })
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.CourseSkills, new { @class = "font-weight-bold" })
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Skill</th>
+                            <th>Points</th>
+                            <th>-</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var skill in Model.CourseSkills)
+                        {
+                            <tr>
+                                <th><small>@skill.Name</small></th>
+                                <th><small>@skill.Points</small></th>
+                                <th>
+                                    <button class="btn btn-primary" onclick="location.href = '@Url.Action("RemoveSkillFromCourse", "Course", new {courseId = Model.Id, skillName = @skill.Name })';">Delete</button>
+                                </th>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.CourseMaterials, new { @class = "font-weight-bold" })
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Title</th>
+                            <th>-</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var material in Model.CourseMaterials)
+                        {
+                            <tr>
+                                <th><small>@material.Type</small></th>
+                                <th><small>@material.Title</small></th>
+                                <th>
+                                    <button class="btn btn-primary" onclick="location.href = '@Url.Action("RemoveMaterialFromCourse", "Course", new { courseId = Model.Id, materialId = material.Id })';">Delete</button>
+                                </th>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </form>
+        <br />
+    </div>
+    <div class="col-md-4 offset-md-4">
+        <form asp-controller="Material" asp-action="CreateForm" asp-route-id="@Model.Id">
+            <label for="option" class="font-weight-bold">Material</label>
+            <select class="form-control" name="option" id="option">
+                <option class="dropdown-item" value="Article">Article</option>
+                <option class="dropdown-item" value="Publication">Publication</option>
+                <option class="dropdown-item" value="Video">Video</option>
+            </select>
+            <br />
+            <input type="submit" class="btn btn-primary" value="Add material" />
+        </form>
+        <br />
+        <form asp-controller="Course" asp-action="AddSkillToCourse" asp-route-courseId="@Model.Id">
+            <div>
+                <label for="skillName">Skill</label>
+                <select class="form-control" name="skillName" id="skillName">
+                    <option class="dropdown-item" value="Programming">Programming</option>
+                    <option class="dropdown-item" value="Music">Music</option>
+                    <option class="dropdown-item" value="Physics">Physics</option>
+                    <option class="dropdown-item" value="HealthCare">HealthCare</option>
+                    <option class="dropdown-item" value="TimeManagment">TimeManagment</option>
+                    <option class="dropdown-item" value="Communication">Communication</option>
+                    <option class="dropdown-item" value="Illustration">Illustration</option>
+                    <option class="dropdown-item" value="Photo">Photo</option>
+                </select>
+                <label for="skillPoint">Points</label>
+                <select class="form-control" name="skillPoint" id="skillPoint">
+                    <option class="dropdown-item">1</option>
+                    <option class="dropdown-item">2</option>
+                    <option class="dropdown-item">3</option>
+                    <option class="dropdown-item">4</option>
+                    <option class="dropdown-item">5</option>
+                    <option class="dropdown-item">6</option>
+                    <option class="dropdown-item">7</option>
+                    <option class="dropdown-item">8</option>
+                </select>
+            </div>
+            <br />
+            <input type="submit" class="btn btn-primary" value="Add skill" />
+        </form>
+        <br />
+        <form asp-action="Index" asp-controller="Home">
+            <div>
+                <input type="submit" class="btn btn-primary m-4" value="Back">
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="showmodal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @{
+                
+            }
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

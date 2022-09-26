@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Threading.Tasks;
+
 namespace API.Controllers
 {
     using System;
@@ -12,7 +14,7 @@ namespace API.Controllers
     using Services;
     using Services.Helper;
     using Services.Interface;
-    using Services.Validators;
+    using Services.Validator;
     using View;
 
     /// <summary>
@@ -48,7 +50,7 @@ namespace API.Controllers
         }
 
         /// <inheritdoc/>
-        public string Launch()
+        public async Task<string> Launch()
         {
             var currentUser = _authorizedUser.Account;
             string page = Command.UserPage;
@@ -57,17 +59,21 @@ namespace API.Controllers
             {
                 Console.Clear();
                 var userCourses = currentUser.UserCourses.Select(c => c.Key).ToList();
-                var courses = _courseService.GetAll().Where(c => userCourses.Contains(c.Id));
+                var courses = _courseService.GetAll(0).Result.Where(c => userCourses.Contains(c.Id));
                 UserPageView.Show(currentUser, courses.ToList());
 
                 string cmdLine = Console.ReadLine();
                 switch (cmdLine)
                 {
                     case Command.CreateCourseCommand:
-                        var course = _authorizedUser.CreateCourse(_courseService, _materialService);
-                        _authorizedUser.AddCourse(course);
-                        _userService.Save();
-                        _courseService.Add(course);
+                        Console.Write("Введіть назву курсу: ");
+                        string name = UserInput.NotEmptyString(() => Console.ReadLine());
+                        Console.Write("Введіть опис курсу: ");
+                        string description = UserInput.NotEmptyString(() => Console.ReadLine());
+                        var course = await _authorizedUser.CreateCourse(name, description, _authorizedUser.Account.Name, _courseService, _materialService);
+                        _authorizedUser.AddCourseToUser(course.Id);
+                        await _userService.Save();
+                        await _courseService.Add(course);
                         Console.Write("Курс успішно додано. Натисніть Enter");
                         Console.ReadLine();
                         break;
@@ -75,7 +81,7 @@ namespace API.Controllers
                         Console.Write("Введіть номер курсу: ");
                         if (_validateService.Course.Validate(courses.ToList(), Console.ReadLine(), out course))
                         {
-                            page = new CourseController(_userService, _courseService, _materialService, _authorizedUser, new OpenedCourseService(course, _validateService), Command.UserPage).Launch();
+                            page = await new CourseController(_userService, _courseService, _authorizedUser, new OpenedCourseService(course, _validateService), Command.UserPage).Launch();
                         }
 
                         break;
@@ -84,8 +90,8 @@ namespace API.Controllers
                         if (_validateService.Course.Validate(courses.ToList(), Console.ReadLine(), out course))
                         {
                             _authorizedUser.RemoveCourse(course.Id);
-                            _userService.Update(currentUser);
-                            _courseService.DeleteByIndex(course.Id);
+                            await _userService.Update(currentUser);
+                            await _courseService.DeleteByIndex(course.Id);
                         }
 
                         break;

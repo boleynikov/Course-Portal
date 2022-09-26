@@ -14,10 +14,11 @@ namespace Services.Interface
         /// </summary>
         /// <returns></returns>
         Course Get();
+
         /// <summary>
         /// Add skill to course
         /// </summary>
-        void AddOrEditSkill();
+        void AddOrEditSkill(Course course, string skillName, int skillPoint);
         /// <summary>
         /// Delete skill from course
         /// </summary>
@@ -34,7 +35,7 @@ namespace Services.Interface
         /// Delete material in opened course
         /// </summary>
         /// <returns>Index of removed material</returns>
-        int DeleteCourseMaterial();
+        int DeleteCourseMaterial(int id);
         /// <summary>
         /// Add material which user is own to course
         /// </summary>

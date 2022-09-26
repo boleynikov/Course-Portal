@@ -2,75 +2,77 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Threading.Tasks;
+
 namespace Data.Repository
 {
-    using System.Collections.Generic;
-    using System.Linq;
     using Context;
-    using Interface;
     using Domain.CourseMaterials;
+    using Interface;
     using Microsoft.EntityFrameworkCore;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Material Repository.
     /// </summary>
     public class MaterialRepository : IRepository<Material>
     {
-        private readonly DbContextFactory _contextFactory;
+        private readonly AppDbContext _context;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MaterialRepository"/> class.
         /// </summary>
-        /// <param name="contextFactory">DBContextFactory.</param>
-        public MaterialRepository(DbContextFactory contextFactory)
+        /// <param name="context">Database context.</param>
+        public MaterialRepository(AppDbContext context)
         {
-            _contextFactory = contextFactory;
+            _context = context;
         }
 
         /// <inheritdoc/>
-        public void Add(Material material)
+        public async Task Add(Material material)
         {
-            var context = _contextFactory.Get();
-            context.Materials.Add(material);
-            context.SaveChanges();
+            _context.Materials.Add(material);
+            await _context.SaveChangesAsync();
         }
 
         /// <inheritdoc/>
-        public void DeleteByIndex(int id)
+        public async Task DeleteByIndex(int id)
         {
-            var context = _contextFactory.Get();
-            var material = context.Materials.FirstOrDefault(u => u.Id == id);
-            context.Materials.Remove(material);
-            context.SaveChanges();
+            var material = await _context.Materials.FirstOrDefaultAsync(u => u.Id == id);
+            _context.Materials.Remove(material);
+            await _context.SaveChangesAsync();
         }
 
         /// <inheritdoc/>
-        public IEnumerable<Material> GetAll()
+        public async Task<IEnumerable<Material>> GetAll(int pageNumber)
         {
-            var context = _contextFactory.Get();
-            return context.Materials;
+            //var sql = "EXEC dbo.Material_GetAll";
+            //return await _context.Materials.FromSqlRaw<Material>(sql).ToArrayAsync();
+            return await _context.Materials.ToArrayAsync();
         }
 
         /// <inheritdoc/>
-        public Material GetByID(int id)
+        public async Task<Material> GetByID(int id)
         {
-            var context = _contextFactory.Get();
-            return context.Materials.FirstOrDefault(u => u.Id == id);
+            return await _context.Materials.FirstOrDefaultAsync(u => u.Id == id);
         }
 
         /// <inheritdoc/>
-        public void Save()
+        public async Task Save()
         {
-            var context = _contextFactory.Get();
-            context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         /// <inheritdoc/>
-        public void Update(Material editedMaterial)
+        public async Task Update(Material editedMaterial)
         {
-            var context = _contextFactory.Get();
-            context.Entry(editedMaterial).State = EntityState.Modified;
-            context.SaveChanges();
+            _context.Entry(editedMaterial).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> GetCount()
+        {
+            return await _context.Materials.CountAsync();
         }
     }
 }

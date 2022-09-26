@@ -1,6 +1,6 @@
 ﻿using Domain;
 using Domain.CourseMaterials;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Services.Interface
 {
@@ -17,12 +17,12 @@ namespace Services.Interface
         /// <summary>
         /// Create new course
         /// </summary>
-        Course CreateCourse(IService<Course> courseService, IService<Material> materialService);
+        Task<Course> CreateCourse(string name, string description, string owner, IService<Course> courseService, IService<Material> materialService);
         /// <summary>
         /// Add new course to user list
         /// </summary>
-        /// <param name="newCourse"></param>
-        void AddCourse(Course newCourse);
+        /// <param name="courseId"></param>
+        Task AddCourseToUser(int courseId);
 
         /// <summary>
         /// Remove course from user list
@@ -45,11 +45,6 @@ namespace Services.Interface
         /// Create Material in command line
         /// </summary>
         /// <returns></returns>
-        IEnumerable<Material> CreateMaterials(IService<Material> materialService);
-        /// <summary>
-        /// Add exist user material to course
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<Material> AddExistingMaterials();
+        Task<Material> AddMaterial(IService<Material> materialService, Material material);
     }
 }

@@ -1,0 +1,90 @@
+﻿@using Domain.Enum
+@model (IEnumerable<Domain.Course> courseInPage, int currentPage)
+@{
+    ViewData["Title"] = "Домашня сторінка";
+}
+
+<nav aria-label="Page navigation" class="row justify-content-between">
+    <ul class="pagination col-4">
+        @for (int i = 1; i <= Convert.ToInt32(ViewData["pageCount"]); i++)
+        {
+            if (i == Model.currentPage)
+            {
+                <li class="page-item"><a class="page-link active" href="@Url.Action("Index","Home", new {page = i})">@i</a></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link text-black-50" href="@Url.Action("Index","Home", new {page = i})">@i</a></li>
+            }
+        }
+    </ul>
+    @using (Html.BeginForm("Index", "Home", new { @searchString = "#searchString" }, FormMethod.Get, false, new { @class = "col-4"}))
+    {
+        <div class="row">
+            <div class="col">
+                <input type="text" class="form-control" name="searchString" id="searchString" placeholder="Search by name..." />
+            </div>
+            <div class="col">
+                <input type="submit" class="btn btn-outline-primary" value="Search" />
+            </div>
+        </div>
+    }
+</nav>
+@foreach (var course in Model.courseInPage)
+{
+    <div class="card mb-3 pointer-event" onclick="openCourseModal({url: '/Course/Index', data: '@course.Id', txt:'Course details'})">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img src="https://picsum.photos/300/200" class="img-fluid rounded" alt="...">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body" id="courseInfo">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="card-title text-center">@course.Name</h5>
+                            <p class="card-text">@course.Description</p>
+                            <p class="card-text text-right"><small class="text-muted">@course.Owner</small></p>
+                        </div>
+                        <div class="col-sm-3">
+                            @{
+                                var color = String.Empty;
+                                switch (course.Status)
+                                {
+                                    case CourseStatus.Deleted:
+                                        color = "bg-danger";
+                                        break;
+                                    case CourseStatus.Edited:
+                                        color = "bg-warning";
+                                        break;
+                                    case CourseStatus.Created:
+                                        color = "bg-success";
+                                        break;
+                                }
+                            }
+                            <p class="card-text text-center rounded @color"><small class="text-white">@course.Status</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@if (Model.Item1.Count() >= 4)
+{
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            @for (int i = 1; i <= Convert.ToInt32(ViewData["pageCount"]); i++)
+            {
+                if (i == Model.currentPage)
+                {
+                    <li class="page-item"><a class="page-link active" href="@Url.Action("Index","Home", new {page = i})">@i</a></li>
+                }
+                else
+                {
+                    <li class="page-item"><a class="page-link text-black-50" href="@Url.Action("Index","Home", new {page = i})">@i</a></li>
+                }
+            }
+        </ul>
+    </nav>
+}
+<script src="~/js/site.js"></script>

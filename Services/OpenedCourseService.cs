@@ -2,7 +2,7 @@
 using Domain.CourseMaterials;
 using Services.Helper;
 using Services.Interface;
-using Services.Validators;
+using Services.Validator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,12 +16,12 @@ namespace Services
     public class OpenedCourseService : IOpenedCourseService
     {
         private readonly Course _currentCourse;
-        private readonly Validator _validateService;
+        private readonly Validator.Validator _validateService;
         /// <summary>
         /// Initializes a new instance of the <see cref="OpenedCourseService"/> class.
         /// </summary>
         /// <param name="currentCourse">Course, which will be opened</param>
-        public OpenedCourseService(Course currentCourse, Validator validateService)
+        public OpenedCourseService(Course currentCourse, Validator.Validator validateService)
         {
             _currentCourse = currentCourse;
             _validateService = validateService;
@@ -31,43 +31,22 @@ namespace Services
         public Course Get() => _currentCourse;
 
         /// <inheritdoc/>
-        public void AddOrEditSkill()
+        public void AddOrEditSkill(Course course, string skillName, int skillPoint)
         {
-            string cmdLine = string.Empty;
-            Console.WriteLine("Оберіть навички, які можна отримати пройшовши курс:");
-            Console.WriteLine($"Доступні навички:\n" +
-                                  "0 - Programming,\n" +
-                                  "1 - Music,\n" +
-                                  "2 - Physics,\n" +
-                                  "3 - HealthCare,\n" +
-                                  "4 - TimeManagment,\n" +
-                                  "5 - Communication,\n" +
-                                  "6 - Illustration,\n" +
-                                  "7 - Photo\n" +
-                                  "Введіть номер навика і кількість поінтів через дорівнює (Ось так: 1 = 3)\n" +
-                                  $"Або введіть {Command.StopAddingCommand}, щоб зупинитися");
-            cmdLine = Console.ReadLine();
-
-            Skill skill = AuthorizedUserService.CreateSkill(cmdLine);
-            if (skill == null)
-            {
-                return;
-            }
-
-            var skills = _currentCourse.CourseSkills;
-            var existingSkill = skills.ToList().Find(c => c.Name == skill.Name);
+            var skill = new Skill() { Name = Enum.Parse<SkillKind>(skillName), Points = skillPoint };
+            var existingSkill = course?.CourseSkills.ToList().Find(c => c.Name == skill.Name);
 
             if (existingSkill != null)
             {
-                var index = skills.ToList().IndexOf(existingSkill);
-                skills.ElementAt(index).Points += skill.Points;
+                var index = course.CourseSkills.ToList().IndexOf(existingSkill);
+                course.CourseSkills.ElementAt(index).Points += skill.Points;
             }
             else
             {
-                skills.Add(new Skill { Name = skill.Name, Points = skill.Points });
+                course.CourseSkills.Add(new Skill { Name = skill.Name, Points = skill.Points });
             }
 
-            _currentCourse.Status = CourseStatus.InEditing;
+            course.Status = CourseStatus.Edited;
         }
         /// <inheritdoc/>
         public void DeleteSkill()
@@ -78,7 +57,7 @@ namespace Services
             {
                 var skill = _currentCourse.CourseSkills.ToList().Find(s => s.Name == name);
                 _currentCourse.CourseSkills.Remove(skill);
-                _currentCourse.Status = CourseStatus.InEditing;
+                _currentCourse.Status = CourseStatus.Edited;
             }
         }
         /// <inheritdoc/>
@@ -87,7 +66,7 @@ namespace Services
             Console.Write("Введіть нову назву курсу: ");
             string name = UserInput.NotEmptyString(() => Console.ReadLine());
             _currentCourse.Name = name;
-            _currentCourse.Status = CourseStatus.InEditing;
+            _currentCourse.Status = CourseStatus.Edited;
         }
         /// <inheritdoc/>
         public void EditCourseDescription()
@@ -95,24 +74,19 @@ namespace Services
             Console.Write("Введіть новий опис курсу: ");
             string description = UserInput.NotEmptyString(() => Console.ReadLine());
             _currentCourse.Description = description;
-            _currentCourse.Status = CourseStatus.InEditing;
+            _currentCourse.Status = CourseStatus.Edited;
         }
         /// <inheritdoc/>
-        public int DeleteCourseMaterial()
+        public int DeleteCourseMaterial(int id)
         {
-            Console.Write("Введіть ідентифікатор матеріалу: ");
-            var strMaterialId = UserInput.NotEmptyString(() => Console.ReadLine());
-            if (_validateService.Material.Validate(_currentCourse.CourseMaterials.ToList(), strMaterialId, out Material material) && _currentCourse.CourseMaterials.Contains(material))
+            var material = _currentCourse.CourseMaterials.FirstOrDefault(m => m.Id == id);
+            if (material == null)
             {
-                _currentCourse.CourseMaterials.Remove(material);
-                _currentCourse.Status = CourseStatus.InEditing;
-                Console.WriteLine($"Матеріал {strMaterialId} успішно видалено\n" +
-                                   "Натисніть Enter");
-                Console.ReadLine();
-                return material.Id;
+                throw new ArgumentOutOfRangeException();
             }
-
-            throw new ArgumentOutOfRangeException();
+            _currentCourse.CourseMaterials.Remove(material);
+            _currentCourse.Status = CourseStatus.Edited;
+            return material.Id;
         }
 
         /// <inheritdoc/>
@@ -133,7 +107,7 @@ namespace Services
                 if (_validateService.Material.Validate(userMaterials, stringMatId, out Material material) && !_currentCourse.CourseMaterials.Contains(material))
                 {
                     _currentCourse.CourseMaterials.Add(material);
-                    _currentCourse.Status = CourseStatus.InEditing;
+                    _currentCourse.Status = CourseStatus.Edited;
                 }
                 else
                 {

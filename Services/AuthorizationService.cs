@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Threading.Tasks;
+
 namespace Services
 {
     using System;
@@ -23,6 +25,7 @@ namespace Services
         /// Initializes a new instance of the <see cref="AuthorizationService"/> class.
         /// </summary>
         /// <param name="service">User service for decorating.</param>
+        /// <param name="authorizedUserService">Service which store signed user</param>
         public AuthorizationService(IService<User> service, IAuthorizedUserService authorizedUserService)
         {
             _userService = service;
@@ -30,20 +33,9 @@ namespace Services
         }
 
         /// <inheritdoc/>
-        public void Login(string email, string password)
+        public async Task<bool> Login(string email, string password)
         {
-            var loginResult = TryLogin(email, password);
-            if (loginResult)
-            {
-                Console.WriteLine($"З поверненням {_authorizedUserService.Account.Name}\n" +
-                                   "Натисніть Enter");
-                Console.ReadLine();
-            }
-            else
-            {
-                Console.WriteLine("Невірний email чи пароль");
-                Console.ReadLine();
-            }
+            return await TryLogin(email, password);
         }
 
         /// <inheritdoc/>
@@ -53,12 +45,13 @@ namespace Services
         }
 
         /// <inheritdoc/>
-        public void Register(string name, string email, string password)
+        public async Task<bool> Register(string name, string email, string password)
         {
-            TryRegister(name, email, password);
+            var result = await TryRegister(name, email, password);
+            return result;
         }
 
-        private bool IsValidEmail(string email)
+        private static bool IsValidEmail(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
             {
@@ -95,9 +88,9 @@ namespace Services
             }
         }
 
-        private bool TryLogin(string email, string password)
+        private async Task<bool> TryLogin(string email, string password)
         {
-            var allUsers = _userService.GetAll();
+            var allUsers = await  _userService.GetAll(0);
             var pulledUser = allUsers.SingleOrDefault(user => user.Email == email);
             if (pulledUser != null)
             {
@@ -111,21 +104,20 @@ namespace Services
             return false;
         }
 
-        private void TryRegister(string name, string email, string password)
+        private async Task<bool> TryRegister(string name, string email, string password)
         {
-            if (IsValidEmail(email))
+            var allUsers = await _userService.GetAll(0);
+            if (IsValidEmail(email) && allUsers.FirstOrDefault(user => user.Email == email) == null)
             {
-                var id = _userService.GetAll().ToList().Count + 1;
+                var users = await _userService.GetAll(0);
+                var id = users.ToList().Count + 1;
                 var newUser = new User(id, name, email, password);
-                _userService.Add(newUser);
+                await _userService.Add(newUser);
                 _authorizedUserService.Account = newUser;
+                return true;
             }
-            else
-            {
-                Console.WriteLine("E-mail у неправильному форматі\n" +
-                                  "Натисніть Enter");
-                Console.ReadLine();
-            }
+
+            return false;
         }
     }
 }

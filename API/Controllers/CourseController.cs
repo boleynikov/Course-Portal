@@ -3,6 +3,7 @@
 // </copyright>
 
 using System.Linq;
+using System.Threading.Tasks;
 using Domain.CourseMaterials;
 using Domain.Enum;
 
@@ -22,7 +23,7 @@ namespace API.Controllers
     {
         private readonly IService<User> _userService;
         private readonly IService<Course> _courseService;
-        private readonly IService<Material> _materialService;
+
         private readonly IAuthorizedUserService _authorizedUser;
         private readonly IOpenedCourseService _openedCourse;
         private readonly string _redirectPage;
@@ -33,24 +34,26 @@ namespace API.Controllers
         /// <param name="userService">User service instance.</param>
         /// <param name="courseService">Course service instance.</param>
         /// <param name="authorizedUser">Current authorized user service</param>
-        /// <param name="course">Course, that displayed.</param>
         /// <param name="redirectPage">String of page for redirect back.</param>
         public CourseController(
             IService<User> userService,
             IService<Course> courseService,
-            IService<Material> materialService,
             IAuthorizedUserService authorizedUser,
             IOpenedCourseService openedCourse,
             string redirectPage = "home")
         {
             _userService = userService;
             _courseService = courseService;
-            _materialService = materialService;
             _openedCourse = openedCourse;
             _authorizedUser = authorizedUser;
             _redirectPage = redirectPage;
         }
 
+        /// <summary>
+        /// Checks course status
+        /// </summary>
+        /// <param name="course"></param>
+        /// <returns></returns>
         public static bool IsCourseNotDeleted(Course course)
         {
             if (course?.Status == CourseStatus.Deleted)
@@ -64,7 +67,7 @@ namespace API.Controllers
         }
 
         /// <inheritdoc/>
-        public string Launch()
+        public async Task<string> Launch()
         {
             string page = Command.CoursePage;
             while (page == Command.CoursePage)
@@ -84,7 +87,7 @@ namespace API.Controllers
                                 break;
                             }
 
-                            page = new MaterialController(_authorizedUser, currentCourse).Launch();
+                            page = await new MaterialController(_authorizedUser, currentCourse).Launch();
                             if (currentUser.UserCourses[_openedCourse.Get().Id].State == State.PreCompleted)
                             {
                                 foreach (var courseSkill in _openedCourse.Get().CourseSkills)
@@ -95,7 +98,7 @@ namespace API.Controllers
                                 currentUser.UserCourses[_openedCourse.Get().Id].State = State.Completed;
                             }
 
-                            _userService.Update(currentUser);
+                            await _userService.Update(currentUser);
                             break;
                         case Command.EditCommand:
                             if (!IsCourseNotDeleted(currentCourse))
@@ -104,8 +107,8 @@ namespace API.Controllers
                             }
 
                             EditCourse();
-                            _courseService.Update(currentCourse);
-                            _userService.Update(currentUser);
+                            await _courseService.Update(currentCourse);
+                            await _userService.Update(currentUser);
                             break;
                         case Command.BackCommand:
                             page = _redirectPage;
@@ -127,8 +130,8 @@ namespace API.Controllers
                                 break;
                             }
 
-                            _authorizedUser.AddCourse(currentCourse);
-                            _userService.Save();
+                            await _authorizedUser.AddCourseToUser(currentCourse.Id);
+                            await _userService.Save();
                             break;
                         case Command.EditCommand:
                             if (!IsCourseNotDeleted(currentCourse))
@@ -137,8 +140,8 @@ namespace API.Controllers
                             }
 
                             EditCourse();
-                            _courseService.Update(currentCourse);
-                            _userService.Update(currentUser);
+                            await _courseService.Update(currentCourse);
+                            await _userService.Update(currentUser);
                             break;
                         case Command.BackCommand:
                             page = _redirectPage;
@@ -174,25 +177,11 @@ namespace API.Controllers
                         _openedCourse.EditCourseDescription();
                         break;
                     case Command.DeleteCourseMaterial:
-                        try
-                        {
-                            int matId = _openedCourse.DeleteCourseMaterial();
-                            if (_materialService.GetById(matId).User.Id == _authorizedUser.Account.Id)
-                            {
-                                _materialService.DeleteByIndex(matId);
-                            }
-                        }
-                        catch
-                        {
-                            Console.WriteLine("Такого ідентифікатору немає");
-                        }
-
                         break;
                     case Command.AddCourseMaterials:
                         _openedCourse.AddCourseMaterial(_authorizedUser.Account.UserMaterials.ToList());
                         break;
                     case Command.AddNewOrEditSkill:
-                        _openedCourse.AddOrEditSkill();
                         break;
                     case Command.DeleteSkill:
                         _openedCourse.DeleteSkill();
