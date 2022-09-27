@@ -3,7 +3,6 @@
 // </copyright>
 
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Services.Validator;
 
 namespace API
@@ -36,13 +35,13 @@ namespace API
             Validator validator = new ();
             IAuthorizedUserService authorizedUserService = new CurrentUserService(userService);
             IAuthorizationService authorizationService = new AuthorizationService(userService, authorizedUserService);
-            string page = Command.HomePage;
+            var page = Command.HomePage;
             while (page != Command.ExitCommand)
             {
                 switch (page)
                 {
                     case Command.HomePage:
-                        page = await new HomeController(courseService, userService, materialService, authorizationService, authorizedUserService, validator).Launch();
+                        page = await new HomeController(courseService, userService, authorizationService, authorizedUserService, validator).Launch();
                         break;
                     case Command.UserPage:
                         page = await new UserController(courseService, materialService, userService, authorizedUserService, validator).Launch();

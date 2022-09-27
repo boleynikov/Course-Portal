@@ -6,6 +6,13 @@ namespace API.View
 {
     public static class MaterialPageView
     {
+        /// <summary>
+        /// Show material page to console
+        /// </summary>
+        /// <param name="material">Current material</param>
+        /// <param name="courseName">Name of current course</param>
+        /// <param name="stageStatus">Status of completed material by user</param>
+        /// <param name="pageCount">Summary materials count in course</param>
         public static void Show(Material material, string courseName, string stageStatus, string pageCount)
         {
             Console.Clear();

@@ -2,18 +2,17 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using Domain.Enum;
 using System.Linq;
 using System.Threading.Tasks;
-using Domain.CourseMaterials;
-using Domain.Enum;
 
 namespace API.Controllers
 {
-    using System;
     using Abstract;
     using Domain;
     using Services.Helper;
     using Services.Interface;
+    using System;
     using View;
 
     /// <summary>
@@ -161,9 +160,6 @@ namespace API.Controllers
 
         private void EditCourse()
         {
-            var currentCourse = _openedCourse.Get();
-            var name = currentCourse.Name;
-            var description = currentCourse.Description;
             CoursePageView.EditNavigationView();
             var str = UserInput.NotEmptyString(() => Console.ReadLine());
             var editCmd = str.Split(", ");
@@ -178,17 +174,98 @@ namespace API.Controllers
                         _openedCourse.EditCourseDescription();
                         break;
                     case Command.DeleteCourseMaterial:
+                        try
+                        {
+                            Console.Write("Введіть ідентифікатор матеріалу: ");
+                            var strMaterialId = UserInput.NotEmptyString(() => Console.ReadLine());
+                            var materialId = int.Parse(strMaterialId);
+                            _openedCourse.DeleteCourseMaterial(materialId);
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Такого ідентифікатору немає");
+                            Console.ReadLine();
+                        }
+
                         break;
                     case Command.AddCourseMaterials:
                         _openedCourse.AddCourseMaterial(_authorizedUser.Account.UserMaterials.ToList());
                         break;
                     case Command.AddNewOrEditSkill:
+                        var skill = CreateSkill();
+                        if (skill != null)
+                        {
+                            _openedCourse.AddOrEditSkill(skill.Name, skill.Points);
+                        }
+
                         break;
                     case Command.DeleteSkill:
-                        _openedCourse.DeleteSkill();
+                        try
+                        {
+                            Console.Write("Введіть назву навички, яку хочете видалити з курсу: ");
+                            string skillName = UserInput.NotEmptyString(() => Console.ReadLine());
+                            _openedCourse.DeleteSkill(skillName);
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            Console.WriteLine("Такої навички немає");
+                            Console.ReadLine();
+                        }
+
                         break;
                 }
             }
+        }
+
+        private Skill CreateSkill()
+        {
+            Console.WriteLine("Оберіть навичку, які можна отримати пройшовши курс:");
+            Console.WriteLine($"Доступні навички:\n" +
+                              "0 - Programming,\n" +
+                              "1 - Music,\n" +
+                              "2 - Physics,\n" +
+                              "3 - HealthCare,\n" +
+                              "4 - TimeManagment,\n" +
+                              "5 - Communication,\n" +
+                              "6 - Illustration,\n" +
+                              "7 - Photo\n" +
+                              "Введіть номер навика і кількість поінтів через дорівнює (Ось так: 1 = 3)\n");
+
+            var cmdLine = UserInput.NotEmptyString(() => Console.ReadLine());
+
+            Skill newSkill;
+            var skillStr = cmdLine?.Split(" = ");
+
+            if (skillStr.Length > 1 && Enum.TryParse(skillStr[0], out SkillKind skillKind) && int.TryParse(skillStr[1], out int points))
+            {
+                if ((int)skillKind > 7 || (int)skillKind < 0)
+                {
+                    Console.WriteLine("Такої навички немає\n" +
+                                      "Натисніть Enter");
+                    Console.ReadLine();
+                    return null;
+                }
+
+                if (points <= 0 | points > 12)
+                {
+                    Console.WriteLine("Не можна вказувати стільки поінтів\n" +
+                                      "Натисніть Enter");
+                    Console.ReadLine();
+                    return null;
+                }
+
+                newSkill = new Skill { Name = skillKind, Points = points };
+                Console.Clear();
+            }
+            else
+            {
+                Console.WriteLine("Не вірний формат вводу\n" +
+                                  "Натисніть Enter");
+                Console.ReadLine();
+                return null;
+            }
+
+            return newSkill;
         }
     }
 }

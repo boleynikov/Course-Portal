@@ -2,6 +2,7 @@
 using Services.Helper;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace API.View
 {
@@ -13,26 +14,29 @@ namespace API.View
         /// <summary>
         /// Show home page to console
         /// </summary>
+        /// <param name="courses">All courses in repo</param>
         /// <param name="isAuthorized"></param>
-        public static void Show(List<Course> courses, bool isAuthorized, string userName = "")
+        /// <param name="userName">Current user name</param>
+        public static void Show(IEnumerable<Course> courses, bool isAuthorized, string userName = "")
         {
             if (courses == null)
             {
                 throw new ArgumentNullException(nameof(courses));
             }
 
+            var courseList = courses.ToList();
             Console.Clear();
             Console.WriteLine("Вітаємо на Educational Portal\n" +
                               "Список наявних курсів:");
-            if (courses.Count <= 0)
+            if (courseList.Count <= 0)
             {
                 Console.WriteLine("\tНаразі репозиторій курсів пустий");
             }
             else
             {
-                for (int i = 0; i < courses.Count; i++)
+                for (int i = 0; i < courseList.Count; i++)
                 {
-                    Console.WriteLine("\t|{0, 2}.| {1,-40} | {2,5}", courses[i].Id, courses[i].Name, courses[i].Description);
+                    Console.WriteLine("\t|{0, 2}.| {1,-40} | {2,5}", courseList[i].Id, courseList[i].Name, courseList[i].Description);
                 }
             }
 

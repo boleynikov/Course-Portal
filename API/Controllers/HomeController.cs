@@ -4,19 +4,17 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Domain.CourseMaterials;
-using Domain.Enum;
 
 namespace API.Controllers
 {
-    using System;
-    using System.Linq;
     using Abstract;
     using Domain;
     using Services;
     using Services.Helper;
     using Services.Interface;
     using Services.Validator;
+    using System;
+    using System.Linq;
     using View;
 
     /// <summary>
@@ -26,7 +24,6 @@ namespace API.Controllers
     {
         private readonly IService<Course> _courseService;
         private readonly IService<User> _userService;
-        private readonly IService<Material> _materialService;
         private readonly IAuthorizationService _authorization;
         private readonly IAuthorizedUserService _authorizedUser;
         private readonly Validator _validateService;
@@ -43,14 +40,12 @@ namespace API.Controllers
         public HomeController(
             IService<Course> courseService,
             IService<User> userService,
-            IService<Material> materialService,
             IAuthorizationService authorizationService,
             IAuthorizedUserService authorizedUserService,
             Validator validateService)
         {
             _courseService = courseService;
             _userService = userService;
-            _materialService = materialService;
             _authorization = authorizationService;
             _authorizedUser = authorizedUserService;
             _validateService = validateService;
@@ -90,7 +85,19 @@ namespace API.Controllers
                     var email = UserInput.NotEmptyString(() => Console.ReadLine());
                     Console.Write("Введіть пароль: ");
                     var password = UserInput.NotEmptyString(() => Console.ReadLine());
-                    await _authorization.Login(email, password);
+                    var loginResult = await _authorization.Login(email, password);
+                    if (loginResult)
+                    {
+                        Console.WriteLine($"З поверненням {_authorizedUser.Account.Name}\n" +
+                                          "Натисніть Enter");
+                        Console.ReadLine();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Невірний email чи пароль");
+                        Console.ReadLine();
+                    }
+
                     break;
                 case Command.RegisterCommand:
                     Console.Write("Введіть своє ім'я: ");
@@ -99,7 +106,19 @@ namespace API.Controllers
                     email = UserInput.NotEmptyString(() => Console.ReadLine());
                     Console.Write("Введіть пароль: ");
                     password = UserInput.NotEmptyString(() => Console.ReadLine());
-                    await _authorization.Register(name, email, password);
+                    var registerResult = await _authorization.Register(name, email, password);
+                    if (registerResult)
+                    {
+                        Console.WriteLine($"З поверненням {_authorizedUser.Account.Name}\n" +
+                                          "Натисніть Enter");
+                        Console.ReadLine();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Email у неправильному вигляді");
+                        Console.ReadLine();
+                    }
+
                     break;
                 case Command.ExitCommand:
                     page = Command.ExitCommand;
