@@ -3,7 +3,6 @@
 // </copyright>
 
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Services.Validator;
 
 namespace API
@@ -28,14 +27,15 @@ namespace API
         {
             Console.OutputEncoding = Encoding.Unicode;
             Console.InputEncoding = Encoding.Unicode;
-            AppDbContext context = new AppDbContext(options: new DbContextOptions<AppDbContext>());
+
+            var context = new ConsoleDbContext();
             IService<Material> materialService = new MaterialService(new MaterialRepository(context));
             IService<Course> courseService = new CourseService(new CourseRepository(context));
             IService<User> userService = new UserService(new UserRepository(context));
             Validator validator = new ();
             IAuthorizedUserService authorizedUserService = new CurrentUserService(userService);
             IAuthorizationService authorizationService = new AuthorizationService(userService, authorizedUserService);
-            string page = Command.HomePage;
+            var page = Command.HomePage;
             while (page != Command.ExitCommand)
             {
                 switch (page)

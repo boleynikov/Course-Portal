@@ -18,7 +18,7 @@
                 @Html.TextBoxFor(x => x.ConfirmPassword, new { @class = "form-control", @type = "password", placeholder = "Repeat password" })
                 <span class="text-danger">@Html.ValidationMessageFor(x => x.ConfirmPassword)</span><br />
                 <div class="text-danger" asp-validation-summary="ModelOnly"></div>
-                <input type="submit" class="btn btn-outline-primary" value="Register" />
+                <input type="submit" class="btn btn-outline-primary" style="width: 350px" value="Register" />
             </div>
         </form>
     </div>

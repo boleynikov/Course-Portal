@@ -31,10 +31,11 @@ namespace API.Controllers
         /// <summary>
         /// Initializes a new instance of the <see cref="UserController"/> class.
         /// </summary>
-        /// <param name="courseService">Course service instance.</param>
-        /// <param name="materialService">Material service instance.</param>
-        /// <param name="userService">User service instance.</param>
+        /// <param name="courseService">Course service instance</param>
+        /// <param name="materialService">Material service instance</param>
+        /// <param name="userService">User service instance</param>
         /// <param name="authorizedUser">Current authorized user service</param>
+        /// <param name="validateService">Input validation service</param>
         public UserController(
             IService<Course> courseService,
             IService<Material> materialService,
@@ -53,7 +54,7 @@ namespace API.Controllers
         public async Task<string> Launch()
         {
             var currentUser = _authorizedUser.Account;
-            string page = Command.UserPage;
+            var page = Command.UserPage;
 
             while (page == Command.UserPage)
             {
@@ -62,16 +63,16 @@ namespace API.Controllers
                 var courses = _courseService.GetAll(0).Result.Where(c => userCourses.Contains(c.Id));
                 UserPageView.Show(currentUser, courses.ToList());
 
-                string cmdLine = Console.ReadLine();
+                var cmdLine = Console.ReadLine();
                 switch (cmdLine)
                 {
                     case Command.CreateCourseCommand:
                         Console.Write("Введіть назву курсу: ");
-                        string name = UserInput.NotEmptyString(() => Console.ReadLine());
+                        var name = UserInput.NotEmptyString(() => Console.ReadLine());
                         Console.Write("Введіть опис курсу: ");
-                        string description = UserInput.NotEmptyString(() => Console.ReadLine());
+                        var description = UserInput.NotEmptyString(() => Console.ReadLine());
                         var course = await _authorizedUser.CreateCourse(name, description, _authorizedUser.Account.Name, _courseService, _materialService);
-                        _authorizedUser.AddCourseToUser(course.Id);
+                        await _authorizedUser.AddCourseToUser(course.Id);
                         await _userService.Save();
                         await _courseService.Add(course);
                         Console.Write("Курс успішно додано. Натисніть Enter");
@@ -81,7 +82,7 @@ namespace API.Controllers
                         Console.Write("Введіть номер курсу: ");
                         if (_validateService.Course.Validate(courses.ToList(), Console.ReadLine(), out course))
                         {
-                            page = await new CourseController(_userService, _courseService, _authorizedUser, new OpenedCourseService(course, _validateService), Command.UserPage).Launch();
+                            page = await new CourseController(_userService, _courseService, _materialService, _authorizedUser, new OpenedCourseService(course, _validateService), Command.UserPage).Launch();
                         }
 
                         break;

@@ -1,6 +1,7 @@
 ﻿using Domain;
 using Domain.CourseMaterials;
 using System.Collections.Generic;
+using Domain.Enum;
 
 namespace Services.Interface
 {
@@ -18,11 +19,11 @@ namespace Services.Interface
         /// <summary>
         /// Add skill to course
         /// </summary>
-        void AddOrEditSkill(Course course, string skillName, int skillPoint);
+        void AddOrEditSkill(SkillKind skillName, int skillPoint);
         /// <summary>
         /// Delete skill from course
         /// </summary>
-        void DeleteSkill();
+        void DeleteSkill(string skillName);
         /// <summary>
         /// Edit course name
         /// </summary>

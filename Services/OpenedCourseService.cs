@@ -1,12 +1,11 @@
 ﻿using Domain;
 using Domain.CourseMaterials;
+using Domain.Enum;
 using Services.Helper;
 using Services.Interface;
-using Services.Validator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Enum;
 
 namespace Services
 {
@@ -21,6 +20,7 @@ namespace Services
         /// Initializes a new instance of the <see cref="OpenedCourseService"/> class.
         /// </summary>
         /// <param name="currentCourse">Course, which will be opened</param>
+        /// <param name="validateService">Validation service</param>
         public OpenedCourseService(Course currentCourse, Validator.Validator validateService)
         {
             _currentCourse = currentCourse;
@@ -31,33 +31,35 @@ namespace Services
         public Course Get() => _currentCourse;
 
         /// <inheritdoc/>
-        public void AddOrEditSkill(Course course, string skillName, int skillPoint)
+        public void AddOrEditSkill(SkillKind skillName, int skillPoint)
         {
-            var skill = new Skill() { Name = Enum.Parse<SkillKind>(skillName), Points = skillPoint };
-            var existingSkill = course?.CourseSkills.ToList().Find(c => c.Name == skill.Name);
+            var skill = new Skill() { Name = skillName, Points = skillPoint };
+            var existingSkill = _currentCourse?.CourseSkills.ToList().Find(c => c.Name == skill.Name);
 
             if (existingSkill != null)
             {
-                var index = course.CourseSkills.ToList().IndexOf(existingSkill);
-                course.CourseSkills.ElementAt(index).Points += skill.Points;
+                var index = _currentCourse.CourseSkills.ToList().IndexOf(existingSkill);
+                _currentCourse.CourseSkills.ElementAt(index).Points += skill.Points;
             }
             else
             {
-                course.CourseSkills.Add(new Skill { Name = skill.Name, Points = skill.Points });
+                _currentCourse.CourseSkills.Add(new Skill { Name = skill.Name, Points = skill.Points });
             }
 
-            course.Status = CourseStatus.Edited;
+            _currentCourse.Status = CourseStatus.Edited;
         }
         /// <inheritdoc/>
-        public void DeleteSkill()
+        public void DeleteSkill(string skillName)
         {
-            Console.Write("Введіть назву навички, яку хочете видалити з курсу: ");
-            string skillName = UserInput.NotEmptyString(() => Console.ReadLine());
             if (Enum.TryParse(skillName, out SkillKind name))
             {
                 var skill = _currentCourse.CourseSkills.ToList().Find(s => s.Name == name);
                 _currentCourse.CourseSkills.Remove(skill);
                 _currentCourse.Status = CourseStatus.Edited;
+            }
+            else
+            {
+                throw new InvalidOperationException(nameof(skillName));
             }
         }
         /// <inheritdoc/>

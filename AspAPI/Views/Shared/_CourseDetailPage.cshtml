@@ -58,7 +58,7 @@
                                 </form>
                             }
                         }
-                        else
+                        else if( Model.CourseMaterials.Count != 0 )
                         {
                             <form asp-controller="Course" asp-action="AddCourseToUser" asp-route-courseId="@Model.Id">
                                 <input type="submit" class="btn btn-outline-primary m-1 ml-5" style="width: 700px" value="Register on course" />
@@ -72,7 +72,7 @@
                     else
                     {
                         <form asp-area="Identity" asp-controller="Identity" asp-action="LoginForm">
-                            <button type="submit" class="btn btn-outline-primary mt-2 ml-5" style="width: 700px">Please login</button>
+                            <button type="submit" class="btn btn-outline-primary mt-2 ml-5" style="width: 700px">Login</button>
                         </form>
                     }
                 </div>
