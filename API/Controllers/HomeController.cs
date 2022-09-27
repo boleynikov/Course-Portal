@@ -4,6 +4,7 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Domain.CourseMaterials;
 
 namespace API.Controllers
 {
@@ -24,6 +25,7 @@ namespace API.Controllers
     {
         private readonly IService<Course> _courseService;
         private readonly IService<User> _userService;
+        private readonly IService<Material> _materialService;
         private readonly IAuthorizationService _authorization;
         private readonly IAuthorizedUserService _authorizedUser;
         private readonly Validator _validateService;
@@ -40,12 +42,14 @@ namespace API.Controllers
         public HomeController(
             IService<Course> courseService,
             IService<User> userService,
+            IService<Material> materialService,
             IAuthorizationService authorizationService,
             IAuthorizedUserService authorizedUserService,
             Validator validateService)
         {
             _courseService = courseService;
             _userService = userService;
+            _materialService = materialService;
             _authorization = authorizationService;
             _authorizedUser = authorizedUserService;
             _validateService = validateService;
@@ -157,7 +161,7 @@ namespace API.Controllers
                     Console.Write("Введіть номер курсу: ");
                     if (_validateService.Course.Validate(courses.ToList(), Console.ReadLine(), out course))
                     {
-                        page = await new CourseController(_userService, _courseService, _authorizedUser, new OpenedCourseService(course, new Validator())).Launch();
+                        page = await new CourseController(_userService, _courseService, _materialService, _authorizedUser, new OpenedCourseService(course, new Validator())).Launch();
                     }
 
                     break;

@@ -41,7 +41,7 @@ namespace API
                 switch (page)
                 {
                     case Command.HomePage:
-                        page = await new HomeController(courseService, userService, authorizationService, authorizedUserService, validator).Launch();
+                        page = await new HomeController(courseService, userService, materialService, authorizationService, authorizedUserService, validator).Launch();
                         break;
                     case Command.UserPage:
                         page = await new UserController(courseService, materialService, userService, authorizedUserService, validator).Launch();

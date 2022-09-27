@@ -2,17 +2,19 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using Domain.Enum;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain.CourseMaterials;
+using Domain.Enum;
+using Services;
 
 namespace API.Controllers
 {
+    using System;
     using Abstract;
     using Domain;
     using Services.Helper;
     using Services.Interface;
-    using System;
     using View;
 
     /// <summary>
@@ -22,7 +24,7 @@ namespace API.Controllers
     {
         private readonly IService<User> _userService;
         private readonly IService<Course> _courseService;
-
+        private readonly IService<Material> _materialService;
         private readonly IAuthorizedUserService _authorizedUser;
         private readonly IOpenedCourseService _openedCourse;
         private readonly string _redirectPage;
@@ -32,18 +34,21 @@ namespace API.Controllers
         /// </summary>
         /// <param name="userService">User service instance</param>
         /// <param name="courseService">Course service instance</param>
+        /// <param name="materialService">Material service instance</param>
         /// <param name="openedCourse">Current opened course service</param>
         /// <param name="authorizedUser">Current authorized user service</param>
         /// <param name="redirectPage">String of page for redirect back</param>
         public CourseController(
             IService<User> userService,
             IService<Course> courseService,
+            IService<Material> materialService,
             IAuthorizedUserService authorizedUser,
             IOpenedCourseService openedCourse,
             string redirectPage = "home")
         {
             _userService = userService;
             _courseService = courseService;
+            _materialService = materialService;
             _openedCourse = openedCourse;
             _authorizedUser = authorizedUser;
             _redirectPage = redirectPage;
@@ -106,7 +111,7 @@ namespace API.Controllers
                                 break;
                             }
 
-                            EditCourse();
+                            await EditCourse();
                             await _courseService.Update(currentCourse);
                             await _userService.Update(currentUser);
                             break;
@@ -139,7 +144,7 @@ namespace API.Controllers
                                 break;
                             }
 
-                            EditCourse();
+                            await EditCourse();
                             await _courseService.Update(currentCourse);
                             await _userService.Update(currentUser);
                             break;
@@ -158,7 +163,7 @@ namespace API.Controllers
             return page;
         }
 
-        private void EditCourse()
+        private async Task EditCourse()
         {
             CoursePageView.EditNavigationView();
             var str = UserInput.NotEmptyString(() => Console.ReadLine());
@@ -189,7 +194,32 @@ namespace API.Controllers
 
                         break;
                     case Command.AddCourseMaterials:
-                        _openedCourse.AddCourseMaterial(_authorizedUser.Account.UserMaterials.ToList());
+                        Console.WriteLine("Ви бажаєте додати матеріали зі свого списку?\n" +
+                                          "1 - так\n" +
+                                          "2 - ні");
+
+                        var chooseCommand = UserInput.NotEmptyString(() => Console.ReadLine());
+
+                        if (chooseCommand == "1")
+                        {
+                            _openedCourse.AddCourseMaterial(_authorizedUser.Account.UserMaterials.ToList());
+                        }
+                        else if (chooseCommand == "2")
+                        {
+                            Console.Clear();
+                            var materialConfigure = new MaterialConfigureService();
+                            Console.WriteLine($"Введіть тип матеріалу, який хочете додати до курсу\n" +
+                                              "Доступні матеріали:\n" +
+                                              $"{Command.ArticleInputCase} - Article,\n" +
+                                              $"{Command.PublicationInputCase} - Publication,\n" +
+                                              $"{Command.VideoInputCase} - Video\n" +
+                                              $"Або введіть {Command.StopAddingCommand}, щоб зупинитися");
+                            var material = await materialConfigure.CreateMaterials(_materialService, _authorizedUser.Account);
+                            _openedCourse.Get().CourseMaterials.Add(material);
+                            await _courseService.Update(_openedCourse.Get());
+                        }
+
+                        await _userService.Save();
                         break;
                     case Command.AddNewOrEditSkill:
                         var skill = CreateSkill();

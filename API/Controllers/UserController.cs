@@ -82,7 +82,7 @@ namespace API.Controllers
                         Console.Write("Введіть номер курсу: ");
                         if (_validateService.Course.Validate(courses.ToList(), Console.ReadLine(), out course))
                         {
-                            page = await new CourseController(_userService, _courseService, _authorizedUser, new OpenedCourseService(course, _validateService), Command.UserPage).Launch();
+                            page = await new CourseController(_userService, _courseService, _materialService, _authorizedUser, new OpenedCourseService(course, _validateService), Command.UserPage).Launch();
                         }
 
                         break;
