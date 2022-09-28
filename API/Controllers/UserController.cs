@@ -2,21 +2,20 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using ConsoleAPI.Controllers.Abstract;
+using ConsoleAPI.View;
+using Domain;
+using Domain.CourseMaterials;
+using Services;
+using Services.Helper;
+using Services.Interface;
+using Services.Validator;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.Controllers
+namespace ConsoleAPI.Controllers
 {
-    using System;
-    using System.Linq;
-    using Abstract;
-    using Domain;
-    using Domain.CourseMaterials;
-    using Services;
-    using Services.Helper;
-    using Services.Interface;
-    using Services.Validator;
-    using View;
-
     /// <summary>
     /// User Controller.
     /// </summary>

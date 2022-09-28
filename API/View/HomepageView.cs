@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace API.View
+namespace ConsoleAPI.View
 {
     /// <summary>
     /// Home Page console view

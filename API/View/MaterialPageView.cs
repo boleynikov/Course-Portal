@@ -2,7 +2,7 @@
 using Domain.CourseMaterials;
 using Services.Helper;
 
-namespace API.View
+namespace ConsoleAPI.View
 {
     public static class MaterialPageView
     {

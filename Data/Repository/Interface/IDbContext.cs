@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Threading.Tasks;
+
 namespace Data.Repository.Interface
 {
     using System.Collections.Generic;
@@ -17,7 +19,7 @@ namespace Data.Repository.Interface
         /// </summary>
         /// <typeparam name="T">Type of objects in list.</typeparam>
         /// <returns>List of T objects.</returns>
-        IEnumerable<T> Get<T>()
+        Task<IEnumerable<T>> Get<T>()
             where T : BaseEntity;
 
         /// <summary>
@@ -26,7 +28,7 @@ namespace Data.Repository.Interface
         /// <typeparam name="T">Type of objects.</typeparam>
         /// <param name="listEntities">Type of objects in list.</param>
         /// <returns>Result.</returns>
-        bool Update<T>(IEnumerable<T> listEntities)
+        Task<bool> Update<T>(IEnumerable<T> listEntities)
             where T : BaseEntity;
     }
 }

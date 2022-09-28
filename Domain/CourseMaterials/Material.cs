@@ -15,7 +15,6 @@ namespace Domain.CourseMaterials
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Material"/> class.
-        /// Abstract constructor <see cref="Material"/> class.
         /// </summary>
         /// <param name="id">Material id.</param>
         /// <param name="title">Material title.</param>
