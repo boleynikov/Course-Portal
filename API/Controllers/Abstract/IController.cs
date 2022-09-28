@@ -4,7 +4,7 @@
 
 using System.Threading.Tasks;
 
-namespace API.Controllers.Abstract
+namespace ConsoleAPI.Controllers.Abstract
 {
     /// <summary>
     /// Interface of Controller.

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32126.315
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API\API.csproj", "{04AC5A40-A36A-470B-94EE-069220B74128}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleAPI", "API\ConsoleAPI.csproj", "{04AC5A40-A36A-470B-94EE-069220B74128}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{29B4F212-2139-4362-8C4B-C3BDF5930A94}"
 EndProject
@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspAPI", "AspAPI\AspAPI.csproj", "{EFB1435A-6AF3-4ADD-BE4F-840BCAC4DA00}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileData", "FileData\FileData.csproj", "{607188EB-5985-4075-BD10-9601B75E9791}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +46,10 @@ Global
 		{EFB1435A-6AF3-4ADD-BE4F-840BCAC4DA00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFB1435A-6AF3-4ADD-BE4F-840BCAC4DA00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFB1435A-6AF3-4ADD-BE4F-840BCAC4DA00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{607188EB-5985-4075-BD10-9601B75E9791}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{607188EB-5985-4075-BD10-9601B75E9791}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{607188EB-5985-4075-BD10-9601B75E9791}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{607188EB-5985-4075-BD10-9601B75E9791}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

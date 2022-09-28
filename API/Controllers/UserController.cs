@@ -2,21 +2,20 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using ConsoleAPI.Controllers.Abstract;
+using ConsoleAPI.View;
+using Domain;
+using Domain.CourseMaterials;
+using Services;
+using Services.Helper;
+using Services.Interface;
+using Services.Validator;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.Controllers
+namespace ConsoleAPI.Controllers
 {
-    using System;
-    using System.Linq;
-    using Abstract;
-    using Domain;
-    using Domain.CourseMaterials;
-    using Services;
-    using Services.Helper;
-    using Services.Interface;
-    using Services.Validator;
-    using View;
-
     /// <summary>
     /// User Controller.
     /// </summary>
@@ -71,7 +70,7 @@ namespace API.Controllers
                         var name = UserInput.NotEmptyString(() => Console.ReadLine());
                         Console.Write("Введіть опис курсу: ");
                         var description = UserInput.NotEmptyString(() => Console.ReadLine());
-                        var course = await _authorizedUser.CreateCourse(name, description, _authorizedUser.Account.Name, _courseService, _materialService);
+                        var course = await _authorizedUser.CreateCourse(name, description, _authorizedUser.Account.Email, _courseService, _materialService);
                         await _authorizedUser.AddCourseToUser(course.Id);
                         await _userService.Save();
                         await _courseService.Add(course);

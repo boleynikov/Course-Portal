@@ -2,21 +2,20 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System;
 using System.Linq;
 using System.Threading.Tasks;
+using ConsoleAPI.Controllers.Abstract;
+using ConsoleAPI.View;
+using Domain;
 using Domain.CourseMaterials;
 using Domain.Enum;
 using Services;
+using Services.Helper;
+using Services.Interface;
 
-namespace API.Controllers
+namespace ConsoleAPI.Controllers
 {
-    using System;
-    using Abstract;
-    using Domain;
-    using Services.Helper;
-    using Services.Interface;
-    using View;
-
     /// <summary>
     /// Course Controller.
     /// </summary>
@@ -255,7 +254,7 @@ namespace API.Controllers
                               "1 - Music,\n" +
                               "2 - Physics,\n" +
                               "3 - HealthCare,\n" +
-                              "4 - TimeManagment,\n" +
+                              "4 - Management,\n" +
                               "5 - Communication,\n" +
                               "6 - Illustration,\n" +
                               "7 - Photo\n" +

@@ -15,7 +15,7 @@ namespace Data.Repository
     /// <summary>
     /// Converter for deserialization of list with abstract class heirs.
     /// </summary>
-    internal class MaterialConverter : JsonConverter
+    public class MaterialConverter : JsonConverter
     {
         /// <inheritdoc/>
         public override bool CanWrite
@@ -32,14 +32,25 @@ namespace Data.Repository
         /// <inheritdoc/>
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var jo = JObject.Load(reader);
-            return jo["Type"].Value<string>() switch
-            {
-                "Article" => jo.ToObject<ArticleMaterial>(serializer),
-                "Publication" => jo.ToObject<PublicationMaterial>(serializer),
-                "Video" => jo.ToObject<VideoMaterial>(serializer),
-                _ => null,
-            };
+            //var jo = JObject.Load(reader);
+            //return jo["Type"].Value<string>() switch
+            //{
+            //    "Article" => jo.ToObject<ArticleMaterial>(serializer),
+            //    "Publication" => jo.ToObject<PublicationMaterial>(serializer),
+            //    "Video" => jo.ToObject<VideoMaterial>(serializer),
+            //};
+            JObject jo = JObject.Load(reader);
+            if (jo["type"].Value<string>() == "Article")
+                return jo.ToObject<ArticleMaterial>(serializer);
+
+            if (jo["type"].Value<string>() == "Publication")
+                return jo.ToObject<PublicationMaterial>(serializer);
+
+            if (jo["type"].Value<string>() == "Video")
+                return jo.ToObject<VideoMaterial>(serializer);
+
+            return null;
+
         }
 
         /// <inheritdoc/>

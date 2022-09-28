@@ -2,22 +2,21 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using ConsoleAPI.Controllers.Abstract;
+using ConsoleAPI.View;
+using Domain;
 using Domain.CourseMaterials;
+using Services;
+using Services.Helper;
+using Services.Interface;
+using Services.Validator;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace API.Controllers
+namespace ConsoleAPI.Controllers
 {
-    using Abstract;
-    using Domain;
-    using Services;
-    using Services.Helper;
-    using Services.Interface;
-    using Services.Validator;
-    using System;
-    using System.Linq;
-    using View;
-
     /// <summary>
     /// Home Controller.
     /// </summary>
