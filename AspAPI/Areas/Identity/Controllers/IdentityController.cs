@@ -23,22 +23,6 @@ namespace AspAPI.Areas.Identity.Controllers
             ViewData["pageCount"] = pageCount;
             return View("UserProfile", (_authorizedUser.Account, page));
         }
-        public IActionResult LoginForm()
-        {
-            return View("LoginForm");
-        }
-
-        [HttpGet]
-        public IActionResult RegisterForm()
-        {
-            return View("RegisterForm");
-        }
-
-        [HttpGet]
-        public IActionResult CreateCourseForm()
-        {
-            return View();
-        }
 
         [HttpPost]
         public IActionResult GoToCourseForm(Models.Course course)
@@ -96,6 +80,23 @@ namespace AspAPI.Areas.Identity.Controllers
             }
 
             return View("LoginForm");
+        }
+
+        public IActionResult LoginForm()
+        {
+            return View("LoginForm");
+        }
+
+        [HttpGet]
+        public IActionResult RegisterForm()
+        {
+            return View("RegisterForm");
+        }
+
+        [HttpGet]
+        public IActionResult CreateCourseForm()
+        {
+            return View();
         }
 
     }
