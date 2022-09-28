@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using AspAPI.ModelExtension;
+﻿using AspAPI.Mapper;
 using AspAPI.Models.Materials;
 using Domain;
 using Domain.CourseMaterials;
 using Domain.Enum;
+using Microsoft.AspNetCore.Mvc;
 using Services.Interface;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace AspAPI.Controllers
 {
@@ -92,7 +92,8 @@ namespace AspAPI.Controllers
         public async Task<IActionResult> EditForm(int id)
         {
             var course = await _courseService.GetById(id);
-            return View(course.ToModel());
+            var courseModel = OwnMapper.Map<Course, Models.Course>(course);
+            return View(courseModel);
         }
 
         public async Task<IActionResult> SaveNameDescription(int courseId, Models.Course model)
@@ -109,7 +110,8 @@ namespace AspAPI.Controllers
                 course.Description = model.Description;
                 course.Status = model.Status;
                 await _courseService.Update(course);
-                return View("EditForm", course.ToModel());
+                var courseModel = OwnMapper.Map<Course, Models.Course>(course);
+                return View("EditForm", courseModel);
             }
 
             return RedirectToAction("EditForm", new { id = courseId });
@@ -160,9 +162,10 @@ namespace AspAPI.Controllers
             return RedirectToAction("EditForm", new { id = courseId });
         }
 
-        public async Task<IActionResult> AddArticleToCourse(ArticleModel article, int courseId)
+        public async Task<IActionResult> AddArticleToCourse(ArticleModel articleModel, int courseId)
         {
-            var material = await _authorizedUser.AddMaterial(_materialService, article.ToDomain());
+            var article = OwnMapper.Map<ArticleModel, ArticleMaterial>(articleModel);
+            var material = await _authorizedUser.AddMaterial(_materialService, article);
             var course = await _courseService.GetById(courseId);
             course.CourseMaterials.Add(material);
             course.Status = CourseStatus.Edited;
@@ -170,9 +173,10 @@ namespace AspAPI.Controllers
             return RedirectToAction("EditForm", new { id = courseId });
         }
 
-        public async Task<IActionResult> AddPublicationToCourse(PublicationModel publication, int courseId)
+        public async Task<IActionResult> AddPublicationToCourse(PublicationModel publicationModel, int courseId)
         {
-            var material = await _authorizedUser.AddMaterial(_materialService, publication.ToDomain());
+            var publication = OwnMapper.Map<PublicationModel, PublicationMaterial>(publicationModel);
+            var material = await _authorizedUser.AddMaterial(_materialService, publication);
             var course = await _courseService.GetById(courseId);
             course.CourseMaterials.Add(material);
             course.Status = CourseStatus.Edited;
@@ -180,9 +184,10 @@ namespace AspAPI.Controllers
             return RedirectToAction("EditForm", new { id = courseId });
         }
 
-        public async Task<IActionResult> AddVideoToCourse(VideoModel video, int courseId)
+        public async Task<IActionResult> AddVideoToCourse(VideoModel videoModel, int courseId)
         {
-            var material = await _authorizedUser.AddMaterial(_materialService, video.ToDomain());
+            var video = OwnMapper.Map<VideoModel, VideoMaterial>(videoModel);
+            var material = await _authorizedUser.AddMaterial(_materialService, video);
             var course = await _courseService.GetById(courseId);
             course.CourseMaterials.Add(material);
             course.Status = CourseStatus.Edited;

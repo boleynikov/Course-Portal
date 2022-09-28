@@ -15,5 +15,10 @@ namespace AspAPI.Models.Materials
         /// </summary>
         [Required(ErrorMessage = "Quality is required")]
         public int Quality { get; set; }
+
+        /// <summary>
+        /// Gets or sets type of material.
+        /// </summary>
+        public string Type { get; set; } = "Video";
     }
 }
