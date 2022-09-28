@@ -93,7 +93,7 @@
         <dt class="col-sm-2">
         </dt>
     </dl>
-    @if (Model.user.UserCourses.Count > 6)
+    @if (Model.user.UserCourses.Count > 4)
     {
         <ul class="pagination">
             @for (int i = 1; i <= Convert.ToInt32(ViewData["pageCount"]); i++)

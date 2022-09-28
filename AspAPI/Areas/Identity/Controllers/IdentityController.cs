@@ -22,8 +22,7 @@ namespace AspAPI.Areas.Identity.Controllers
             pageCount = pageCount % 4 == 0 ? pageCount / 4 : (pageCount / 4) + 1;
             ViewData["pageCount"] = pageCount;
             return View("UserProfile", (_authorizedUser.Account, page));
-    }
-
+        }
         public IActionResult LoginForm()
         {
             return View("LoginForm");
@@ -55,6 +54,7 @@ namespace AspAPI.Areas.Identity.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterModel user)
         {
             if (user == null)
@@ -77,6 +77,7 @@ namespace AspAPI.Areas.Identity.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> LoginUser(LoginModel user)
         {
             if (user == null)
