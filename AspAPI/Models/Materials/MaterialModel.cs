@@ -9,10 +9,6 @@ namespace AspAPI.Models.Materials
         /// Gets or sets entity id.
         /// </summary>
         public int Id { get; set; }
-        /// <summary>
-        /// Gets or sets type of material.
-        /// </summary>
-        public string Type { get; set; }
 
         /// <summary>
         /// Gets or sets title of material.

@@ -29,5 +29,10 @@ namespace AspAPI.Models.Materials
         [Display(Name = "Publication")]
         [Required(ErrorMessage = "Date of publication is required")]
         public DateTime YearOfPublication { get; set; }
+
+        /// <summary>
+        /// Gets or sets type of material.
+        /// </summary>
+        public string Type { get; set; } = "Publication";
     }
 }
