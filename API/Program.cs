@@ -29,23 +29,23 @@ namespace ConsoleAPI
             Console.InputEncoding = Encoding.Unicode;
 
             //Using SQL Server
-            //var context = new ConsoleDbContext();
-            //IService<Material> materialService = new MaterialService(new MaterialRepository(context));
-            //IService<Course> courseService = new CourseService(new CourseRepository(context));
-            //IService<User> userService = new UserService(new UserRepository(context));
-            //Validator validator = new Validator();
-            //IAuthorizedUserService authorizedUserService = new CurrentUserService(userService);
-            //IAuthorizationService authorizationService = new AuthorizationService(userService, authorizedUserService);
-
-            //In case of using File System for storage - uncomment
-            //
-            IDbContext context = new FileDbContext();
-            IService<Material> materialService = new MaterialService(new MaterialFileRepository(context));
-            IService<Course> courseService = new CourseService(new CourseFileRepository(context));
-            IService<User> userService = new UserService(new UserFileRepository(context));
+            var context = new ConsoleDbContext();
+            IService<Material> materialService = new MaterialService(new MaterialRepository(context));
+            IService<Course> courseService = new CourseService(new CourseRepository(context));
+            IService<User> userService = new UserService(new UserRepository(context));
             Validator validator = new Validator();
             IAuthorizedUserService authorizedUserService = new CurrentUserService(userService);
             IAuthorizationService authorizationService = new AuthorizationService(userService, authorizedUserService);
+
+            //In case of using File System for storage - uncomment
+            //
+            //IDbContext context = new FileDbContext();
+            //IService<Material> materialService = new MaterialService(new MaterialFileRepository(context));
+            //IService<Course> courseService = new CourseService(new CourseFileRepository(context));
+            //IService<User> userService = new UserService(new UserFileRepository(context));
+            //Validator validator = new Validator();
+            //IAuthorizedUserService authorizedUserService = new CurrentUserService(userService);
+            //IAuthorizationService authorizationService = new AuthorizationService(userService, authorizedUserService);
 
             var page = Command.HomePage;
             while (page != Command.ExitCommand)

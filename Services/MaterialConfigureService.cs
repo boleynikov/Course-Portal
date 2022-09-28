@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Domain;
+﻿using Domain;
 using Domain.CourseMaterials;
 using Services.Helper;
 using Services.Interface;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Services
 {
@@ -25,11 +23,9 @@ namespace Services
             }
 
             var allMaterials = await materialService.GetAll(0);
-            var cmdLine = string.Empty;
-
             Console.Write("Обраний матеріал: ");
-            cmdLine = UserInput.NotEmptyString(() => Console.ReadLine());
-            int materialsCount = await materialService.GetCount();
+            var cmdLine = UserInput.NotEmptyString(() => Console.ReadLine());
+            var materialsCount = await materialService.GetCount();
             int id;
             if (materialsCount == 0)
             {

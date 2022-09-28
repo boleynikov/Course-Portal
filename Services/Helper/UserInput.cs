@@ -15,7 +15,7 @@ namespace Services.Helper
         public static float ValidFloat(Func<string> input)
         {
             float number;
-            string str = input?.Invoke();
+            var str = input?.Invoke();
             while (!float.TryParse(str, out number))
             {
                 Console.Write("Ви ввели не валідне значення. Спробуйте ще раз: ");
@@ -33,7 +33,7 @@ namespace Services.Helper
         public static int ValidInt(Func<string> input)
         {
             int number;
-            string str = input?.Invoke();
+            var str = input?.Invoke();
             while (!int.TryParse(str, out number))
             {
                 Console.Write("Ви ввели не валідне значення для числа. Спробуйте ще раз: ");
@@ -51,7 +51,7 @@ namespace Services.Helper
         public static DateTime ValidDateTime(Func<string> input)
         {
             DateTime date = DateTime.Today;
-            string str = input?.Invoke();
+            var str = input?.Invoke();
             while (!DateTime.TryParse(str, out DateTime newDate) ||
                    (DateTime.TryParse(str, out newDate) && newDate.Year < 1800 || newDate > DateTime.Now))
             {
@@ -70,7 +70,7 @@ namespace Services.Helper
         /// <returns>Not empty string value</returns>
         public static string NotEmptyString(Func<string> input)
         {
-            string str = input?.Invoke();
+            var str = input?.Invoke();
             while (string.IsNullOrWhiteSpace(str))
             {
                 if (string.IsNullOrWhiteSpace(str))

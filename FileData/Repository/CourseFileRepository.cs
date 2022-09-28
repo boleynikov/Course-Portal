@@ -95,7 +95,7 @@ namespace Data.Repository
             var course = courses.FirstOrDefault(c => c.Id == entity.Id);
             if (course != null)
             {
-                int i = courses.IndexOf(course);
+                var i = courses.IndexOf(course);
                 courses[i] = entity;
                 await Save();
             }

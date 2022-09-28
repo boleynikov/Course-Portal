@@ -70,7 +70,7 @@ namespace ConsoleAPI.Controllers
                         var name = UserInput.NotEmptyString(() => Console.ReadLine());
                         Console.Write("Введіть опис курсу: ");
                         var description = UserInput.NotEmptyString(() => Console.ReadLine());
-                        var course = await _authorizedUser.CreateCourse(name, description, _authorizedUser.Account.Name, _courseService, _materialService);
+                        var course = await _authorizedUser.CreateCourse(name, description, _authorizedUser.Account.Email, _courseService, _materialService);
                         await _authorizedUser.AddCourseToUser(course.Id);
                         await _userService.Save();
                         await _courseService.Add(course);

@@ -98,7 +98,7 @@ namespace Data.Repository
             var material = materials.FirstOrDefault(c => c.Id == entity.Id);
             if (material != null)
             {
-                int i = materials.IndexOf(material);
+                var i = materials.IndexOf(material);
                 materials[i] = entity;
                 await Save();
             }

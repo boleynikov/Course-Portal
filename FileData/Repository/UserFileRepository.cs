@@ -96,7 +96,7 @@ namespace Data.Repository
             var user = users.FirstOrDefault(c => c.Id == entity.Id);
             if (user != null)
             {
-                int i = users.IndexOf(user);
+                var i = users.IndexOf(user);
                 users[i] = entity;
                 await Save();
             }
