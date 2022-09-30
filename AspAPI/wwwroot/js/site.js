@@ -5,7 +5,7 @@
     var modal = $('#modal');
 
     if (id === undefined || url === undefined) {
-        alert('Data miss')
+        alert('Data miss');
     }
 
     $.ajax({
@@ -16,10 +16,10 @@
             $('.modal-dialog');
             modal.find(".modal-header").find('.text-center').html(headerTxt);
             modal.find(".modal-body").html(response);
-            modal.modal('show')
+            modal.modal('show');
         },
         failure: function () {
-            modal.modal('hide')
+            modal.modal('hide');
         },
         error: function (response) {
             alert(response.responseText);
