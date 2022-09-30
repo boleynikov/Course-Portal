@@ -68,8 +68,6 @@ namespace ConsoleAPI
                         break;
                 }
             }
-
-            await context.DisposeAsync();
         }
     }
 }

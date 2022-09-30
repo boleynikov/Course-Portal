@@ -68,6 +68,7 @@ namespace Data.Repository
             await _context.SaveChangesAsync();
         }
 
+        /// <inheritdoc/>
         public async Task<int> GetCount()
         {
             return await _context.Materials.CountAsync();

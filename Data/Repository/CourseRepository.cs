@@ -82,6 +82,7 @@ namespace Data.Repository
                                          .ToArrayAsync();
         }
 
+        /// <inheritdoc/>
         public async Task<int> GetCount()
         {
             return await _context.Courses.CountAsync();
