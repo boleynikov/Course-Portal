@@ -3,7 +3,7 @@
 @model (Domain.CourseMaterials.ArticleMaterial material, int materialIndex, int completedMaterials)
 
 <div class="row">
-    <div class=" col col-lg-2 ">
+    <div class=" col col-lg-3 ">
         @{
             var course = await CourseService.GetById(Convert.ToInt32(ViewData["courseId"]));
         }

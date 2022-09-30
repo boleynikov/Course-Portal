@@ -5,7 +5,7 @@
     @for(var i = 0; i < Model.materials.Count(); i++)
     {
         var material = Model.materials.ElementAt(i);
-        var title = material.Title.Length > 7 ? $"{material.Title.Substring(0, 7)}.." : material.Title;
+        var title = material.Title.Length > 20 ? $"{material.Title.Substring(0, 20)}.." : material.Title;
         if (i <= Model.completedMaterials)
         {
             if (material.Id == Model.materialId)

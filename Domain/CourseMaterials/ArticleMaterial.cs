@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.ComponentModel.DataAnnotations;
+
 namespace Domain.CourseMaterials
 {
     using System;
@@ -30,6 +32,7 @@ namespace Domain.CourseMaterials
         /// <summary>
         /// Gets or sets publication date of article.
         /// </summary>
+        [Display(Name = "Release date")]
         public DateTime DateOfPublication { get; set; }
 
         /// <summary>

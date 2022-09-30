@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.ComponentModel.DataAnnotations;
+
 namespace Domain.CourseMaterials
 {
     using System;
@@ -39,6 +41,7 @@ namespace Domain.CourseMaterials
         /// <summary>
         /// Gets or sets publication count of pages.
         /// </summary>
+        [Display(Name = "Page count")]
         public int PageCount { get; set; }
 
         /// <summary>
@@ -49,6 +52,7 @@ namespace Domain.CourseMaterials
         /// <summary>
         /// Gets or sets year of publication(release).
         /// </summary>
+        [Display(Name = "Release year")]
         public DateTime YearOfPublication { get; set; }
     }
 }
