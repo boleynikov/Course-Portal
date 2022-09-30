@@ -36,7 +36,10 @@ namespace ConsoleAPI.View
             {
                 for (int i = 0; i < courseList.Count; i++)
                 {
-                    Console.WriteLine("\t|{0, 2}.| {1,-40} | {2,5}", courseList[i].Id, courseList[i].Name, courseList[i].Description);
+                    var description = courseList[i].Description.Length > 50
+                        ? $"{courseList[i].Description.Substring(0, 50)}..."
+                        : courseList[i].Description;
+                    Console.WriteLine("\t|{0, 2}.| {1,-40} | {2,5}", courseList[i].Id, courseList[i].Name, description);
                 }
             }
 
